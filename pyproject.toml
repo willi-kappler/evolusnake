@@ -1,0 +1,34 @@
+[project]
+version = "0.1"
+name = "Evolusnake"
+dependencies = [
+    "parasnake @ git+ssh://git@github.com/willi-kappler/parasnake"
+]
+requires-python = ">= 3.12"
+readme = "README.md"
+description = "Evolutionary algorithms in Python."
+maintainers = [
+  {name = "Willi Kappler", email = "grandor@gmx.de"}
+]
+authors = [
+  {name = "Willi Kappler", email = "grandor@gmx.de"},
+]
+keywords = ["evolution", "genetic", "algorithm"]
+#license = {text = "MIT License"}
+#license-files = ["LICENSE"]
+license = "MIT"
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.12"
+]
+
+[project.urls]
+Repository = "https://github.com/willi-kappler/evolusnake"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
