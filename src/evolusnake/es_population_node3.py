@@ -4,12 +4,12 @@
 # See: https://github.com/willi-kappler/evolusnake
 
 """
-This module defines the base data class for an individual.
+This module defines the class for population type 3.
 """
 
 # Python std lib:
 import logging
-from typing import Any,  override
+from typing import Any, override
 
 # External imports:
 from parasnake.ps_node import PSNode
@@ -32,7 +32,7 @@ class ESPopulationNode3(PSNode):
         self.population = ESPopulation(config, individual)
 
     @override
-    def ps_process_data(self, data: Any) -> Any:
+    def ps_process_data(self, data: ESIndividual) -> ESIndividual:
         logger.debug(f"ESPopulationNode3.ps_process_data()")
         logger.debug(f"Individual from server: {data.fitness}")
 
