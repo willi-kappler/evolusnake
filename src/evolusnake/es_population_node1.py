@@ -23,6 +23,10 @@ logger = logging.getLogger(__name__)
 
 class ESPopulationNode1(PSNode):
     def __init__(self, config: ESConfiguration, individual: ESIndividual):
+        logger.info("Init population node type 1")
+        logger.info("Clone population and mutate individuals in place. Then sort population by fitness.")
+        logger.info("The worst individuals are overwritten.")
+
         super().__init__(config.parasnake_config)
 
         self.population = ESPopulation(config, individual)
@@ -38,6 +42,7 @@ class ESPopulationNode1(PSNode):
 
         self.population.es_reset_or_accept_best(data)
         offset = self.population.population_size
+        max_mutation: int = self.population.num_of_mutations
 
         for i in range(self.population.num_of_iterations):
             # Create a copy of each individual before mutating it:
@@ -46,15 +51,20 @@ class ESPopulationNode1(PSNode):
                 self.population.population[j + offset] = ind.es_clone()
 
                 # Now mutate the original individual:
-                for _ in range(self.population.num_of_mutations):
+                for _ in range(max_mutation):
                     ind.es_mutate()
                 ind.es_calculate_fitness()
 
             self.population.es_sort_population()
 
-            if self.population.population[0] <= self.population.target_fitness:
+            if self.population.population[0].fitness <= self.population.target_fitness:
                 logger.info(f"Early exit at iteration {i}")
                 break
+
+            # Change mutation rate:
+            max_mutation -= 1
+            if max_mutation <= 0:
+                max_mutation = self.population.num_of_mutations
 
         best_fitness: float = self.population.population[0].fitness
         worst_fitness: float = self.population.population[offset - 1].fitness
