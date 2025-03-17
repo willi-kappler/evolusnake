@@ -8,20 +8,30 @@ This module defines the base data class for an individual.
 """
 
 # Python std lib:
-from typing import Any
+import logging
+from typing import Any, Self
+
+logger = logging.getLogger(__name__)
 
 class ESIndividual:
     def __init__(self):
         self.fitness = 0.0
 
     def es_mutate(self):
-        pass
+        # Must be implemented by the user
+        raise NotImplementedError
 
     def es_randomize(self):
-        pass
+        # Must be implemented by the user
+        raise NotImplementedError
 
     def es_calculate_fitness(self):
-        pass
+        # Must be implemented by the user
+        raise NotImplementedError
+
+    def es_clone(self) -> Self:
+        # Must be implemented by the user
+        raise NotImplementedError
 
     def __lt__(self, other: Any) -> bool:
         match other:
