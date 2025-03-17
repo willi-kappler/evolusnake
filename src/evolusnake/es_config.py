@@ -24,7 +24,7 @@ class ESConfiguration:
     """
 
     def __init__(self):
-        self.parasnake_config = None
+        self.parasnake_config: PSConfiguration = PSConfiguration("12345678901234567890123456789012")
 
         # Server config:
         self.server_mode: bool = False
