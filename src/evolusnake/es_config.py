@@ -31,7 +31,7 @@ class ESConfiguration:
         self.target_fitness: float = 0.0
         self.result_filename: str = "best_result.json"
         self.save_new_finess: bool = False
-        self.same_fitness: bool = False
+        self.allow_same_fitness: bool = False
         self.share_only_best: bool = False
         self.server_population_size: int = 10
 
