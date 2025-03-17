@@ -23,6 +23,9 @@ logger = logging.getLogger(__name__)
 
 class ESPopulationNode2(PSNode):
     def __init__(self, config: ESConfiguration, individual: ESIndividual):
+        logger.info("Init population node type 2")
+        logger.info("Mutate a clone and if it's better keep it.")
+
         super().__init__(config.parasnake_config)
 
         self.population = ESPopulation(config, individual)
@@ -55,7 +58,7 @@ class ESPopulationNode2(PSNode):
             if minimum_found:
                 break
 
-            # change mutation rate:
+            # Change mutation rate:
             max_mutation -= 1
             if max_mutation <= 0:
                 max_mutation = self.population.num_of_mutations
