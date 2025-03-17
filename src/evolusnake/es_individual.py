@@ -34,22 +34,3 @@ class ESIndividual:
         # Must be implemented by the user
         raise NotImplementedError
 
-    def __lt__(self, other: Any) -> bool:
-        match other:
-            case float(f):
-                return self.fitness < f
-            case ESIndividual() as ind:
-                return self.fitness < ind.fitness
-            case _:
-                raise ValueError(f"Type not supported: {other}")
-
-    def __le__(self, other: Any) -> bool:
-        match other:
-            case float(f):
-                return self.fitness <= f
-            case ESIndividual() as ind:
-                return self.fitness <= ind.fitness
-            case _:
-                raise ValueError(f"Type not supported: {other}")
-
-
