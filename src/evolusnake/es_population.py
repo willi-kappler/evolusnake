@@ -51,6 +51,10 @@ class ESPopulation:
         # Init random number generator:
         rnd.seed()
 
+        logger.debug(f"{self.population_size=}, {self.target_fitness=}")
+        logger.debug(f"{self.num_of_iterations=}, {self.num_of_mutations=}")
+        logger.debug(f"{self.accept_new_best=}, {self.reset_population=}")
+
     def es_get_random_index(self) -> int:
         return rnd.randrange(self.population_size)
 
