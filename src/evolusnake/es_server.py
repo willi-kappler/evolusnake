@@ -11,7 +11,7 @@ This module defines the Parasnake server class.
 import logging
 import json
 import random as rnd
-from typing import Any, override, Optional
+from typing import override, Optional
 
 # External imports:
 from parasnake.ps_server import PSServer
@@ -43,6 +43,10 @@ class ESServer(PSServer):
             ind.es_mutate()
             ind.es_calculate_fitness()
             self.population.append(ind)
+
+        logger.debug(f"{self.population_size=}, {self.target_firness=}")
+        logger.debug(f"{self.result_filename=}, {self.save_new_fitness=}")
+        logger.debug(f"{self.allow_same_fitness=}, {self.share_only_best=}")
 
     def es_save_data(self, filename: str):
         with open(filename, "w") as f:

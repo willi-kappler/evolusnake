@@ -9,7 +9,7 @@ This module defines the class for population type 2.
 
 # Python std lib:
 import logging
-from typing import Any, override
+from typing import override
 
 # External imports:
 from parasnake.ps_node import PSNode
