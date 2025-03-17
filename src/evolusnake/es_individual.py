@@ -10,12 +10,13 @@ This module defines the base data class for an individual.
 # Python std lib:
 import logging
 from typing import Any, Self
+from sys import float_info
 
 logger = logging.getLogger(__name__)
 
 class ESIndividual:
     def __init__(self):
-        self.fitness = 0.0
+        self.fitness: float = float_info.max
 
     def es_mutate(self):
         # Must be implemented by the user
