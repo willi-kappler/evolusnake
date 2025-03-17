@@ -19,7 +19,6 @@ logger = logging.getLogger(__name__)
 
 class ESPopulation:
     def __init__(self, config: ESConfiguration, individual: ESIndividual):
-
         if config.node_population_size < 2:
             raise ValueError(f"Node population must be at least 2, {config.node_population_size}")
 
@@ -48,6 +47,9 @@ class ESPopulation:
         self.best_fitness: float = 0.0
         self.worst_index: int = 0
         self.worst_fitness: float = 0.0
+
+        # Init random number generator:
+        rnd.seed()
 
     def es_get_random_index(self) -> int:
         return rnd.randrange(self.population_size)
