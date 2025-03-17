@@ -10,6 +10,7 @@ This module defines the configuration.
 # Python std lib:
 import json
 import logging
+import argparse
 from typing import Any
 
 # External imports:
@@ -90,4 +91,19 @@ class ESConfiguration:
                     raise ValueError(f"Unknown configuration option: {key=}, {value=}")
 
         return config
+
+    def from_command_line(self):
+        parser = argparse.ArgumentParser(add_help=False, argument_default=argparse.SUPPRESS)
+        parser.add_argument("-s", action="store_true")
+        parser.add_argument("-f", type=float)
+        parser.add_argument("-p", type=int)
+        parser.add_argument("-m", type=int)
+        parser.add_argument("-i", type=int)
+        parser.add_argument("-k", type=int)
+        #parser.add_argument()
+
+        args = parser.parse_known_args()
+
+
+
 
