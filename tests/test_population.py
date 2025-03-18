@@ -17,13 +17,6 @@ from tests.common import TestIndividual
 
 
 class TestPopulation(unittest.TestCase):
-    def test_init(self):
-        """
-        Test normal initialisazion.
-        """
-
-        pass
-
     def test_population_valid_config(self):
         """
         Test population init with a valid config.

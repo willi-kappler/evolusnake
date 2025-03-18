@@ -18,13 +18,6 @@ from parasnake.ps_config import PSConfiguration
 
 
 class TestPopulation(unittest.TestCase):
-    def test_init(self):
-        """
-        Test normal initialisazion.
-        """
-
-        pass
-
     def test_population_process_data(self):
         """
         Test optimizing the population.
