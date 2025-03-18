@@ -33,7 +33,7 @@ class ESPopulationNode3(PSNode):
 
     @override
     def ps_process_data(self, data: ESIndividual) -> ESIndividual:
-        logger.debug(f"ESPopulationNode3.ps_process_data()")
+        logger.debug("ESPopulationNode3.ps_process_data()")
         logger.debug(f"Individual from server: {data.fitness}")
 
         self.population.es_reset_or_accept_best(data)
