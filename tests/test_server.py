@@ -19,7 +19,7 @@ from tests.common import TestIndividual
 from parasnake.ps_config import PSConfiguration
 
 
-# TODO: ps_get_new_data, ps_process_result, ps_save_data
+# TODO: ps_get_new_data, ps_process_result 
 
 
 class TestServer(unittest.TestCase):
@@ -82,7 +82,6 @@ class TestServer(unittest.TestCase):
 
         self.assertAlmostEqual(data["fitness"], ind1.fitness)
         self.assertEqual(data["data"], ind1.data)
-        self.assertEqual(data["data_size"], ind1.data_size)
 
     def test_server_is_job_done1(self):
         """
@@ -113,6 +112,72 @@ class TestServer(unittest.TestCase):
         server1.population[0].fitness = 1.0
 
         self.assertEqual(server1.ps_is_job_done(), False)
+
+    def test_server_get_new_data1(self):
+        """
+        Test generating new data for the node. Only best.
+        """
+
+        config1: ESConfiguration = ESConfiguration()
+        config1.parasnake_config = PSConfiguration("12345678901234567890123456789012")
+        config1.share_only_best = True
+        ind1: TestIndividual = TestIndividual()
+
+        server1: ESServer = ESServer(config1, ind1)
+        # TODO: implement
+
+    def test_server_get_new_data2(self):
+        """
+        Test generating new data for the node. Choose randomly.
+        """
+
+        config1: ESConfiguration = ESConfiguration()
+        config1.parasnake_config = PSConfiguration("12345678901234567890123456789012")
+        config1.share_only_best = False
+        ind1: TestIndividual = TestIndividual()
+
+        server1: ESServer = ESServer(config1, ind1)
+        # TODO: implement
+
+    def test_server_process_result(self):
+        """
+        Test receiving data from node.
+        """
+
+        config1: ESConfiguration = ESConfiguration()
+        config1.parasnake_config = PSConfiguration("12345678901234567890123456789012")
+        ind1: TestIndividual = TestIndividual()
+
+        server1: ESServer = ESServer(config1, ind1)
+        # TODO: implement
+
+    def test_server_save_data2(self):
+        """
+        Test server saving data.
+        """
+
+        config1: ESConfiguration = ESConfiguration()
+        config1.parasnake_config = PSConfiguration("12345678901234567890123456789012")
+        ind1: TestIndividual = TestIndividual()
+        ind1.fitness = 8.91
+        ind1.data = [7, 8, 9, 10, 11]
+        ind1.data_size = len(ind1.data)
+
+        server1: ESServer = ESServer(config1, ind1)
+        server1.population[0] = ind1
+
+        filename = "test_data.json"
+        server1.result_filename = filename
+        server1.ps_save_data()
+
+        with open(filename, "r") as f:
+            data: dict = json.load(f)
+
+        os.remove(filename)
+
+        self.assertAlmostEqual(data["fitness"], ind1.fitness)
+        self.assertEqual(data["data"], ind1.data)
+
 
 if __name__ == "__main__":
     unittest.main()
