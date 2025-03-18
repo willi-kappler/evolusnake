@@ -3,52 +3,17 @@
 #
 # See: https://github.com/willi-kappler/evolusnake
 
+# Python std lib:
 from typing import override
 import random as rnd
 import unittest
 
+# Local imports:
 from evolusnake.es_config import ESConfiguration
 from evolusnake.es_population import ESPopulation
 from evolusnake.es_individual import ESIndividual
 
-
-class TestIndividual(ESIndividual):
-    def __init__(self):
-        self.mutate_called: int = 0
-        self.calc_fitness_called: int = 0
-        self.clone_called: int = 0
-        self.randomize_called: int = 0
-
-        self.data = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-        self.data_size = 10
-
-    @override
-    def es_mutate(self):
-        pos = rnd.randrange(self.data_size)
-        self.data[pos] = 1 - self.data[pos]
-        self.mutate_called += 1
-
-    @override
-    def es_randomize(self):
-        for _ in range(self.data_size):
-            self.es_mutate()
-
-        self.randomize_called += 1
-
-    @override
-    def es_calculate_fitness(self):
-        self.fitness = float(sum(self.data))
-        self.calc_fitness_called += 1
-
-    @override
-    def es_clone(self) -> "TestIndividual":
-        new: TestIndividual = TestIndividual()
-        new.data = self.data[:]
-        new.data_size = self.data_size
-
-        self.clone_called += 1
-
-        return new
+from tests.common import TestIndividual
 
 
 class TestPopulation(unittest.TestCase):
@@ -85,6 +50,12 @@ class TestPopulation(unittest.TestCase):
         self.assertEqual(ind1.calc_fitness_called, 0)
         self.assertEqual(ind1.clone_called, 10)
         self.assertEqual(ind1.randomize_called, 0)
+
+        for ind in population1.population:
+            self.assertEqual(ind.mutate_called, 40) # type: ignore
+            self.assertEqual(ind.calc_fitness_called, 1) # type: ignore
+            self.assertEqual(ind.clone_called, 0) # type: ignore
+            self.assertEqual(ind.randomize_called, 1) # type: ignore
 
     def test_population_invalid_config1(self):
         """
@@ -124,6 +95,93 @@ class TestPopulation(unittest.TestCase):
         with self.assertRaises(ValueError):
             population: ESPopulation = ESPopulation(config1, ind1)
             del population
+
+    def test_population_find_worst_individual(self):
+        """
+        Test finding the worst individual in a population.
+        """
+
+        config1: ESConfiguration = ESConfiguration()
+        ind1: TestIndividual = TestIndividual()
+
+        population1: ESPopulation = ESPopulation(config1, ind1)
+
+        population1.es_find_worst_individual()
+
+        for i in range(population1.population_size):
+            self.assertGreaterEqual(population1.worst_fitness, population1.population[i].fitness)
+
+    def test_population_find_best_and_worst_individual(self):
+        """
+        Test finding the best and worst individual in a population.
+        """
+
+        config1: ESConfiguration = ESConfiguration()
+        ind1: TestIndividual = TestIndividual()
+
+        population1: ESPopulation = ESPopulation(config1, ind1)
+
+        population1.es_find_best_and_worst_individual()
+
+        for i in range(population1.population_size):
+            self.assertGreaterEqual(population1.worst_fitness, population1.population[i].fitness)
+
+        for i in range(population1.population_size):
+            self.assertLessEqual(population1.best_fitness, population1.population[i].fitness)
+
+    def test_sort_population(self):
+        """
+        Test sorting the population.
+        """
+
+        config1: ESConfiguration = ESConfiguration()
+        ind1: TestIndividual = TestIndividual()
+
+        population1: ESPopulation = ESPopulation(config1, ind1)
+
+        population1.es_sort_population()
+
+        for i in range(population1.population_size - 1):
+            self.assertLessEqual(population1.population[i].fitness, population1.population[i + 1].fitness)
+
+    def test_reset_or_accept_best1(self):
+        """
+        Test resetting the population or accepting the best solution.
+        """
+
+        config1: ESConfiguration = ESConfiguration()
+        config1.reset_population = True
+        ind1: TestIndividual = TestIndividual()
+
+        population1: ESPopulation = ESPopulation(config1, ind1)
+        self.assertEqual(population1.reset_population, True)
+
+        ind1.data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+        population1.es_reset_or_accept_best(ind1)
+        population1.es_sort_population()
+
+        self.assertGreater(population1.population[0].fitness, 0.0)
+
+    def test_reset_or_accept_best2(self):
+        """
+        Test resetting the population or accepting the best solution.
+        """
+
+        config1: ESConfiguration = ESConfiguration()
+        config1.reset_population = False
+        ind1: TestIndividual = TestIndividual()
+
+        population1: ESPopulation = ESPopulation(config1, ind1)
+        self.assertEqual(population1.reset_population, False)
+
+        ind1.data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        ind1.es_calculate_fitness()
+
+        population1.es_reset_or_accept_best(ind1)
+        population1.es_sort_population()
+
+        self.assertAlmostEqual(population1.population[0].fitness, 0.0)
 
 if __name__ == "__main__":
     unittest.main()
