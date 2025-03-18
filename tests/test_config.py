@@ -4,26 +4,92 @@
 # See: https://github.com/willi-kappler/evolusnake
 
 import unittest
-#import pathlib
+import json
+import os
 
 from evolusnake.es_config import ESConfiguration
 
 
 class TestConfiguration(unittest.TestCase):
-    def test_init(self):
+    def test_load_config1(self):
         """
-        Test normal initialisazion.
-        """
-
-        pass
-
-    def test_some_(self):
-        """
-        Test some.
+        Test loading config from JSON.
         """
 
-        pass
+        json_config: dict = {
+            "secret_key": "12345678901234567890123456789012",
+            "server_mode": True,
+            "target_fitness": 5.8,
+            "result_filename": "test_file1.json",
+            "save_new_finess": True,
+            "share_only_best": False,
+            "server_population_size": 55,
+            "node_population_size": 77,
+            "num_of_iterations": 12345,
+            "num_of_mutations": 17,
+            "accept_new_best": False,
+            "population_kind": 1
+        }
 
+        test_config_file: str = "test_config1.json"
+
+        with open(test_config_file, "w") as f:
+            json.dump(json_config, f)
+
+        config1: ESConfiguration = ESConfiguration.from_json(test_config_file)
+        os.remove(test_config_file)
+
+        self.assertEqual(config1.server_mode, True)
+        self.assertAlmostEqual(config1.target_fitness, 5.8)
+        self.assertEqual(config1.result_filename, "test_file1.json")
+        self.assertEqual(config1.save_new_finess, True)
+        self.assertEqual(config1.share_only_best, False)
+        self.assertEqual(config1.server_population_size, 55)
+        self.assertEqual(config1.node_population_size, 77)
+        self.assertEqual(config1.num_of_iterations, 12345)
+        self.assertEqual(config1.num_of_mutations, 17)
+        self.assertEqual(config1.accept_new_best, False)
+        self.assertEqual(config1.population_kind, 1)
+
+    def test_load_config2(self):
+        """
+        Test loading config from JSON.
+        """
+
+        json_config: dict = {
+            "secret_key": "12345678901234567890123456789012",
+            "server_mode": False,
+            "target_fitness": 1.34,
+            "result_filename": "test_file2.json",
+            "save_new_finess": False,
+            "share_only_best": True,
+            "server_population_size": 88,
+            "node_population_size": 99,
+            "num_of_iterations": 33333,
+            "num_of_mutations": 21,
+            "accept_new_best": True,
+            "population_kind": 2
+        }
+
+        test_config_file: str = "test_config2.json"
+
+        with open(test_config_file, "w") as f:
+            json.dump(json_config, f)
+
+        config1: ESConfiguration = ESConfiguration.from_json(test_config_file)
+        os.remove(test_config_file)
+
+        self.assertEqual(config1.server_mode, False)
+        self.assertAlmostEqual(config1.target_fitness, 1.34)
+        self.assertEqual(config1.result_filename, "test_file2.json")
+        self.assertEqual(config1.save_new_finess, False)
+        self.assertEqual(config1.share_only_best, True)
+        self.assertEqual(config1.server_population_size, 88)
+        self.assertEqual(config1.node_population_size, 99)
+        self.assertEqual(config1.num_of_iterations, 33333)
+        self.assertEqual(config1.num_of_mutations, 21)
+        self.assertEqual(config1.accept_new_best, True)
+        self.assertEqual(config1.population_kind, 2)
 
 if __name__ == "__main__":
     unittest.main()
