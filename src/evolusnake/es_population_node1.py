@@ -66,8 +66,14 @@ class ESPopulationNode1(PSNode):
             if max_mutation <= 0:
                 max_mutation = self.population.num_of_mutations
 
-        best_fitness: float = self.population.population[0].fitness
-        worst_fitness: float = self.population.population[offset - 1].fitness
+        self.population.best_fitness = self.population.population[0].fitness
+        self.population.best_index = 0
+        self.population.worst_fitness = self.population.population[offset - 1].fitness
+        self.population.worst_index = offset - 1
+
+        best_fitness: float = self.population.best_fitness
+        worst_fitness: float = self.population.worst_fitness
+
         logger.debug(f"{best_fitness=}, {worst_fitness=}")
 
         return self.population.population[0]
