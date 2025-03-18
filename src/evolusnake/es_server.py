@@ -31,7 +31,11 @@ class ESServer(PSServer):
 
         self.population: list[ESIndividual] = []
         self.population_size = config.server_population_size
-        self.target_firness: float = config.target_fitness
+
+        if self.population_size < 2:
+            raise ValueError("Population size must be at least 2.")
+
+        self.target_fitness: float = config.target_fitness
         self.result_filename: str = config.result_filename
         self.save_new_fitness: bool = config.save_new_finess
         self.allow_same_fitness: bool = config.allow_same_fitness
@@ -46,17 +50,17 @@ class ESServer(PSServer):
 
         self.population.sort(key=lambda ind: ind.fitness)
 
-        logger.debug(f"{self.population_size=}, {self.target_firness=}")
+        logger.debug(f"{self.population_size=}, {self.target_fitness=}")
         logger.debug(f"{self.result_filename=}, {self.save_new_fitness=}")
         logger.debug(f"{self.allow_same_fitness=}, {self.share_only_best=}")
 
     def es_save_data(self, filename: str):
         with open(filename, "w") as f:
-            json.dump(self.population[0], f)
+            json.dump(self.population[0].es_to_json(), f)
 
     @override
     def ps_is_job_done(self) -> bool:
-        return self.population[0].fitness <= self.target_firness
+        return self.population[0].fitness <= self.target_fitness
 
     @override
     def ps_get_new_data(self, node_id: PSNodeId) -> Optional[ESIndividual]:
