@@ -9,7 +9,7 @@ This module defines the base data class for an individual.
 
 # Python std lib:
 import logging
-from typing import Any, Self
+from typing import Self
 from sys import float_info
 
 logger = logging.getLogger(__name__)
