@@ -91,6 +91,6 @@ class ESPopulation:
     def es_reset_or_accept_best(self, best: ESIndividual):
         if self.reset_population:
             self.es_random_population()
-        else:
-            self.population[0] = best
+        elif self.accept_new_best:
+                self.population[0] = best
 
