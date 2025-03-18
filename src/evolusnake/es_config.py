@@ -88,7 +88,7 @@ class ESConfiguration:
                 case "population_kind":
                     config.population_kind = value
                 case _:
-                    raise ValueError(f"Unknown configuration option: {key=}, {value=}")
+                    logger.debug(f"Unknown evolusnake configuration option: {key=}, {value=}")
 
         return config
 
@@ -104,6 +104,6 @@ class ESConfiguration:
 
         args = parser.parse_known_args()
 
-
+        # TODO: set options to configuration.
 
 
