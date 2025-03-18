@@ -55,9 +55,6 @@ class ESPopulation:
         logger.debug(f"{self.num_of_iterations=}, {self.num_of_mutations=}")
         logger.debug(f"{self.accept_new_best=}, {self.reset_population=}")
 
-    def es_get_random_index(self) -> int:
-        return rnd.randrange(self.population_size)
-
     def es_find_worst_individual(self):
         self.worst_index = 0
         self.worst_fitness = self.population[0].fitness
@@ -96,17 +93,4 @@ class ESPopulation:
             self.es_random_population()
         else:
             self.population[0] = best
-
-    def es_replace_worst(self, best: ESIndividual):
-        self.es_find_worst_individual()
-        self.population[self.worst_index] = best
-
-        self.es_find_worst_individual()
-        worst: ESIndividual = self.population[self.worst_index]
-        worst.es_randomize()
-        worst.es_calculate_fitness()
-
-
-
-
 
