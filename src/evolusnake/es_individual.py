@@ -34,3 +34,11 @@ class ESIndividual:
         # Must be implemented by the user
         raise NotImplementedError
 
+    def es_to_json(self) -> dict:
+        # Must be implemented by the user
+        raise NotImplementedError
+
+    def es_from_json(self, data: dict):
+        # Must be implemented by the user
+        raise NotImplementedError
+

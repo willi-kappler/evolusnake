@@ -4,7 +4,7 @@
 # See: https://github.com/willi-kappler/evolusnake
 
 # Python std lib:
-from typing import override
+from typing import override, Self
 import random as rnd
 
 # Local imports:
@@ -42,7 +42,7 @@ class TestIndividual(ESIndividual):
         self.calc_fitness_called += 1
 
     @override
-    def es_clone(self) -> "TestIndividual":
+    def es_clone(self) -> Self:
         new: TestIndividual = TestIndividual()
         new.data = self.data[:]
         new.data_size = self.data_size
@@ -50,5 +50,16 @@ class TestIndividual(ESIndividual):
 
         self.clone_called += 1
 
-        return new
+        return new # type: ignore
+
+    @override
+    def es_to_json(self) -> dict:
+        return {"data": self.data, "data_size": self.data_size, "fitness": self.fitness}
+
+    @override
+    def es_from_json(self, data: dict):
+        self.data = data["data"]
+        self.data_size = data["data_size"]
+        self.fitness = data["fitness"]
+
 
