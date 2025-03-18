@@ -54,12 +54,12 @@ class TestIndividual(ESIndividual):
 
     @override
     def es_to_json(self) -> dict:
-        return {"data": self.data, "data_size": self.data_size, "fitness": self.fitness}
+        return {"data": self.data, "fitness": self.fitness}
 
     @override
     def es_from_json(self, data: dict):
         self.data = data["data"]
-        self.data_size = data["data_size"]
+        self.data_size = len(self.data)
         self.fitness = data["fitness"]
 
 
