@@ -44,6 +44,8 @@ class ESServer(PSServer):
             ind.es_calculate_fitness()
             self.population.append(ind)
 
+        self.population.sort(key=lambda ind: ind.fitness)
+
         logger.debug(f"{self.population_size=}, {self.target_firness=}")
         logger.debug(f"{self.result_filename=}, {self.save_new_fitness=}")
         logger.debug(f"{self.allow_same_fitness=}, {self.share_only_best=}")
@@ -92,7 +94,7 @@ class ESServer(PSServer):
             if new_fitness < current_best_fitness:
                 logger.info(f"New best fitness: {new_fitness}, previous: {current_best_fitness}")
                 logger.info(f"From node: {node_id}")
-                logger.debug(f"(Worst fitness: {self.population[-1].fitness}")
+                logger.debug(f"Worst fitness: {self.population[-1].fitness}")
 
                 if self.save_new_fitness:
                     self.es_save_data(f"{self.new_fitness_counter}_{self.result_filename}")
