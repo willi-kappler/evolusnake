@@ -17,6 +17,7 @@ from tests.common import TestIndividual
 
 # External imports:
 from parasnake.ps_config import PSConfiguration
+from parasnake.ps_nodeid import PSNodeId
 
 
 # TODO: ps_get_new_data, ps_process_result 
@@ -122,9 +123,20 @@ class TestServer(unittest.TestCase):
         config1.parasnake_config = PSConfiguration("12345678901234567890123456789012")
         config1.share_only_best = True
         ind1: TestIndividual = TestIndividual()
+        ind1.data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
         server1: ESServer = ESServer(config1, ind1)
-        # TODO: implement
+        server1.population[0] = ind1
+        node_id1: PSNodeId = PSNodeId()
+
+        best_counter: int = 0
+
+        for _ in range(10):
+            ind2 = server1.ps_get_new_data(node_id1)
+            if ind1.data == ind2.data: # type: ignore
+                best_counter += 1
+
+        self.assertEqual(best_counter, 10)
 
     def test_server_get_new_data2(self):
         """
@@ -136,8 +148,19 @@ class TestServer(unittest.TestCase):
         config1.share_only_best = False
         ind1: TestIndividual = TestIndividual()
 
+        ind1.data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
         server1: ESServer = ESServer(config1, ind1)
-        # TODO: implement
+        server1.population[0] = ind1
+        node_id1: PSNodeId = PSNodeId()
+        best_counter: int = 0
+
+        for _ in range(10):
+            ind2 = server1.ps_get_new_data(node_id1)
+            if ind1.data == ind2.data: # type: ignore
+                best_counter += 1
+
+        self.assertLess(best_counter, 9)
 
     def test_server_process_result(self):
         """
