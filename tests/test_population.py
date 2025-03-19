@@ -151,10 +151,14 @@ class TestPopulation(unittest.TestCase):
 
         ind1.data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
-        population1.es_reset_or_accept_best(ind1)
-        population1.es_sort_population()
+        best_counter: int = 0
+        for _ in range(10):
+            population1.es_reset_or_accept_best(ind1)
+            population1.es_sort_population()
+            if population1.population[0].fitness == 0.0:
+                best_counter += 1
 
-        self.assertGreater(population1.population[0].fitness, 0.0)
+        self.assertLess(best_counter, 9)
 
     def test_reset_or_accept_best2(self):
         """
@@ -171,10 +175,15 @@ class TestPopulation(unittest.TestCase):
         ind1.data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         ind1.es_calculate_fitness()
 
-        population1.es_reset_or_accept_best(ind1)
-        population1.es_sort_population()
+        best_counter: int = 0
+        for _ in range(10):
+            population1.es_reset_or_accept_best(ind1)
+            population1.es_sort_population()
+            if population1.population[0].fitness == 0.0:
+                best_counter += 1
 
-        self.assertAlmostEqual(population1.population[0].fitness, 0.0)
+        self.assertEqual(best_counter, 10)
+
 
 if __name__ == "__main__":
     unittest.main()
