@@ -20,9 +20,6 @@ from parasnake.ps_config import PSConfiguration
 from parasnake.ps_nodeid import PSNodeId
 
 
-# TODO: ps_get_new_data, ps_process_result 
-
-
 class TestServer(unittest.TestCase):
     def test_server_valid_config(self):
         """
@@ -162,17 +159,74 @@ class TestServer(unittest.TestCase):
 
         self.assertLess(best_counter, 9)
 
-    def test_server_process_result(self):
+    def test_server_process_result1(self):
         """
-        Test receiving data from node.
+        Test receiving data from node, do not allow same fitness.
         """
 
         config1: ESConfiguration = ESConfiguration()
         config1.parasnake_config = PSConfiguration("12345678901234567890123456789012")
+        config1.allow_same_fitness = False
+        config1.save_new_finess = False
         ind1: TestIndividual = TestIndividual()
+        ind1.data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        ind1.fitness = 0.0
 
         server1: ESServer = ESServer(config1, ind1)
-        # TODO: implement
+        server1.population[0].fitness = 0.0
+        node_id1: PSNodeId = PSNodeId()
+        fitness_list1: list[float] = [ind.fitness for ind in server1.population]
+        self.assertEqual(server1.new_fitness_counter, 0)
+        server1.ps_process_result(node_id1, ind1)
+        fitness_list2: list[float] = [ind.fitness for ind in server1.population]
+        self.assertEqual(server1.new_fitness_counter, 0)
+        self.assertEqual(fitness_list1, fitness_list2)
+
+    def test_server_process_result2(self):
+        """
+        Test receiving data from node, allow same fitness.
+        """
+
+        config1: ESConfiguration = ESConfiguration()
+        config1.parasnake_config = PSConfiguration("12345678901234567890123456789012")
+        config1.allow_same_fitness = True
+        config1.save_new_finess = False
+        ind1: TestIndividual = TestIndividual()
+        ind1.data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        ind1.fitness = 0.0
+
+        server1: ESServer = ESServer(config1, ind1)
+        server1.population[0].fitness = 0.0
+        fitness_list1: list[float] = [ind.fitness for ind in server1.population]
+        node_id1: PSNodeId = PSNodeId()
+        self.assertEqual(server1.new_fitness_counter, 0)
+        server1.ps_process_result(node_id1, ind1)
+        fitness_list2: list[float] = [ind.fitness for ind in server1.population]
+        self.assertEqual(server1.new_fitness_counter, 0)
+        self.assertNotEqual(fitness_list1, fitness_list2)
+
+    def test_server_process_result3(self):
+        """
+        Test receiving data from node, allow same fitness.
+        """
+
+        config1: ESConfiguration = ESConfiguration()
+        config1.parasnake_config = PSConfiguration("12345678901234567890123456789012")
+        config1.allow_same_fitness = True
+        config1.save_new_finess = False
+        ind1: TestIndividual = TestIndividual()
+        ind1.data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        ind1.fitness = 0.0
+
+        server1: ESServer = ESServer(config1, ind1)
+        server1.population[0].fitness = 0.1
+        fitness_list1: list[float] = [ind.fitness for ind in server1.population]
+        node_id1: PSNodeId = PSNodeId()
+        self.assertEqual(server1.new_fitness_counter, 0)
+        server1.ps_process_result(node_id1, ind1)
+        fitness_list2: list[float] = [ind.fitness for ind in server1.population]
+        self.assertEqual(server1.new_fitness_counter, 1)
+        self.assertNotEqual(fitness_list1, fitness_list2)
 
     def test_server_save_data2(self):
         """
