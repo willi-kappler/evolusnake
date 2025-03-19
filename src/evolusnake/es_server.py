@@ -96,13 +96,14 @@ class ESServer(PSServer):
             self.population.sort(key=lambda ind: ind.fitness)
 
             if new_fitness < current_best_fitness:
+                self.new_fitness_counter += 1
+
                 logger.info(f"New best fitness: {new_fitness}, previous: {current_best_fitness}")
-                logger.info(f"From node: {node_id}")
+                logger.info(f"From node: {node_id}, new fitness counter: {self.new_fitness_counter}")
                 logger.debug(f"Worst fitness: {self.population[-1].fitness}")
 
                 if self.save_new_fitness:
                     self.es_save_data(f"{self.new_fitness_counter}_{self.result_filename}")
-                    self.new_fitness_counter += 1
 
     @override
     def ps_save_data(self) -> None:
