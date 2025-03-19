@@ -25,7 +25,7 @@ from parasnake.ps_nodeid import PSNodeId
 class TestServer(unittest.TestCase):
     def test_server_and_node1(self):
         """
-        Test server init with a valid config.
+        Test server and node combined.
         """
 
         config1: ESConfiguration = ESConfiguration()
