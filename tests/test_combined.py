@@ -5,8 +5,6 @@
 
 # Python std lib:
 import unittest
-import json
-import os
 
 # Local imports:
 from evolusnake.es_config import ESConfiguration
