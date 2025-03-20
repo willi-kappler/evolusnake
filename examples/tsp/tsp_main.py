@@ -50,14 +50,16 @@ class TSPIndividual(ESIndividual):
         while i1 == i2:
             i2 = rnd.randrange(self.num_elems)
 
-        if i1 > i2:
-            (i1, i2) = (i2, i1)
+        (self.positions[i1], self.positions[i2]) = (self.positions[i2], self.positions[i1])
 
-        while i1 < i2:
-            (self.positions[i1], self.positions[i2]) = (self.positions[i2], self.positions[i1])
-
-            i1 += 1
-            i2 -= 1
+        # if i1 > i2:
+        #     (i1, i2) = (i2, i1)
+        #
+        # while i1 < i2:
+        #     (self.positions[i1], self.positions[i2]) = (self.positions[i2], self.positions[i1])
+        #
+        #     i1 += 1
+        #     i2 -= 1
 
     @override
     def es_randomize(self):
@@ -86,7 +88,7 @@ class TSPIndividual(ESIndividual):
     @override
     def es_clone(self) -> Self:
         new = TSPIndividual()
-        new.positions = self.positions
+        new.positions = self.positions[:]
         new.num_elems = self.num_elems
         new.fitness = self.fitness
 
@@ -106,66 +108,6 @@ class TSPIndividual(ESIndividual):
         self.fitness = data["fitness"]
         self.positions = data["positions"]
         self.num_elems = len(self.positions)
-
-
-
-
-# type
-#     TSPIndividual* = ref object of NAIndividual
-#         data: seq[(float64, float64)]
-#
-# proc naCalculateFitness2(self: var TSPIndividual): float64 =
-#     var length: float64 = 0.0
-#     let last = self.data.high
-#
-#     for i in 1..<last:
-#         let dx = self.data[i - 1][0] - self.data[i][0]
-#         let dy = self.data[i - 1][1] - self.data[i][1]
-#         let d = hypot(dx, dy)
-#         length += d
-#
-#     let dx = self.data[0][0] - self.data[last][0]
-#     let dy = self.data[0][1] - self.data[last][1]
-#     let d = hypot(dx, dy)
-#     length += d
-#
-#     return length
-#
-# method naMutate*(self: var TSPIndividual) =
-#     let last = self.data.high
-#     var i = rand(last)
-#     var j = rand(last)
-#
-#     # Ensure that i != j
-#     while i == j:
-#         j = rand(last)
-#
-#     if i > j:
-#         swap(i, j)
-#
-#     # Reverse order
-#
-#     let d = j - i
-#
-#     for k in 0..<d:
-#         let u = i+k
-#         let v = j-k
-#         if u >= v:
-#             break
-#         swap(self.data[u], self.data[v])
-#
-# method naRandomize*(self: var TSPIndividual) =
-#     shuffle(self.data)
-#
-# method naCalculateFitness*(self: var TSPIndividual) =
-#     self.fitness = self.naCalculateFitness2()
-#
-# method naClone*(self: TSPIndividual): NAIndividual =
-#     result = TSPIndividual(data: self.data)
-#     result.fitness = self.fitness
-#
-
-
 
 
 def main():
@@ -196,10 +138,20 @@ def main():
     ind = TSPIndividual()
     ind.load_data("city_positions1.txt")
 
+    config.target_fitness = 330.0
+
+    # Best fitness with city_positions1: 325.1787170723113
+    # Possible good limit: 330.0
+    #
+    # Best fitness with city_positions2: 7872.429256144669
+    # Possible good limit: 7900.0
+
     if server_mode:
+        print("Create and start server.")
         server = ESServer(config, ind)
         server.ps_run()
     else:
+        print("Create and start node.")
         population = ESPopulationNode1(config, ind)
         population.ps_run()
 
