@@ -52,15 +52,6 @@ class TSPIndividual(ESIndividual):
 
         (self.positions[i1], self.positions[i2]) = (self.positions[i2], self.positions[i1])
 
-        # if i1 > i2:
-        #     (i1, i2) = (i2, i1)
-        #
-        # while i1 < i2:
-        #     (self.positions[i1], self.positions[i2]) = (self.positions[i2], self.positions[i1])
-        #
-        #     i1 += 1
-        #     i2 -= 1
-
     @override
     def es_randomize(self):
         rnd.shuffle(self.positions)
@@ -74,14 +65,11 @@ class TSPIndividual(ESIndividual):
         x1: float
         y1: float
 
-        (x0, y0) = self.positions[0]
+        (x0, y0) = self.positions[-1]
 
         for (x1, y1) in self.positions:
             length += math.hypot(x0 - x1, y0 - y1)
             (x0, y0) = (x1, y1)
-
-        (x1, y1) = self.positions[0]
-        length += math.hypot(x0 - x1, y0 - y1)
 
         self.fitness = length
 
