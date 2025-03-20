@@ -128,10 +128,10 @@ def main():
     ind = TSPIndividual()
     ind.load_data("city_positions1.txt")
 
-    config.target_fitness = 330.0
+    config.target_fitness = 380.0
 
-    # Best fitness with city_positions1: 325.1787170723113
-    # Possible good limit: 330.0
+    # Best fitness with city_positions1: 376.3341189874508
+    # Possible good limit: 380.0
     #
     # Best fitness with city_positions2: 7872.429256144669
     # Possible good limit: 7900.0
