@@ -64,7 +64,7 @@ class ESServer(PSServer):
 
     @override
     def ps_get_new_data(self, node_id: PSNodeId) -> Optional[ESIndividual]:
-        logger.debug(f"Request from node: {node_id}")
+        #logger.debug(f"Request from node: {node_id}")
         i: int = 0
 
         if not self.share_only_best:
@@ -77,7 +77,7 @@ class ESServer(PSServer):
 
     @override
     def ps_process_result(self, node_id: PSNodeId, result: ESIndividual):
-        logger.debug(f"Got new individual from node: {node_id}")
+        #logger.debug(f"Got new individual from node: {node_id}")
 
         new_fitness: float = result.fitness
 
