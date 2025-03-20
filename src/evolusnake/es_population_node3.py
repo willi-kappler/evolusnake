@@ -42,7 +42,7 @@ class ESPopulationNode3(PSNode):
 
         self.population.es_find_worst_individual()
         global_fitness: float = self.population.worst_fitness
-        fitness_step: float = global_fitness / float(self.population.num_of_iterations)
+        fitness_step: float = (global_fitness - self.population.target_fitness) / float(self.population.num_of_iterations)
 
         for i in range(self.population.num_of_iterations):
             for j in range(self.population.population_size):
