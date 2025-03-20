@@ -10,6 +10,6 @@ python3 tsp_main.py &
 sleep 2
 python3 tsp_main.py --reset_population &
 sleep 2
-python3 tsp_main.py --reset_population &
+python3 tsp_main.py --population_kind 2 &
 sleep 2
-python3 tsp_main.py --reset_population &
+python3 tsp_main.py --population_kind 3 &

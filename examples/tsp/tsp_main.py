@@ -13,6 +13,8 @@ import math
 from evolusnake.es_config import ESConfiguration
 from evolusnake.es_individual import ESIndividual
 from evolusnake.es_population_node1 import ESPopulationNode1
+from evolusnake.es_population_node2 import ESPopulationNode2
+from evolusnake.es_population_node3 import ESPopulationNode3
 
 from evolusnake.es_server import ESServer
 
@@ -140,7 +142,18 @@ def main():
         server.ps_run()
     else:
         print("Create and start node.")
-        population = ESPopulationNode1(config, ind)
+        pop_kind = config.population_kind
+
+        match pop_kind:
+            case 1:
+                population = ESPopulationNode1(config, ind)
+            case 2:
+                population = ESPopulationNode2(config, ind)
+            case 3:
+                population = ESPopulationNode3(config, ind)
+            case _:
+                raise ValueError(f"Unknown population kind: {pop_kind}")
+
         population.ps_run()
 
 if __name__ == "__main__":
