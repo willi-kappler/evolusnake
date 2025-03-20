@@ -37,7 +37,7 @@ class ESServer(PSServer):
 
         self.target_fitness: float = config.target_fitness
         self.result_filename: str = config.result_filename
-        self.save_new_fitness: bool = config.save_new_finess
+        self.save_new_fitness: bool = config.save_new_fitness
         self.allow_same_fitness: bool = config.allow_same_fitness
         self.share_only_best: bool = config.share_only_best
         self.new_fitness_counter: int = 0
@@ -90,6 +90,8 @@ class ESServer(PSServer):
 
             # Overwrite (kill) last (worst) individual:
             self.population[-1] = result
+
+            logger.debug(f"New fitness in population: {new_fitness}")
 
             current_best_fitness: float = self.population[0].fitness
 
