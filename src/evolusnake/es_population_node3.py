@@ -28,6 +28,7 @@ class ESPopulationNode3(PSNode):
         logger.info("Mutate a clone and if it's better keep it.")
 
         super().__init__(config.parasnake_config)
+        logger.debug(f"Node ID: {self.node_id}")
 
         self.population = ESPopulation(config, individual)
 

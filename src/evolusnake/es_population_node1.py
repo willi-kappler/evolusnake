@@ -28,6 +28,7 @@ class ESPopulationNode1(PSNode):
         logger.info("The worst individuals are overwritten.")
 
         super().__init__(config.parasnake_config)
+        logger.debug(f"Node ID: {self.node_id}")
 
         self.population = ESPopulation(config, individual)
 
