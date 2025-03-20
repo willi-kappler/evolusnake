@@ -52,7 +52,16 @@ class TSPIndividual(ESIndividual):
         while i1 == i2:
             i2 = rnd.randrange(self.num_elems)
 
-        (self.positions[i1], self.positions[i2]) = (self.positions[i2], self.positions[i1])
+#        (self.positions[i1], self.positions[i2]) = (self.positions[i2], self.positions[i1])
+
+        if i1 > i2:
+            (i1, i2) = (i2, i1)
+
+        while i1 < i2:
+            (self.positions[i1], self.positions[i2]) = (self.positions[i2], self.positions[i1])
+
+            i1 += 1
+            i2 -= 1
 
     @override
     def es_randomize(self):
@@ -126,15 +135,15 @@ def main():
     logging.getLogger("parasnake").setLevel(logging.WARNING)
 
     ind = TSPIndividual()
-    ind.load_data("city_positions1.txt")
+    ind.load_data("city_positions2.txt")
 
-    config.target_fitness = 380.0
+    config.target_fitness = 8230.0
 
     # Best fitness with city_positions1: 376.3341189874508
     # Possible good limit: 380.0
     #
-    # Best fitness with city_positions2: 7872.429256144669
-    # Possible good limit: 7900.0
+    # Best fitness with city_positions2: 8228.008978846385
+    # Possible good limit: 8230.0
 
     if server_mode:
         print("Create and start server.")
