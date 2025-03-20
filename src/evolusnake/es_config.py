@@ -31,7 +31,7 @@ class ESConfiguration:
         self.server_mode: bool = False
         self.target_fitness: float = 0.0
         self.result_filename: str = "best_result.json"
-        self.save_new_finess: bool = False
+        self.save_new_fitness: bool = False
         self.allow_same_fitness: bool = False
         self.share_only_best: bool = False
         self.server_population_size: int = 10
@@ -71,8 +71,8 @@ class ESConfiguration:
                     config.target_fitness = value
                 case "result_filename":
                     config.result_filename = value
-                case "save_new_finess":
-                    config.save_new_finess = value
+                case "save_new_fitness":
+                    config.save_new_fitness = value
                 case "share_only_best":
                     config.share_only_best = value
                 case "server_population_size":
@@ -93,17 +93,41 @@ class ESConfiguration:
         return config
 
     def from_command_line(self):
-        parser = argparse.ArgumentParser(add_help=False, argument_default=argparse.SUPPRESS)
-        parser.add_argument("-s", action="store_true")
-        parser.add_argument("-f", type=float)
-        parser.add_argument("-p", type=int)
-        parser.add_argument("-m", type=int)
-        parser.add_argument("-i", type=int)
-        parser.add_argument("-k", type=int)
-        #parser.add_argument()
+        parser = argparse.ArgumentParser(add_help=False)
+        parser.add_argument("--server", action="store_true")
+        parser.add_argument("--target_fitness", type=float)
+        parser.add_argument("--population_size", type=int)
+        parser.add_argument("--num_of_mutations", type=int)
+        parser.add_argument("--num_of_iterations", type=int)
+        parser.add_argument("--population_kind", type=int)
+        parser.add_argument("--reset_population", action="store_true")
 
-        args = parser.parse_known_args()
+        args = parser.parse_args()
 
-        # TODO: set options to configuration.
+        self.server_mode = args.server
+
+        if args.target_fitness != None:
+            self.target_fitness = args.target_fitness
+
+        if args.population_size != None:
+            self.node_population_size = args.population_size
+
+        if args.num_of_mutations != None:
+            self.num_of_mutations = args.num_of_mutations
+
+        if args.num_of_iterations != None:
+            self.num_of_iterations = args.num_of_iterations
+
+        if args.population_kind != None:
+            self.population_kind = args.population_kind
+
+        self.reset_population = args.reset_population
+
+        # print(f"{self.server_mode}")
+        # print(f"{self.target_fitness}")
+        # print(f"{self.node_population_size}")
+        # print(f"{self.num_of_mutations}")
+        # print(f"{self.num_of_iterations}")
+        # print(f"{self.population_kind}")
 
 
