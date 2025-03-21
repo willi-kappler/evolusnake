@@ -122,6 +122,9 @@ class TestPopulation(unittest.TestCase):
         for i in range(population1.population_size):
             self.assertLessEqual(population1.best_fitness, population1.population[i].fitness)
 
+        self.assertAlmostEqual(population1.best_fitness, population1.population[population1.best_index].fitness)
+        self.assertAlmostEqual(population1.worst_fitness, population1.population[population1.worst_index].fitness)
+
     def test_sort_population(self):
         """
         Test sorting the population.
