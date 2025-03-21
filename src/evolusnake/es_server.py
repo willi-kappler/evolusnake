@@ -10,6 +10,7 @@ This module defines the Parasnake server class.
 # Python std lib:
 import logging
 import json
+import time
 import random as rnd
 from typing import override, Optional
 
@@ -54,13 +55,24 @@ class ESServer(PSServer):
         logger.debug(f"{self.result_filename=}, {self.save_new_fitness=}")
         logger.debug(f"{self.allow_same_fitness=}, {self.share_only_best=}")
 
+        self.start_time = time.time()
+
     def es_save_data(self, filename: str):
         with open(filename, "w") as f:
             json.dump(self.population[0].es_to_json(), f)
 
     @override
     def ps_is_job_done(self) -> bool:
-        return self.population[0].fitness <= self.target_fitness
+        best_fitness: float = self.population[0].fitness
+        job_done: bool = best_fitness <= self.target_fitness
+
+        if job_done:
+            stop_time = time.time()
+            time_taken = stop_time - self.start_time
+            logger.info(f"Job is done, time taken: {time_taken} sec.")
+            logger.debug(f"{best_fitness=} < {self.target_fitness=}")
+
+        return job_done
 
     @override
     def ps_get_new_data(self, node_id: PSNodeId) -> Optional[ESIndividual]:
