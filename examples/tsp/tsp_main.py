@@ -142,7 +142,7 @@ def main():
     # Best fitness with city_positions1: 376.3341189874508
     # Possible good limit: 380.0
     #
-    # Best fitness with city_positions2: 8228.008978846385
+    # Best fitness with city_positions2: 8219.322949926998
     # Possible good limit: 8230.0
 
     if server_mode:
