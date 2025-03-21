@@ -43,6 +43,8 @@ class ESConfiguration:
         self.accept_new_best: bool = True
         self.reset_population: bool = False
         self.population_kind: int = 1
+        self.increase_iteration: int = 0
+        self.increase_mutation: int = 0
 
     @staticmethod
     def from_json(file_name) -> Any:
@@ -87,6 +89,10 @@ class ESConfiguration:
                     config.accept_new_best = value
                 case "population_kind":
                     config.population_kind = value
+                case "increase_iteration":
+                    config.increase_iteration = value
+                case "increase_mutation":
+                    config.increase_mutation = value
                 case _:
                     logger.debug(f"Unknown evolusnake configuration option: {key=}, {value=}")
 
@@ -101,6 +107,8 @@ class ESConfiguration:
         parser.add_argument("--num_of_iterations", type=int)
         parser.add_argument("--population_kind", type=int)
         parser.add_argument("--reset_population", action="store_true")
+        parser.add_argument("--increase_iteration", type=int)
+        parser.add_argument("--increase_mutation", type=int)
 
         args = parser.parse_args()
 
@@ -122,6 +130,12 @@ class ESConfiguration:
             self.population_kind = args.population_kind
 
         self.reset_population = args.reset_population
+
+        if args.increase_iteration != None:
+            self.increase_iteration = args.increase_iteration
+
+        if args.increase_mutation != None:
+            self.increase_mutation = args.increase_mutation
 
         # print(f"{self.server_mode}")
         # print(f"{self.target_fitness}")

@@ -37,14 +37,14 @@ class ESPopulationNode2(PSNode):
         logger.debug(f"Individual from server: {data.fitness}")
 
         self.population.es_reset_or_accept_best(data)
-        max_mutation: int = self.population.num_of_mutations
+        self.population.es_increase_iteration_mutation()
         minimum_found: bool = False
 
         for i in range(self.population.num_of_iterations):
             for j in range(self.population.population_size):
                 tmp_ind: ESIndividual = self.population.population[j].es_clone()
 
-                for _ in range(max_mutation):
+                for _ in range(self.population.num_of_mutations):
                     tmp_ind.es_mutate()
                 tmp_ind.es_calculate_fitness()
 
@@ -60,9 +60,7 @@ class ESPopulationNode2(PSNode):
                 break
 
             # Change mutation rate:
-            max_mutation -= 1
-            if max_mutation <= 0:
-                max_mutation = self.population.num_of_mutations
+            self.population.es_set_num_mutations()
 
         self.population.es_find_best_and_worst_individual()
 

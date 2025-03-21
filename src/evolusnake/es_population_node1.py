@@ -42,8 +42,8 @@ class ESPopulationNode1(PSNode):
         logger.debug(f"Individual from server: {data.fitness}")
 
         self.population.es_reset_or_accept_best(data)
+        self.population.es_increase_iteration_mutation()
         offset = self.population.population_size
-        max_mutation: int = self.population.num_of_mutations
 
         for i in range(self.population.num_of_iterations):
             # Create a copy of each individual before mutating it:
@@ -52,7 +52,7 @@ class ESPopulationNode1(PSNode):
                 self.population.population[j + offset] = ind.es_clone()
 
                 # Now mutate the original individual:
-                for _ in range(max_mutation):
+                for _ in range(self.population.num_of_mutations):
                     ind.es_mutate()
                 ind.es_calculate_fitness()
 
@@ -63,9 +63,7 @@ class ESPopulationNode1(PSNode):
                 break
 
             # Change mutation rate:
-            max_mutation -= 1
-            if max_mutation <= 0:
-                max_mutation = self.population.num_of_mutations
+            self.population.es_set_num_mutations()
 
         self.population.best_fitness = self.population.population[0].fitness
         self.population.best_index = 0
