@@ -36,7 +36,7 @@ class TestServer(unittest.TestCase):
         self.assertEqual(len(server1.population), config1.server_population_size)
         self.assertAlmostEqual(server1.target_fitness, config1.target_fitness)
         self.assertEqual(server1.result_filename, config1.result_filename)
-        self.assertEqual(server1.save_new_fitness, config1.save_new_finess)
+        self.assertEqual(server1.save_new_fitness, config1.save_new_fitness)
         self.assertEqual(server1.allow_same_fitness, config1.allow_same_fitness)
         self.assertEqual(server1.share_only_best, config1.share_only_best)
         self.assertEqual(server1.new_fitness_counter, 0)
@@ -167,7 +167,7 @@ class TestServer(unittest.TestCase):
         config1: ESConfiguration = ESConfiguration()
         config1.parasnake_config = PSConfiguration("12345678901234567890123456789012")
         config1.allow_same_fitness = False
-        config1.save_new_finess = False
+        config1.save_new_fitness = False
         ind1: TestIndividual = TestIndividual()
         ind1.data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         ind1.fitness = 0.0
@@ -190,7 +190,7 @@ class TestServer(unittest.TestCase):
         config1: ESConfiguration = ESConfiguration()
         config1.parasnake_config = PSConfiguration("12345678901234567890123456789012")
         config1.allow_same_fitness = True
-        config1.save_new_finess = False
+        config1.save_new_fitness = False
         ind1: TestIndividual = TestIndividual()
         ind1.data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         ind1.fitness = 0.0
@@ -213,7 +213,7 @@ class TestServer(unittest.TestCase):
         config1: ESConfiguration = ESConfiguration()
         config1.parasnake_config = PSConfiguration("12345678901234567890123456789012")
         config1.allow_same_fitness = True
-        config1.save_new_finess = False
+        config1.save_new_fitness = False
         ind1: TestIndividual = TestIndividual()
         ind1.data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         ind1.fitness = 0.0

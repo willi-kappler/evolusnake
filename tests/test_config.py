@@ -23,7 +23,7 @@ class TestConfiguration(unittest.TestCase):
             "server_mode": True,
             "target_fitness": 5.8,
             "result_filename": "test_file1.json",
-            "save_new_finess": True,
+            "save_new_fitness": True,
             "share_only_best": False,
             "server_population_size": 55,
             "node_population_size": 77,
@@ -44,7 +44,7 @@ class TestConfiguration(unittest.TestCase):
         self.assertEqual(config1.server_mode, True)
         self.assertAlmostEqual(config1.target_fitness, 5.8)
         self.assertEqual(config1.result_filename, "test_file1.json")
-        self.assertEqual(config1.save_new_finess, True)
+        self.assertEqual(config1.save_new_fitness, True)
         self.assertEqual(config1.share_only_best, False)
         self.assertEqual(config1.server_population_size, 55)
         self.assertEqual(config1.node_population_size, 77)
@@ -63,7 +63,7 @@ class TestConfiguration(unittest.TestCase):
             "server_mode": False,
             "target_fitness": 1.34,
             "result_filename": "test_file2.json",
-            "save_new_finess": False,
+            "save_new_fitness": False,
             "share_only_best": True,
             "server_population_size": 88,
             "node_population_size": 99,
@@ -84,7 +84,7 @@ class TestConfiguration(unittest.TestCase):
         self.assertEqual(config1.server_mode, False)
         self.assertAlmostEqual(config1.target_fitness, 1.34)
         self.assertEqual(config1.result_filename, "test_file2.json")
-        self.assertEqual(config1.save_new_finess, False)
+        self.assertEqual(config1.save_new_fitness, False)
         self.assertEqual(config1.share_only_best, True)
         self.assertEqual(config1.server_population_size, 88)
         self.assertEqual(config1.node_population_size, 99)
