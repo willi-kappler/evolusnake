@@ -9,6 +9,7 @@ This module defines the class for population type 3.
 
 # Python std lib:
 import logging
+import random as rnd
 from typing import override
 
 # External imports:
@@ -24,13 +25,12 @@ logger = logging.getLogger(__name__)
 class ESPopulationNode3(PSNode):
     def __init__(self, config: ESConfiguration, individual: ESIndividual):
         logger.info("Init population node type 3")
-        logger.info("Use shrinking global fitness for all individuals.")
-        logger.info("Mutate a clone and if it's better keep it.")
+        logger.debug("TODO...")
 
         super().__init__(config.parasnake_config)
         logger.debug(f"Node ID: {self.node_id}")
 
-        self.population = ESPopulation(config, individual)
+        self.population: ESPopulation = ESPopulation(config, individual)
 
     @override
     def ps_process_data(self, data: ESIndividual) -> ESIndividual:
@@ -38,44 +38,36 @@ class ESPopulationNode3(PSNode):
         logger.debug(f"Individual from server: {data.fitness}")
 
         self.population.es_reset_or_accept_best(data)
-        max_mutation: int = self.population.num_of_mutations
-        minimum_found: bool = False
+        self.population.es_increase_iteration_mutation()
+        self.population.es_find_best_and_worst_individual()
 
-        self.population.es_find_worst_individual()
-        global_fitness: float = self.population.worst_fitness
-        fitness_step: float = (global_fitness - self.population.target_fitness) / float(self.population.num_of_iterations)
+        max_iter = self.population.num_of_iterations * self.population.population_size
 
-        for i in range(self.population.num_of_iterations):
-            for j in range(self.population.population_size):
-                tmp_ind: ESIndividual = self.population.population[j].es_clone()
+        for i in range(max_iter):
+            j = rnd.randrange(self.population.population_size)
+            tmp_ind: ESIndividual = self.population.population[j].es_clone()
 
-                for _ in range(max_mutation):
-                    tmp_ind.es_mutate()
-                tmp_ind.es_calculate_fitness()
+            for _ in range(self.population.num_of_mutations):
+                tmp_ind.es_mutate()
+            tmp_ind.es_calculate_fitness()
 
-                if tmp_ind.fitness < global_fitness:
-                    self.population.population[j] = tmp_ind
-
-                    if tmp_ind.fitness <= self.population.target_fitness:
-                        logger.info(f"Early exit at iteration {i}")
-                        minimum_found = True
-                        break
-
-            if minimum_found:
-                break
+            if tmp_ind.fitness < self.population.best_fitness:
+                self.population.population[self.population.best_index] = tmp_ind
+                if tmp_ind.fitness <= self.population.target_fitness:
+                    logger.info(f"Early exit at iteration {i}")
+                    break
+            elif tmp_ind.fitness < self.population.worst_fitness:
+                self.population.population[self.population.worst_index] = tmp_ind
+                self.population.es_find_worst_individual()
 
             # Change mutation rate:
-            max_mutation -= 1
-            if max_mutation <= 0:
-                max_mutation = self.population.num_of_mutations
-
-            global_fitness -= fitness_step
-
-        self.population.es_find_best_and_worst_individual()
+            self.population.es_set_num_mutations()
 
         best_fitness: float = self.population.best_fitness
         worst_fitness: float = self.population.worst_fitness
         logger.debug(f"{best_fitness=}, {worst_fitness=}")
+
+        self.population.population[self.population.worst_index].es_randomize()
 
         return self.population.population[self.population.best_index]
 
