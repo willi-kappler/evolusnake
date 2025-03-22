@@ -12,10 +12,7 @@ import math
 # Local imports:
 from evolusnake.es_config import ESConfiguration
 from evolusnake.es_individual import ESIndividual
-from evolusnake.es_population_node1 import ESPopulationNode1
-from evolusnake.es_population_node2 import ESPopulationNode2
-from evolusnake.es_population_node3 import ESPopulationNode3
-
+from evolusnake.es_select_population import es_select_population
 from evolusnake.es_server import ESServer
 
 
@@ -133,17 +130,17 @@ def main():
     logging.getLogger("parasnake").setLevel(logging.WARNING)
 
     ind = TSPIndividual()
-    ind.load_data("city_positions1.txt")
-    #ind.load_data("city_positions2.txt")
-
-    config.target_fitness = 380.0
-    #config.target_fitness = 8230.0
 
     # Best fitness with city_positions1: 376.3341189874508
     # Possible good limit: 380.0
-    #
+    # ind.load_data("city_positions1.txt")
+    # config.target_fitness = 380.0
+
     # Best fitness with city_positions2: 8219.322949926998
     # Possible good limit: 8230.0
+    ind.load_data("city_positions2.txt")
+    config.target_fitness = 8230.0
+    #config.target_fitness = 9000.0
 
     if server_mode:
         print("Create and start server.")
@@ -151,18 +148,7 @@ def main():
         server.ps_run()
     else:
         print("Create and start node.")
-        pop_kind = config.population_kind
-
-        match pop_kind:
-            case 1:
-                population = ESPopulationNode1(config, ind)
-            case 2:
-                population = ESPopulationNode2(config, ind)
-            case 3:
-                population = ESPopulationNode3(config, ind)
-            case _:
-                raise ValueError(f"Unknown population kind: {pop_kind}")
-
+        population = es_select_population(config, ind)
         population.ps_run()
 
 if __name__ == "__main__":
