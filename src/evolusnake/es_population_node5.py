@@ -48,6 +48,7 @@ class ESPopulationNode5(PSNode):
         self.population.es_randomize_or_accept_best(data)
         self.population.es_increase_iteration_mutation()
         minimum_found: bool = False
+        second_worst: ESIndividual = self.population.population[-2].es_clone()
 
         for i in range(self.population.num_of_iterations):
             for j in range(self.population.population_size):
