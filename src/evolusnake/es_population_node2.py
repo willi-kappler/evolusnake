@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 class ESPopulationNode2(PSNode):
     def __init__(self, config: ESConfiguration, individual: ESIndividual):
         logger.info("Init population node type 2")
-        logger.info("Mutate a clone and if it's better keep it.")
+        logger.info("Mutate a clone and if it's better than the previous version keep it.")
 
         super().__init__(config.parasnake_config)
         logger.debug(f"Node ID: {self.node_id}")

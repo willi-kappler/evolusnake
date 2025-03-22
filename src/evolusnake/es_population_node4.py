@@ -24,7 +24,10 @@ logger = logging.getLogger(__name__)
 class ESPopulationNode4(PSNode):
     def __init__(self, config: ESConfiguration, individual: ESIndividual):
         logger.info("Init population node type 4")
-        logger.debug("TODO...")
+        logger.debug("Use a global fitness that is the same for all individuals.")
+        logger.debug("Mutate an individual and if it's better than the global fitness keep it.")
+        logger.debug("Reduce global fitness each iteration.")
+        logger.debug("If no individual is better, increase the global fitness a bit.")
 
         super().__init__(config.parasnake_config)
         logger.debug(f"Node ID: {self.node_id}")
