@@ -44,6 +44,17 @@ test_kind_4() {
     sleep 2
 }
 
+test_kind_5() {
+    python3 tsp_main.py --population_kind 5 &
+    sleep 2
+    python3 tsp_main.py --population_kind 5 --num_of_iterations 30000 &
+    sleep 2
+    python3 tsp_main.py --population_kind 5 --num_of_iterations 40000 &
+    sleep 2
+    python3 tsp_main.py --population_kind 5 --num_of_iterations 50000 &
+    sleep 2
+}
+
 reset
 
 export PYTHONPATH=$PYTHONPATH:"../../src/"
