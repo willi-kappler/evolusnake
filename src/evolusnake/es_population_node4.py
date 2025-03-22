@@ -87,5 +87,5 @@ class ESPopulationNode4(PSNode):
 
         self.population.es_clone_best_to_worst()
 
-        return self.population.population[self.population.best_index]
+        return self.population.es_get_best()
 

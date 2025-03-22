@@ -116,12 +116,22 @@ class ESPopulation:
         worst = self.population[self.worst_index]
         worst.es_randomize()
         worst.es_calculate_fitness()
+        # Now maybe no lionger the worst!
 
     def es_replace_best(self, individual: ESIndividual):
         self.population[self.best_index] = individual
         self.best_fitness = individual.fitness
+        # Still the best at index: self.best_index!
+
+    def es_replace_worst(self, individual: ESIndividual):
+        self.population[self.worst_index] = individual
+        # Now lo longer the worst!
 
     def es_clone_best_to_worst(self):
         ind = self.population[self.best_index].es_clone()
         self.population[self.worst_index] = ind
+        # Now lo longer the worst!
+
+    def es_get_best(self) -> ESIndividual:
+        return self.population[self.best_index]
 

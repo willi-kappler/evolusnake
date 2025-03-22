@@ -36,6 +36,9 @@ class ESPopulationNode1(PSNode):
         for _ in range(self.population.population_size):
             self.population.population.append(individual)
 
+        self.population.best_index = 0
+        self.population.worst_index = self.population.population_size - 1
+
     @override
     def ps_process_data(self, data: ESIndividual) -> ESIndividual:
         logger.debug("ESPopulationNode1.ps_process_data()")
@@ -66,14 +69,12 @@ class ESPopulationNode1(PSNode):
             self.population.es_set_num_mutations()
 
         self.population.best_fitness = self.population.population[0].fitness
-        self.population.best_index = 0
         self.population.worst_fitness = self.population.population[offset - 1].fitness
-        self.population.worst_index = offset - 1
 
         best_fitness: float = self.population.best_fitness
         worst_fitness: float = self.population.worst_fitness
 
         logger.debug(f"{best_fitness=}, {worst_fitness=}")
 
-        return self.population.population[0]
+        return self.population.es_get_best()
 

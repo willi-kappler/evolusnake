@@ -68,5 +68,5 @@ class ESPopulationNode2(PSNode):
         worst_fitness: float = self.population.worst_fitness
         logger.debug(f"{best_fitness=}, {worst_fitness=}")
 
-        return self.population.population[self.population.best_index]
+        return self.population.es_get_best()
 

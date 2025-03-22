@@ -57,7 +57,7 @@ class ESPopulationNode3(PSNode):
                     logger.info(f"Early exit at iteration {i}")
                     break
             elif tmp_ind.fitness < self.population.worst_fitness:
-                self.population.population[self.population.worst_index] = tmp_ind
+                self.population.es_replace_worst(tmp_ind)
                 self.population.es_find_worst_individual()
 
             # Change mutation rate:
@@ -67,5 +67,5 @@ class ESPopulationNode3(PSNode):
         worst_fitness: float = self.population.worst_fitness
         logger.debug(f"{best_fitness=}, {worst_fitness=}")
 
-        return self.population.population[self.population.best_index]
+        return self.population.es_get_best()
 
