@@ -1,7 +1,13 @@
 
 TODO:
 
-- population kind 4: global fitness
-- method for returning population based on config kind.
+- add quit notification to parasnake.
+- test cases for population kind 4.
+- test cases for new methods in population.
 
+
+DONE:
+
+# population kind 4: global fitness
+# method for returning population based on config kind.
 
