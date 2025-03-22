@@ -28,8 +28,8 @@ class TestServer(unittest.TestCase):
 
         config1: ESConfiguration = ESConfiguration()
         config1.parasnake_config = PSConfiguration("12345678901234567890123456789012")
-        config1.save_new_finess = False
-        config1.reset_population = False
+        config1.save_new_fitness = False
+        config1.randomize_population = False
         config1.accept_new_best = True
         config1.share_only_best = True
         ind1: TestIndividual = TestIndividual()

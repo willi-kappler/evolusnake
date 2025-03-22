@@ -37,7 +37,7 @@ class ESPopulationNode3(PSNode):
         logger.debug("ESPopulationNode3.ps_process_data()")
         logger.debug(f"Individual from server: {data.fitness}")
 
-        self.population.es_reset_or_accept_best(data)
+        self.population.es_randomize_or_accept_best(data)
         self.population.es_increase_iteration_mutation()
         self.population.es_find_best_and_worst_individual()
 
@@ -52,7 +52,7 @@ class ESPopulationNode3(PSNode):
             tmp_ind.es_calculate_fitness()
 
             if tmp_ind.fitness < self.population.best_fitness:
-                self.population.population[self.population.best_index] = tmp_ind
+                self.population.es_replace_best(tmp_ind)
                 if tmp_ind.fitness <= self.population.target_fitness:
                     logger.info(f"Early exit at iteration {i}")
                     break
@@ -66,8 +66,6 @@ class ESPopulationNode3(PSNode):
         best_fitness: float = self.population.best_fitness
         worst_fitness: float = self.population.worst_fitness
         logger.debug(f"{best_fitness=}, {worst_fitness=}")
-
-        self.population.population[self.population.worst_index].es_randomize()
 
         return self.population.population[self.population.best_index]
 

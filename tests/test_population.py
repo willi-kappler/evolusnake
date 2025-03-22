@@ -32,7 +32,7 @@ class TestPopulation(unittest.TestCase):
         self.assertEqual(population1.num_of_iterations, config1.num_of_iterations)
         self.assertEqual(population1.num_of_mutations, config1.num_of_mutations)
         self.assertEqual(population1.accept_new_best, config1.accept_new_best)
-        self.assertEqual(population1.reset_population, config1.reset_population)
+        self.assertEqual(population1.randomize_population , config1.randomize_population)
         self.assertAlmostEqual(population1.target_fitness, config1.target_fitness)
         self.assertEqual(population1.best_index, 0)
         self.assertAlmostEqual(population1.best_fitness, 0.0)
@@ -146,17 +146,17 @@ class TestPopulation(unittest.TestCase):
         """
 
         config1: ESConfiguration = ESConfiguration()
-        config1.reset_population = True
+        config1.randomize_population = True
         ind1: TestIndividual = TestIndividual()
 
         population1: ESPopulation = ESPopulation(config1, ind1)
-        self.assertEqual(population1.reset_population, True)
+        self.assertEqual(population1.randomize_population, True)
 
         ind1.data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
         best_counter: int = 0
         for _ in range(10):
-            population1.es_reset_or_accept_best(ind1)
+            population1.es_randomize_or_accept_best(ind1)
             population1.es_sort_population()
             if population1.population[0].fitness == 0.0:
                 best_counter += 1
@@ -169,18 +169,18 @@ class TestPopulation(unittest.TestCase):
         """
 
         config1: ESConfiguration = ESConfiguration()
-        config1.reset_population = False
+        config1.randomize_population = False
         ind1: TestIndividual = TestIndividual()
 
         population1: ESPopulation = ESPopulation(config1, ind1)
-        self.assertEqual(population1.reset_population, False)
+        self.assertEqual(population1.randomize_population, False)
 
         ind1.data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         ind1.es_calculate_fitness()
 
         best_counter: int = 0
         for _ in range(10):
-            population1.es_reset_or_accept_best(ind1)
+            population1.es_randomize_or_accept_best(ind1)
             population1.es_sort_population()
             if population1.population[0].fitness == 0.0:
                 best_counter += 1

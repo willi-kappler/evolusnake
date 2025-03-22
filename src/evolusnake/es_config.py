@@ -41,7 +41,7 @@ class ESConfiguration:
         self.num_of_iterations: int = 1000
         self.num_of_mutations: int = 10
         self.accept_new_best: bool = True
-        self.reset_population: bool = False
+        self.randomize_population: bool = False
         self.population_kind: int = 1
         self.increase_iteration: int = 0
         self.increase_mutation: int = 0
@@ -87,6 +87,8 @@ class ESConfiguration:
                     config.num_of_mutations = value
                 case "accept_new_best":
                     config.accept_new_best = value
+                case "randomize_population":
+                    config.randomize_population = value
                 case "population_kind":
                     config.population_kind = value
                 case "increase_iteration":
@@ -106,7 +108,7 @@ class ESConfiguration:
         parser.add_argument("--num_of_mutations", type=int)
         parser.add_argument("--num_of_iterations", type=int)
         parser.add_argument("--population_kind", type=int)
-        parser.add_argument("--reset_population", action="store_true")
+        parser.add_argument("--randomize_population", action="store_true")
         parser.add_argument("--increase_iteration", type=int)
         parser.add_argument("--increase_mutation", type=int)
 
@@ -129,7 +131,7 @@ class ESConfiguration:
         if args.population_kind != None:
             self.population_kind = args.population_kind
 
-        self.reset_population = args.reset_population
+        self.randomize_population = args.randomize_population
 
         if args.increase_iteration != None:
             self.increase_iteration = args.increase_iteration

@@ -41,7 +41,7 @@ class ESPopulation:
         self.num_of_mutations: int = config.num_of_mutations
         self.max_mutations: int = config.num_of_mutations
         self.accept_new_best: bool = config.accept_new_best
-        self.reset_population: bool = config.reset_population
+        self.randomize_population: bool = config.randomize_population
         self.target_fitness: float = config.target_fitness
         self.increase_iteration: int = config.increase_iteration
         self.increase_mutation: int = config.increase_mutation
@@ -56,7 +56,7 @@ class ESPopulation:
 
         logger.debug(f"{self.population_size=}, {self.target_fitness=}")
         logger.debug(f"{self.num_of_iterations=}, {self.num_of_mutations=}")
-        logger.debug(f"{self.accept_new_best=}, {self.reset_population=}")
+        logger.debug(f"{self.accept_new_best=}, {self.randomize_population=}")
         logger.debug(f"{self.increase_iteration=}, {self.increase_mutation=}")
 
     def es_find_worst_individual(self):
@@ -92,8 +92,8 @@ class ESPopulation:
             ind.es_randomize()
             ind.es_calculate_fitness()
 
-    def es_reset_or_accept_best(self, best: ESIndividual):
-        if self.reset_population:
+    def es_randomize_or_accept_best(self, best: ESIndividual):
+        if self.randomize_population:
             self.es_random_population()
         elif self.accept_new_best:
                 self.population[0] = best
@@ -111,4 +111,13 @@ class ESPopulation:
         self.num_of_mutations -= 1
         if self.num_of_mutations <= 0:
             self.num_of_mutations = self.max_mutations
+
+    def es_randomize_worst(self):
+        worst = self.population[self.worst_index]
+        worst.es_randomize()
+        worst.es_calculate_fitness()
+
+    def es_replace_best(self, individual: ESIndividual):
+        self.population[self.best_index] = individual
+        self.best_fitness = individual.fitness
 

@@ -36,7 +36,7 @@ class ESPopulationNode2(PSNode):
         logger.debug("ESPopulationNode2.ps_process_data()")
         logger.debug(f"Individual from server: {data.fitness}")
 
-        self.population.es_reset_or_accept_best(data)
+        self.population.es_randomize_or_accept_best(data)
         self.population.es_increase_iteration_mutation()
         minimum_found: bool = False
 
