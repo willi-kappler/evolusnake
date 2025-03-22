@@ -121,3 +121,7 @@ class ESPopulation:
         self.population[self.best_index] = individual
         self.best_fitness = individual.fitness
 
+    def es_clone_best_to_worst(self):
+        ind = self.population[self.best_index].es_clone()
+        self.population[self.worst_index] = ind
+
