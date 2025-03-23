@@ -109,7 +109,10 @@ class ESPopulation:
             logger.debug(f"{self.max_mutations=}")
 
     def es_set_num_mutations(self):
-        self.num_of_mutations = rnd.randrange(self.max_mutations) + 1
+        if self.max_mutations == 1:
+            self.num_of_mutations = 1
+        else:
+            self.num_of_mutations = rnd.randrange(self.max_mutations) + 1
 
     def es_randomize_worst(self):
         worst = self.population[self.worst_index]
