@@ -96,7 +96,8 @@ class ESPopulation:
         if self.randomize_population:
             self.es_random_population()
         elif self.accept_new_best:
-                self.population[0] = best
+            i: int = rnd.randrange(self.population_size)
+            self.population[i] = best
 
     def es_increase_iteration_mutation(self):
         if self.increase_iteration > 0:
@@ -108,9 +109,7 @@ class ESPopulation:
             logger.debug(f"{self.max_mutations=}")
 
     def es_set_num_mutations(self):
-        self.num_of_mutations -= 1
-        if self.num_of_mutations <= 0:
-            self.num_of_mutations = self.max_mutations
+        self.num_of_mutations = rnd.randrange(self.max_mutations) + 1
 
     def es_randomize_worst(self):
         worst = self.population[self.worst_index]
