@@ -48,6 +48,7 @@ class ESPopulationNode7(PSNode):
 
         if factor < 1.01:
             self.population.es_random_population()
+            logger.debug("Population randomized: {factor=}")
 
         for i in range(self.population.num_of_iterations):
             # Create a copy of each individual before mutating it:
