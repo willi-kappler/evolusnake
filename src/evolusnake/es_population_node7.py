@@ -30,27 +30,24 @@ class ESPopulationNode7(PSNode):
         logger.debug(f"Node ID: {self.node_id}")
 
         self.population = ESPopulation(config, individual)
-
-        self.population.es_sort_population()
         self.population.best_index = 0
         self.population.worst_index = self.population.population_size - 1
-        self.population.best_fitness = self.population.population[0].fitness
-        self.population.worst_fitness = self.population.population[-1].fitness
 
     @override
     def ps_process_data(self, data: ESIndividual) -> ESIndividual:
         logger.debug("ESPopulationNode7.ps_process_data()")
         logger.debug(f"Individual from server: {data.fitness}")
 
+        self.population.es_random_population()
+        self.population.es_sort_population()
+
         offset: int = int(self.population.population_size / 2)
+        previous_best_fitness: float = self.population.population[0].fitness
+        previous_best_counter: int = 0
+        best_fitness: float = previous_best_fitness
+        iter_counter: int = 0
 
-        factor: float = self.population.worst_fitness / self.population.best_fitness
-
-        if factor < 1.01:
-            self.population.es_random_population()
-            logger.debug("Population randomized: {factor=}")
-
-        for i in range(self.population.num_of_iterations):
+        while True:
             # Create a copy of each individual before mutating it:
             for j in range(offset):
                 ind: ESIndividual = self.population.population[j]
@@ -62,16 +59,29 @@ class ESPopulationNode7(PSNode):
             self.population.es_sort_population()
 
             if self.population.population[0].fitness <= self.population.target_fitness:
-                logger.info(f"Early exit at iteration {i}")
+                logger.info("Early exit")
                 break
+
+            best_fitness = self.population.population[0].fitness
+
+            if previous_best_fitness == best_fitness:
+                previous_best_counter += 1
+                if previous_best_counter >= self.population.num_of_iterations:
+                    break
+            else:
+                previous_best_fitness = best_fitness
+                previous_best_counter = 0
+
+            iter_counter += 1
 
         self.population.best_fitness = self.population.population[0].fitness
         self.population.worst_fitness = self.population.population[-1].fitness
 
-        best_fitness: float = self.population.best_fitness
+        best_fitness = self.population.best_fitness
         worst_fitness: float = self.population.worst_fitness
 
         logger.debug(f"{best_fitness=}, {worst_fitness=}")
+        logger.debug(f"{iter_counter=}")
 
         return self.population.es_get_best()
 
