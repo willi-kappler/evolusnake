@@ -55,6 +55,45 @@ test_kind_5() {
     sleep 2
 }
 
+test_kind_6() {
+    python3 tsp_main.py --population_kind 6 --num_of_iterations 1000 &
+    sleep 2
+    python3 tsp_main.py --population_kind 6 --randomize_population --num_of_iterations 1100 &
+    sleep 2
+    python3 tsp_main.py --population_kind 6 --randomize_population --num_of_iterations 1200 &
+    sleep 2
+    python3 tsp_main.py --population_kind 6 --randomize_population --num_of_iterations 1300 &
+    sleep 2
+}
+
+test_kind_7() {
+    python3 tsp_main.py --population_kind 7 &
+    sleep 2
+    python3 tsp_main.py --population_kind 7 --num_of_iterations 30000 &
+    sleep 2
+    python3 tsp_main.py --population_kind 7 --num_of_iterations 35000 &
+    sleep 2
+    python3 tsp_main.py --population_kind 7 --num_of_iterations 40000 &
+    sleep 2
+}
+
+test_all_kinds() {
+    python3 tsp_main.py --population_kind 1 &
+    sleep 2
+    python3 tsp_main.py --population_kind 2 &
+    sleep 2
+    python3 tsp_main.py --population_kind 3 &
+    sleep 2
+    python3 tsp_main.py --population_kind 4 &
+    sleep 2
+    python3 tsp_main.py --population_kind 5 &
+    sleep 2
+    python3 tsp_main.py --population_kind 6 --num_of_iterations 1000 &
+    sleep 2
+    python3 tsp_main.py --population_kind 7 &
+    sleep 2
+}
+
 reset
 
 export PYTHONPATH=$PYTHONPATH:"../../src/"
