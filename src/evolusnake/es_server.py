@@ -70,7 +70,7 @@ class ESServer(PSServer):
             stop_time = time.time()
             time_taken = stop_time - self.start_time
             logger.info(f"Job is done, time taken: {time_taken} sec.")
-            logger.debug(f"{best_fitness=} < {self.target_fitness=}")
+            logger.debug(f"{best_fitness=} <= {self.target_fitness=}")
 
         return job_done
 
