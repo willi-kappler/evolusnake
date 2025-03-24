@@ -67,13 +67,13 @@ test_kind_6() {
 }
 
 test_kind_7() {
-    python3 tsp_main.py --population_kind 7 &
+    python3 tsp_main.py --population_kind 7 --num_of_iterations 1000 &
     sleep 2
-    python3 tsp_main.py --population_kind 7 --num_of_iterations 30000 &
+    python3 tsp_main.py --population_kind 7 --num_of_iterations 2000 &
     sleep 2
-    python3 tsp_main.py --population_kind 7 --num_of_iterations 35000 &
+    python3 tsp_main.py --population_kind 7 --num_of_iterations 3000 &
     sleep 2
-    python3 tsp_main.py --population_kind 7 --num_of_iterations 40000 &
+    python3 tsp_main.py --population_kind 7 --num_of_iterations 4000 &
     sleep 2
 }
 
@@ -90,7 +90,7 @@ test_all_kinds() {
     sleep 2
     python3 tsp_main.py --population_kind 6 --num_of_iterations 1000 &
     sleep 2
-    python3 tsp_main.py --population_kind 7 &
+    python3 tsp_main.py --population_kind 7 --num_of_iterations 1000 &
     sleep 2
 }
 
