@@ -7,7 +7,6 @@ import logging
 import pathlib
 from typing import override, Self
 import random as rnd
-import math
 
 # Local imports:
 from evolusnake.es_config import ESConfiguration
