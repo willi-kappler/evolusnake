@@ -43,6 +43,9 @@ class ESPopulationNode3(PSNode):
         self.population.es_increase_iteration_mutation()
         self.population.es_find_best_and_worst_individual()
 
+        self.population.es_set_num_iterations()
+        logger.debug(f"Iterations: {self.population.num_of_iterations}")
+
         max_iter = self.population.num_of_iterations * self.population.population_size
 
         for i in range(max_iter):

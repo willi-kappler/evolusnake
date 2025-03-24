@@ -47,6 +47,9 @@ class ESPopulationNode7(PSNode):
         best_fitness: float = previous_best_fitness
         iter_counter: int = 0
 
+        self.population.es_set_num_iterations()
+        logger.debug(f"Iterations: {self.population.num_of_iterations}")
+
         while True:
             # Create a copy of each individual before mutating it:
             for j in range(offset):

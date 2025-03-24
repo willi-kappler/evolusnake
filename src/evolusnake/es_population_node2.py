@@ -40,6 +40,9 @@ class ESPopulationNode2(PSNode):
         self.population.es_increase_iteration_mutation()
         minimum_found: bool = False
 
+        self.population.es_set_num_iterations()
+        logger.debug(f"Iterations: {self.population.num_of_iterations}")
+
         for i in range(self.population.num_of_iterations):
             for j in range(self.population.population_size):
                 tmp_ind: ESIndividual = self.population.population[j].es_clone()

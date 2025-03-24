@@ -46,6 +46,9 @@ class ESPopulationNode1(PSNode):
         self.population.es_increase_iteration_mutation()
         offset: int = int(self.population.population_size / 2)
 
+        self.population.es_set_num_iterations()
+        logger.debug(f"Iterations: {self.population.num_of_iterations}")
+
         for i in range(self.population.num_of_iterations):
             # Create a copy of each individual before mutating it:
             for j in range(offset):
