@@ -100,17 +100,46 @@ class SudokuIndividual(ESIndividual):
 
     @override
     def es_mutate(self):
-        c = rnd.randrange(9)
-        r = rnd.randrange(9)
-        n = self.get_value1(c, r)
+        c: int = rnd.randrange(9)
+        r: int = rnd.randrange(9)
+        n: int = self.get_value1(c, r)
 
         while n != 0:
             c = rnd.randrange(9)
             r = rnd.randrange(9)
             n = self.get_value1(c, r)
 
-        val: int = rnd.randrange(1, 10)
-        self.set_value2(c, r, val)
+        possible_numbers: set = {1, 2, 3, 4, 5, 6, 7, 8, 9}
+
+        op: int = rnd.randrange(2)
+
+        match op:
+            case 0:
+                # Check row:
+                for i in range(9):
+                    n = self.get_value1(i, r)
+                    possible_numbers.discard(n)
+                rest: list = list(possible_numbers)
+                rnd.shuffle(rest)
+                for i in range(9):
+                    n = self.get_value1(i, r)
+                    if n == 0:
+                        val: int = rest.pop()
+                        self.set_value2(i, r, val)
+            case 1:
+                # Check col:
+                for i in range(9):
+                    n = self.get_value1(c, i)
+                    possible_numbers.discard(n)
+                rest: list = list(possible_numbers)
+                rnd.shuffle(rest)
+                for i in range(9):
+                    n = self.get_value1(c, i)
+                    if n == 0:
+                        val: int = rest.pop()
+                        self.set_value2(c, i, val)
+            case _:
+                logger.error(f"Mutation operation unknown: {op}")
 
     @override
     def es_randomize(self):
