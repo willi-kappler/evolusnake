@@ -7,6 +7,9 @@ TODO:
 - test cases for population kind 6.
 - test cases for population kind 7.
 - test cases for new methods in population.
+- use mutation_opertation_max and set the mutation operation when the population calls the individual es_mutate() method.
+- keep track of mutation operation: statistics on the most used operation for the best individual.
+- early exit at iteration 0: use sleep() for one second to avoid spamming the server.
 
 
 DONE:
