@@ -22,6 +22,19 @@ class SudokuIndividual(ESIndividual):
     def __init__(self):
         super().__init__()
 
+        # Solution:
+        # 7, 8, 1,   3, 9, 4,   6, 2, 5,
+        # 2, 6, 3,   5, 1, 7,   9, 4, 8,
+        # 4, 9, 5,   6, 8, 2,   1, 7, 3,
+        #
+        # 1, 3, 8,   4, 5, 6,   7, 9, 2,
+        # 9, 2, 4,   7, 3, 1,   8, 5, 6,
+        # 5, 7, 6,   8, 2, 9,   3, 1, 4,
+        #
+        # 6, 5, 7,   9, 4, 3,   2, 8, 1,
+        # 3, 4, 2,   1, 7, 8,   5, 6, 9,
+        # 8, 1, 9,   2, 6, 5,   4, 3, 7
+
         self.numbers1: list = [
         0, 8, 0,   0, 9, 4,   0, 0, 0,
         2, 0, 3,   0, 0, 0,   9, 4, 0,
@@ -96,17 +109,16 @@ class SudokuIndividual(ESIndividual):
             r = rnd.randrange(9)
             n = self.get_value1(c, r)
 
-        val = rnd.randrange(9)
+        val: int = rnd.randrange(1, 10)
         self.set_value2(c, r, val)
 
     @override
     def es_randomize(self):
         for c in range(9):
             for r in range(9):
-                val = self.get_value1(c, r)
-                if val == 0:
-                    val = rnd.randrange(9)
-                self.set_value2(c, r, val)
+                if self.get_value1(c, r) == 0:
+                    val: int = rnd.randrange(1, 10)
+                    self.set_value2(c, r, val)
 
     @override
     def es_calculate_fitness(self):
