@@ -3,66 +3,66 @@
 test_kind_1() {
     python3 sudoku_main.py --population_kind 1 &
     sleep 2
-    python3 sudoku_main.py --population_kind 1 &
+    python3 sudoku_main.py --population_kind 1 --randomize_population &
     sleep 2
-    python3 sudoku_main.py --population_kind 1 &
+    python3 sudoku_main.py --population_kind 1 --randomize_population &
     sleep 2
-    python3 sudoku_main.py --population_kind 1 &
+    python3 sudoku_main.py --population_kind 1 --randomize_population &
     sleep 2
 }
 
 test_kind_2() {
     python3 sudoku_main.py --population_kind 2 &
     sleep 2
-    python3 sudoku_main.py --population_kind 2 &
+    python3 sudoku_main.py --population_kind 2 --randomize_population &
     sleep 2
-    python3 sudoku_main.py --population_kind 2 &
+    python3 sudoku_main.py --population_kind 2 --randomize_population &
     sleep 2
-    python3 sudoku_main.py --population_kind 2 &
+    python3 sudoku_main.py --population_kind 2 --randomize_population &
     sleep 2
 }
 
 test_kind_3() {
     python3 sudoku_main.py --population_kind 3 &
     sleep 2
-    python3 sudoku_main.py --population_kind 3 &
+    python3 sudoku_main.py --population_kind 3 --randomize_population &
     sleep
-    python3 sudoku_main.py --population_kind 3 &
+    python3 sudoku_main.py --population_kind 3 --randomize_population &
     sleep 2
-    python3 sudoku_main.py --population_kind 3 &
+    python3 sudoku_main.py --population_kind 3 --randomize_population &
     sleep 2
 }
 
 test_kind_4() {
     python3 sudoku_main.py --population_kind 4 &
     sleep 2
-    python3 sudoku_main.py --population_kind 4 &
+    python3 sudoku_main.py --population_kind 4 --randomize_population &
     sleep 2
-    python3 sudoku_main.py --population_kind 4 &
+    python3 sudoku_main.py --population_kind 4 --randomize_population &
     sleep 2
-    python3 sudoku_main.py --population_kind 4 &
+    python3 sudoku_main.py --population_kind 4 --randomize_population &
     sleep 2
 }
 
 test_kind_5() {
     python3 sudoku_main.py --population_kind 5 &
     sleep 2
-    python3 sudoku_main.py --population_kind 5 &
+    python3 sudoku_main.py --population_kind 5 --randomize_population &
     sleep 2
-    python3 sudoku_main.py --population_kind 5 &
+    python3 sudoku_main.py --population_kind 5 --randomize_population &
     sleep 2
-    python3 sudoku_main.py --population_kind 5 &
+    python3 sudoku_main.py --population_kind 5 --randomize_population &
     sleep 2
 }
 
 test_kind_6() {
     python3 sudoku_main.py --population_kind 6 &
     sleep 2
-    python3 sudoku_main.py --population_kind 6 &
+    python3 sudoku_main.py --population_kind 6 --randomize_population &
     sleep 2
-    python3 sudoku_main.py --population_kind 6 &
+    python3 sudoku_main.py --population_kind 6 --randomize_population &
     sleep 2
-    python3 sudoku_main.py --population_kind 6 &
+    python3 sudoku_main.py --population_kind 6 --randomize_population &
     sleep 2
 }
 
