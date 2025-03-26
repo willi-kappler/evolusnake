@@ -1,94 +1,94 @@
 #!/usr/bin/env bash
 
 test_kind_1() {
-    python3 sudoku_main.py --population_kind 1 --num_of_mutations 1 &
+    python3 sudoku_main.py --population_kind 1 &
     sleep 2
-    python3 sudoku_main.py --population_kind 1 --num_of_mutations 1 --num_of_iterations 30000 &
+    python3 sudoku_main.py --population_kind 1 &
     sleep 2
-    python3 sudoku_main.py --population_kind 1 --num_of_mutations 1 --num_of_iterations 40000 &
+    python3 sudoku_main.py --population_kind 1 &
     sleep 2
-    python3 sudoku_main.py --population_kind 1 --num_of_mutations 1 --num_of_iterations 50000 &
+    python3 sudoku_main.py --population_kind 1 &
     sleep 2
 }
 
 test_kind_2() {
     python3 sudoku_main.py --population_kind 2 &
     sleep 2
-    python3 sudoku_main.py --population_kind 2 --num_of_mutations 1 --num_of_iterations 30000 &
+    python3 sudoku_main.py --population_kind 2 &
     sleep 2
-    python3 sudoku_main.py --population_kind 2 --num_of_mutations 1 --num_of_iterations 40000 &
+    python3 sudoku_main.py --population_kind 2 &
     sleep 2
-    python3 sudoku_main.py --population_kind 2 --num_of_mutations 1 --num_of_iterations 50000 &
+    python3 sudoku_main.py --population_kind 2 &
     sleep 2
 }
 
 test_kind_3() {
     python3 sudoku_main.py --population_kind 3 &
     sleep 2
-    python3 sudoku_main.py --population_kind 3 --num_of_mutations 1 --num_of_iterations 30000 &
+    python3 sudoku_main.py --population_kind 3 &
     sleep
-    python3 sudoku_main.py --population_kind 3 --num_of_mutations 1 --num_of_iterations 40000 &
+    python3 sudoku_main.py --population_kind 3 &
     sleep 2
-    python3 sudoku_main.py --population_kind 3 --num_of_mutations 1 --num_of_iterations 50000 &
+    python3 sudoku_main.py --population_kind 3 &
     sleep 2
 }
 
 test_kind_4() {
     python3 sudoku_main.py --population_kind 4 &
     sleep 2
-    python3 sudoku_main.py --population_kind 4 --num_of_mutations 1 --num_of_iterations 30000 &
+    python3 sudoku_main.py --population_kind 4 &
     sleep 2
-    python3 sudoku_main.py --population_kind 4 --num_of_mutations 1 --num_of_iterations 40000 &
+    python3 sudoku_main.py --population_kind 4 &
     sleep 2
-    python3 sudoku_main.py --population_kind 4 --num_of_mutations 1 --num_of_iterations 50000 &
+    python3 sudoku_main.py --population_kind 4 &
     sleep 2
 }
 
 test_kind_5() {
     python3 sudoku_main.py --population_kind 5 &
     sleep 2
-    python3 sudoku_main.py --population_kind 5 --num_of_mutations 1 --num_of_iterations 30000 &
+    python3 sudoku_main.py --population_kind 5 &
     sleep 2
-    python3 sudoku_main.py --population_kind 5 --num_of_mutations 1 --num_of_iterations 40000 &
+    python3 sudoku_main.py --population_kind 5 &
     sleep 2
-    python3 sudoku_main.py --population_kind 5 --num_of_mutations 1 --num_of_iterations 50000 &
+    python3 sudoku_main.py --population_kind 5 &
     sleep 2
 }
 
 test_kind_6() {
-    python3 sudoku_main.py --population_kind 6 --num_of_mutations 1 --num_of_iterations 1000 &
+    python3 sudoku_main.py --population_kind 6 &
     sleep 2
-    python3 sudoku_main.py --population_kind 6 --num_of_mutations 1 --num_of_iterations 1100 &
+    python3 sudoku_main.py --population_kind 6 &
     sleep 2
-    python3 sudoku_main.py --population_kind 6 --num_of_mutations 1 --num_of_iterations 1200 &
+    python3 sudoku_main.py --population_kind 6 &
     sleep 2
-    python3 sudoku_main.py --population_kind 6 --num_of_mutations 1 --num_of_iterations 1300 &
+    python3 sudoku_main.py --population_kind 6 &
     sleep 2
 }
 
 test_kind_7() {
     python3 sudoku_main.py --population_kind 7 &
     sleep 2
-    python3 sudoku_main.py --population_kind 7 --num_of_iterations 30000 &
+    python3 sudoku_main.py --population_kind 7 &
     sleep 2
-    python3 sudoku_main.py --population_kind 7 --num_of_iterations 35000 &
+    python3 sudoku_main.py --population_kind 7 &
     sleep 2
-    python3 sudoku_main.py --population_kind 7 --num_of_iterations 40000 &
+    python3 sudoku_main.py --population_kind 7 &
     sleep 2
 }
 
 test_all_kinds() {
-    python3 sudoku_main.py --population_kind 1 --num_of_mutations 1 &
+    python3 sudoku_main.py --population_kind 1 &
     sleep 2
-    python3 sudoku_main.py --population_kind 2 --num_of_mutations 1 &
+    python3 sudoku_main.py --population_kind 2 &
     sleep 2
-    python3 sudoku_main.py --population_kind 3 --num_of_mutations 1 &
+    python3 sudoku_main.py --population_kind 3 &
     sleep 2
-    python3 sudoku_main.py --population_kind 4 --num_of_mutations 1 &
+    python3 sudoku_main.py --population_kind 4 &
     sleep 2
-    python3 sudoku_main.py --population_kind 5 --num_of_mutations 1 &
+    python3 sudoku_main.py --population_kind 5 &
     sleep 2
-    python3 sudoku_main.py --population_kind 6 --num_of_mutations 1 --num_of_iterations 1000 &
+    python3 sudoku_main.py --population_kind 6 &
     sleep 2
     python3 sudoku_main.py --population_kind 7 &
     sleep 2
