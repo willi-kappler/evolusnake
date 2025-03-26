@@ -150,7 +150,7 @@ class SudokuIndividual(ESIndividual):
 
     @override
     def es_randomize(self):
-        pass
+        rnd.shuffle(self.empty_positions)
 
     @override
     def es_calculate_fitness(self):
