@@ -51,25 +51,34 @@ class SudokuIndividual(ESIndividual):
 
         self.numbers2: list = self.numbers1[:]
 
-        self.possible_numbers: list = []
+        self.empty_positions: list = []
 
         for c in range(9):
             for r in range(9):
-                res = self.get_possible_numbers(c, r)
-                l = len(res)
-                self.possible_numbers.append((c, r, l, res))
+                if self.get_value1(c, r) == 0:
+                    self.empty_positions.append((c, r))
 
-        self.num_possible_numbers: int = len(self.possible_numbers)
+    def clear_puzzle(self):
+        for (c, r) in self.empty_positions:
+            self.set_value2(c, r, 0)
 
     def get_possible_numbers(self, c: int, r: int) -> list:
         possible_numbers: set = {1, 2, 3, 4, 5, 6, 7, 8, 9}
 
         for i in range(9):
-            n = self.get_value1(i, r)
+            n = self.get_value2(i, r)
             possible_numbers.discard(n)
         for i in range(9):
-            n = self.get_value1(c, i)
+            n = self.get_value2(c, i)
             possible_numbers.discard(n)
+
+        block_c: int = (c // 3) * 3
+        block_r: int = (r // 3) * 3
+
+        for i in range(3):
+            for j in range(3):
+                n = self.get_value2(block_c + i, block_r + j)
+                possible_numbers.discard(n)
 
         result: list = list(possible_numbers)
 
@@ -122,221 +131,26 @@ class SudokuIndividual(ESIndividual):
 
         return errors
 
-    def just_random(self, c: int, r: int):
-        val = rnd.randrange(1, 10)
-        self.set_value2(c, r, val)
-
-    def check_neighbours(self, c: int, r: int):
-        c1: int = c - 1
-        c2: int = c + 1
-        r1: int = r - 1
-        r2: int = r + 1
-
-        if c1 < 0:
-            c1 = 8
-        if c2 > 8:
-            c2 = 0
-        if r1 < 0:
-            r1 = 8
-        if r2 > 8:
-            r2 = 0
-
-        possible_numbers: set = {1, 2, 3, 4, 5, 6, 7, 8, 9}
-        possible_numbers.discard(self.get_value2(c, r1))
-        possible_numbers.discard(self.get_value2(c, r2))
-        possible_numbers.discard(self.get_value2(c1, r))
-        possible_numbers.discard(self.get_value2(c2, r))
-
-        rest: list = list(possible_numbers)
-        rnd.shuffle(rest)
-
-        self.set_value2(c, r, rest[0])
-
-    def check_and_assign_single(self, c: int, r: int):
-        possible_numbers: set = {1, 2, 3, 4, 5, 6, 7, 8, 9}
-
-        for i in range(9):
-            n = self.get_value1(i, r)
-            possible_numbers.discard(n)
-        for i in range(9):
-            n = self.get_value1(c, i)
-            possible_numbers.discard(n)
-
-        if len(possible_numbers) > 0:
-            rest: list = list(possible_numbers)
-            rnd.shuffle(rest)
-            self.set_value2(c, r, rest[0])
-
-    def check_and_assign_row(self, r: int):
-        possible_numbers: set = {1, 2, 3, 4, 5, 6, 7, 8, 9}
-
-        for i in range(9):
-            n = self.get_value1(i, r)
-            possible_numbers.discard(n)
-
-        rest: list = list(possible_numbers)
-        rnd.shuffle(rest)
-
-        for i in range(9):
-            n = self.get_value1(i, r)
-            if n == 0:
-                self.set_value2(i, r, rest.pop())
-
-    def check_and_assign_col(self, c: int):
-        possible_numbers: set = {1, 2, 3, 4, 5, 6, 7, 8, 9}
-
-        for i in range(9):
-            n = self.get_value1(c, i)
-            possible_numbers.discard(n)
-
-        rest: list = list(possible_numbers)
-        rnd.shuffle(rest)
-
-        for i in range(9):
-            n = self.get_value1(c, i)
-            if n == 0:
-                self.set_value2(c, i, rest.pop())
-
-    def check_and_assign_block(self, c: int, r: int):
-        """
-        Assigns possible values to empty cells within the 3x3 block containing (c, r).
-        """
-        block_start_c: int = (c // 3) * 3
-        block_start_r: int = (r // 3) * 3
-        possible_numbers: set = {1, 2, 3, 4, 5, 6, 7, 8, 9}
-
-        # Remove used numbers in the block
-        for i in range(3):
-            for j in range(3):
-                val = self.get_value1(block_start_c + i, block_start_r + j)
-                possible_numbers.discard(val)
-
-        rest: list = list(possible_numbers)
-        rnd.shuffle(rest)
-
-        # Assign remaining numbers to empty cells in the block
-        for i in range(3):
-            for j in range(3):
-                curr_c = block_start_c + i
-                curr_r = block_start_r + j
-                if self.get_value1(curr_c, curr_r) == 0:
-                    self.set_value2(curr_c, curr_r, rest.pop())
-
-    def clear_col_and_row(self, c: int, r: int):
-        for i in range(9):
-            n = self.get_value1(i, r)
-            if n == 0:
-                self.set_value2(i, r, 0)
-            n = self.get_value1(c, i)
-            if n == 0:
-                self.set_value2(c, i, 0)
-
-    def swap_in_row(self, c1: int, r: int):
-        possible_cols: list = []
-
-        for i in range(9):
-            if i != c1:
-                if self.get_value1(i, r) == 0:
-                    possible_cols.append(i)
-
-        if len(possible_cols) > 0:
-            rnd.shuffle(possible_cols)
-            c2: int = possible_cols[0]
-
-            v1: int = self.get_value2(c1, r)
-            v2: int = self.get_value2(c2, r)
-
-            self.set_value2(c1, r, v2)
-            self.set_value2(c2, r, v1)
-
-    def swap_in_col(self, c: int, r1: int):
-        possible_rows: list = []
-
-        for i in range(9):
-            if i != r1:
-                if self.get_value1(c, i) == 0:
-                    possible_rows.append(i)
-
-        if len(possible_rows) > 0:
-            rnd.shuffle(possible_rows)
-            r2: int = possible_rows[0]
-
-            v1: int = self.get_value2(c, r1)
-            v2: int = self.get_value2(c, r2)
-
-            self.set_value2(c, r1, v2)
-            self.set_value2(c, r2, v1)
-
-    def swap_in_block(self, c: int, r: int):
-        block_start_c: int = (c // 3) * 3
-        block_start_r: int = (r // 3) * 3
-        possible_cells: list = []
-
-        for i in range(3):
-            for j in range(3):
-                curr_c = block_start_c + i
-                curr_r = block_start_r + j
-                if curr_c != c or curr_r != r:
-                    if self.get_value1(curr_c, curr_r) == 0:
-                        possible_cells.append((curr_c, curr_r))
-
-        if len(possible_cells) > 0:
-            rnd.shuffle(possible_cells)
-            c2, r2 = possible_cells[0]
-            v1 = self.get_value2(c, r)
-            v2 = self.get_value2(c2, r2)
-            self.set_value2(c, r, v2)
-            self.set_value2(c2, r2, v1)
-
     def use_possible_numbers(self):
-        i: int = rnd.randrange(self.num_possible_numbers)
-        (c, r, l, nums) = self.possible_numbers[i]
-        i = rnd.randrange(l)
-        self.set_value2(c, r, nums[i])
+        self.clear_puzzle()
+
+        for (c, r) in self.empty_positions:
+            numbers: list = self.get_possible_numbers(c, r)
+            l: int = len(numbers)
+
+            if l == 1:
+                self.set_value2(c, r, numbers[0])
+            elif l > 1:
+                i = rnd.randrange(l)
+                self.set_value2(c, r, numbers[i])
 
     @override
     def es_mutate(self):
-        c: int = rnd.randrange(9)
-        r: int = rnd.randrange(9)
-        n: int = self.get_value1(c, r)
-
-        while n != 0:
-            c = rnd.randrange(9)
-            r = rnd.randrange(9)
-            n = self.get_value1(c, r)
-
-        max_mut: int = 9
-        op: int = rnd.randrange(max_mut)
-
-        match op:
-            case 0:
-                self.just_random(c, r)
-            case 1:
-                self.check_neighbours(c, r)
-            case 2:
-                self.check_and_assign_single(c, r)
-            case 3:
-                self.check_and_assign_col(c)
-            case 4:
-                self.check_and_assign_row(r)
-            case 5:
-                self.check_and_assign_block(c, r)
-            case 6:
-                self.swap_in_col(c, r)
-            case 7:
-                self.swap_in_row(c, r)
-            case 8:
-                self.swap_in_block(c, r)
-            case _:
-                logger.error(f"Unknown mutation operation: {op}")
+        self.use_possible_numbers()
 
     @override
     def es_randomize(self):
-        for c in range(9):
-            for r in range(9):
-                if self.get_value1(c, r) == 0:
-                    val: int = rnd.randrange(1, 10)
-                    self.set_value2(c, r, val)
+        pass
 
     @override
     def es_calculate_fitness(self):
