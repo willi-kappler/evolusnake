@@ -6,5 +6,10 @@
     "node_population_size": 100,
     "num_of_iterations": 5000,
     "num_of_mutations": 1,
-    "save_new_fitness": true
+    "save_new_fitness": true,
+    "mutation_operations": [
+        0,
+        1,
+        2
+    ]
 }

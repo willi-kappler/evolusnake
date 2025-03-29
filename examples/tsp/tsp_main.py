@@ -41,13 +41,20 @@ class TSPIndividual(ESIndividual):
 
         self.num_elems = num_elems
 
-    @override
-    def es_mutate(self):
+    def get_one_index(self) -> int:
+        return rnd.randrange(self.num_elems)
+
+    def get_two_indices(self) -> tuple[int, int]:
         i1: int = rnd.randrange(self.num_elems)
         i2: int = rnd.randrange(self.num_elems)
 
         while i1 == i2:
             i2 = rnd.randrange(self.num_elems)
+
+        return (i1, i2)
+
+    def reverse(self):
+        (i1, i2) = self.get_two_indices()
 
         if i1 > i2:
             (i1, i2) = (i2, i1)
@@ -57,6 +64,20 @@ class TSPIndividual(ESIndividual):
 
             i1 += 1
             i2 -= 1
+
+    def just_swap(self):
+        (i1, i2) = self.get_two_indices()
+        (self.positions[i1], self.positions[i2]) = (self.positions[i2], self.positions[i1])
+
+    @override
+    def es_mutate(self, mut_op: int):
+        match mut_op:
+            case 0:
+                self.reverse()
+            case 1:
+                self.just_swap()
+            case _:
+                raise ValueError(f"Unknown mutation operation: {mut_op}")
 
     @override
     def es_randomize(self):

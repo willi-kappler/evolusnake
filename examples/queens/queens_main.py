@@ -28,12 +28,30 @@ class QueensIndividual(ESIndividual):
         for i in range(size):
             self.positions.append([i, 0])
 
-    @override
-    def es_mutate(self):
+    def random_pos(self):
         i: int = rnd.randrange(self.num_elems)
         y: int = rnd.randrange(self.num_elems)
 
         self.positions[i][1] = y
+
+    def swap_pos(self):
+        i: int = rnd.randrange(self.num_elems)
+        j: int = rnd.randrange(self.num_elems)
+
+        while i == j:
+            j = rnd.randrange(self.num_elems)
+
+        (self.positions[i][1], self.positions[j][1]) = (self.positions[j][1], self.positions[i][1])
+
+    @override
+    def es_mutate(self, mut_op: int):
+        match mut_op:
+            case 0:
+                self.random_pos()
+            case 1:
+                self.swap_pos()
+            case _:
+                raise ValueError(f"Unknown mutation operation: {mut_op}")
 
     @override
     def es_randomize(self):

@@ -145,7 +145,7 @@ class SudokuIndividual(ESIndividual):
                 self.set_value2(c, r, numbers[i])
 
     @override
-    def es_mutate(self):
+    def es_mutate(self, mut_op: int):
         self.use_possible_numbers()
 
     @override
