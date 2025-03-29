@@ -24,7 +24,10 @@ logger = logging.getLogger(__name__)
 class ESPopulationNode7(PSNode):
     def __init__(self, config: ESConfiguration, individual: ESIndividual):
         logger.info("Init population node type 7")
-        logger.info("TODO...")
+        logger.info("Similar to population 1: clone and sort the whole population.")
+        logger.info("The top worse half is overwritten, but mutate all individuals only once.")
+        logger.info("Keep track of the best fitness and if it stays the same for too long, then")
+        logger.info("randomize the whole population.")
 
         super().__init__(config.parasnake_config)
         logger.debug(f"Node ID: {self.node_id}")
@@ -40,6 +43,7 @@ class ESPopulationNode7(PSNode):
 
         self.population.es_random_population()
         self.population.es_sort_population()
+        self.population.es_set_num_iterations()
 
         offset: int = int(self.population.population_size / 2)
         previous_best_fitness: float = self.population.population[0].fitness
@@ -47,22 +51,19 @@ class ESPopulationNode7(PSNode):
         best_fitness: float = previous_best_fitness
         iter_counter: int = 0
 
-        self.population.es_set_num_iterations()
-        logger.debug(f"Iterations: {self.population.num_of_iterations}")
-
         while True:
             # Create a copy of each individual before mutating it:
             for j in range(offset):
                 ind: ESIndividual = self.population.population[j]
-                self.population.population[j + offset] = ind.es_clone()
+                self.population.population[j + offset] = ind.es_clone_internal()
 
-                ind.es_mutate()
+                ind.es_mutate_internal(self.population.es_get_mut_op())
                 ind.es_calculate_fitness()
 
             self.population.es_sort_population()
 
             if self.population.population[0].fitness <= self.population.target_fitness:
-                logger.info("Early exit")
+                self.population.es_early_exit(iter_counter)
                 break
 
             best_fitness = self.population.population[0].fitness
@@ -77,14 +78,7 @@ class ESPopulationNode7(PSNode):
 
             iter_counter += 1
 
-        self.population.best_fitness = self.population.population[0].fitness
-        self.population.worst_fitness = self.population.population[-1].fitness
-
-        best_fitness = self.population.best_fitness
-        worst_fitness: float = self.population.worst_fitness
-
-        logger.debug(f"{best_fitness=}, {worst_fitness=}")
+        self.population.es_log_statistics()
         logger.debug(f"{iter_counter=}")
-
         return self.population.es_get_best()
 

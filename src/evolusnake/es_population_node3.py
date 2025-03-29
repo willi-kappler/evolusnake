@@ -42,24 +42,22 @@ class ESPopulationNode3(PSNode):
         self.population.es_randomize_or_accept_best(data)
         self.population.es_increase_iteration_mutation()
         self.population.es_find_best_and_worst_individual()
-
         self.population.es_set_num_iterations()
-        logger.debug(f"Iterations: {self.population.num_of_iterations}")
 
         max_iter = self.population.num_of_iterations * self.population.population_size
 
         for i in range(max_iter):
             j = rnd.randrange(self.population.population_size)
-            tmp_ind: ESIndividual = self.population.population[j].es_clone()
+            tmp_ind: ESIndividual = self.population.population[j].es_clone_internal()
 
             for _ in range(self.population.num_of_mutations):
-                tmp_ind.es_mutate()
+                tmp_ind.es_mutate_internal(self.population.es_get_mut_op())
             tmp_ind.es_calculate_fitness()
 
             if tmp_ind.fitness < self.population.best_fitness:
                 self.population.es_replace_best(tmp_ind)
                 if tmp_ind.fitness <= self.population.target_fitness:
-                    logger.info(f"Early exit at iteration {i}")
+                    self.population.es_early_exit(i)
                     break
             elif tmp_ind.fitness < self.population.worst_fitness:
                 self.population.es_replace_worst(tmp_ind)
@@ -68,9 +66,6 @@ class ESPopulationNode3(PSNode):
             # Change mutation rate:
             self.population.es_set_num_mutations()
 
-        best_fitness: float = self.population.best_fitness
-        worst_fitness: float = self.population.worst_fitness
-        logger.debug(f"{best_fitness=}, {worst_fitness=}")
-
+        self.population.es_log_statistics()
         return self.population.es_get_best()
 

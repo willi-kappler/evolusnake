@@ -45,6 +45,7 @@ class ESConfiguration:
         self.population_kind: int = 1
         self.increase_iteration: int = 0
         self.increase_mutation: int = 0
+        self.mutation_operations: list = []
 
     @staticmethod
     def from_json(file_name) -> Any:
@@ -95,6 +96,8 @@ class ESConfiguration:
                     config.increase_iteration = value
                 case "increase_mutation":
                     config.increase_mutation = value
+                case "mutation_operations":
+                    config.mutation_operations = value
                 case _:
                     logger.debug(f"Unknown evolusnake configuration option: {key=}, {value=}")
 
@@ -111,6 +114,7 @@ class ESConfiguration:
         parser.add_argument("--randomize_population", action="store_true")
         parser.add_argument("--increase_iteration", type=int)
         parser.add_argument("--increase_mutation", type=int)
+        parser.add_argument("--mutation_operations")
 
         args = parser.parse_args()
 
@@ -138,6 +142,9 @@ class ESConfiguration:
 
         if args.increase_mutation != None:
             self.increase_mutation = args.increase_mutation
+
+        if args.mutation_operations != None:
+            self.mutation_operations = [int(n) for n in args.mutation_operations.split(",")]
 
         # print(f"{self.server_mode}")
         # print(f"{self.target_fitness}")

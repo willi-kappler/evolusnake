@@ -10,6 +10,7 @@ This module defines the base data class for a population.
 # Python std lib:
 import logging
 import random as rnd
+import time
 
 # Local imports
 from evolusnake.es_individual import ESIndividual
@@ -53,6 +54,10 @@ class ESPopulation:
         self.worst_index: int = 0
         self.worst_fitness: float = 0.0
 
+        self.mutation_operations: list = config.mutation_operations
+        self.mutation_operations_len: int = len(config.mutation_operations)
+        self.minimum_found: bool = False
+
         # Init random number generator:
         rnd.seed()
 
@@ -60,6 +65,7 @@ class ESPopulation:
         logger.debug(f"{self.num_of_iterations=}, {self.num_of_mutations=}")
         logger.debug(f"{self.accept_new_best=}, {self.randomize_population=}")
         logger.debug(f"{self.increase_iteration=}, {self.increase_mutation=}")
+        logger.debug(f"{self.mutation_operations=}")
 
     def es_find_worst_individual(self):
         self.worst_index = 0
@@ -118,6 +124,7 @@ class ESPopulation:
 
     def es_set_num_iterations(self):
         self.num_of_iterations = rnd.randrange(self.half_iterations, self.max_iterations)
+        logger.debug(f"Iterations: {self.num_of_iterations}")
 
     def es_randomize_worst(self):
         worst = self.population[self.worst_index]
@@ -141,4 +148,32 @@ class ESPopulation:
 
     def es_get_best(self) -> ESIndividual:
         return self.population[self.best_index]
+
+    def es_get_mut_op(self) -> int:
+        match self.mutation_operations_len:
+            case 0:
+                return 0
+            case 1:
+                return self.mutation_operations[0]
+            case _:
+                i = rnd.randrange(self.mutation_operations_len)
+                return self.mutation_operations[i]
+
+    def es_early_exit(self, iteration: int):
+        logger.info(f"Early exit at iteration {iteration}")
+        self.minimum_found = True
+
+        if iteration == 0:
+            # Wait some seconds to avoid spamming the server.
+            time.sleep(5)
+
+    def es_log_statistics(self):
+        best_individual: ESIndividual = self.population[self.best_index]
+        best_fitness: float = best_individual.fitness
+        worst_individual: ESIndividual = self.population[self.worst_index]
+        worst_fitness: float = worst_individual.fitness
+        logger.debug(f"{best_fitness=}, {worst_fitness=}")
+        logger.debug(f"Best individual mutations: {best_individual.mut_op_counter}")
+        logger.debug(f"Worst individual mutations: {worst_individual.mut_op_counter}")
+
 

@@ -44,30 +44,27 @@ class ESPopulationNode4(PSNode):
 
         self.population.es_randomize_or_accept_best(data)
         self.population.es_increase_iteration_mutation()
-        minimum_found: bool = False
+        self.population.es_set_num_iterations()
+        self.population.minimum_found = False
         ind_below_global: int = 0
         all_above_global: int = 0
 
-        self.population.es_set_num_iterations()
-        logger.debug(f"Iterations: {self.population.num_of_iterations}")
-
         for i in range(self.population.num_of_iterations):
             for j in range(self.population.population_size):
-                tmp_ind: ESIndividual = self.population.population[j].es_clone()
+                tmp_ind: ESIndividual = self.population.population[j].es_clone_internal()
 
                 for _ in range(self.population.num_of_mutations):
-                    tmp_ind.es_mutate()
+                    tmp_ind.es_mutate_internal(self.population.es_get_mut_op())
                 tmp_ind.es_calculate_fitness()
 
                 if tmp_ind.fitness < self.global_fitness:
                     self.population.population[j] = tmp_ind
 
                     if tmp_ind.fitness <= self.population.target_fitness:
-                        logger.info(f"Early exit at iteration {i}")
-                        minimum_found = True
+                        self.population.es_early_exit(i)
                         break
 
-            if minimum_found:
+            if self.population.minimum_found:
                 break
 
             # Change mutation rate:
@@ -85,13 +82,7 @@ class ESPopulationNode4(PSNode):
                 all_above_global += 1
 
         self.population.es_find_best_and_worst_individual()
-
-        best_fitness: float = self.population.best_fitness
-        worst_fitness: float = self.population.worst_fitness
-        logger.debug(f"{best_fitness=}, {worst_fitness=}")
-        logger.debug(f"{self.global_fitness=}, {all_above_global=}")
-
+        self.population.es_log_statistics()
         self.population.es_clone_best_to_worst()
-
         return self.population.es_get_best()
 

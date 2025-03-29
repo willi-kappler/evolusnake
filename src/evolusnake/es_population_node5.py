@@ -24,7 +24,8 @@ logger = logging.getLogger(__name__)
 class ESPopulationNode5(PSNode):
     def __init__(self, config: ESConfiguration, individual: ESIndividual):
         logger.info("Init population node type 5")
-        logger.debug("TODO...")
+        logger.debug("Calculate the average fitness. If after mutation the individual is")
+        logger.debug("better than the average keep it. Replace the worst with the second worst.")
 
         super().__init__(config.parasnake_config)
         logger.debug(f"Node ID: {self.node_id}")
@@ -47,43 +48,36 @@ class ESPopulationNode5(PSNode):
 
         self.population.es_randomize_or_accept_best(data)
         self.population.es_increase_iteration_mutation()
-        minimum_found: bool = False
-        second_worst: ESIndividual = self.population.population[-2].es_clone()
-
         self.population.es_set_num_iterations()
-        logger.debug(f"Iterations: {self.population.num_of_iterations}")
+        self.population.minimum_found = False
+        second_worst: ESIndividual = self.population.population[-2].es_clone_internal()
 
         for i in range(self.population.num_of_iterations):
             for j in range(self.population.population_size):
-                tmp_ind: ESIndividual = self.population.population[j].es_clone()
+                tmp_ind: ESIndividual = self.population.population[j].es_clone_internal()
 
                 for _ in range(self.population.num_of_mutations):
-                    tmp_ind.es_mutate()
+                    tmp_ind.es_mutate_internal(self.population.es_get_mut_op())
                 tmp_ind.es_calculate_fitness()
 
                 if tmp_ind.fitness < self.average_fitness:
                     self.population.population[j] = tmp_ind
 
                     if tmp_ind.fitness <= self.population.target_fitness:
-                        logger.info(f"Early exit at iteration {i}")
-                        minimum_found = True
+                        self.population.es_early_exit(i)
                         break
 
-            if minimum_found:
+            if self.population.minimum_found:
                 break
 
             # Change mutation rate:
             self.population.es_set_num_mutations()
 
             self.population.es_sort_population()
-            second_worst = self.population.population[-2].es_clone()
+            second_worst = self.population.population[-2].es_clone_internal()
             self.population.population[-1] = second_worst
             self.es_calc_average_fitness()
 
-        best_fitness: float = self.population.population[0].fitness
-        worst_fitness: float = self.population.population[-1].fitness
-        logger.debug(f"{best_fitness=}, {worst_fitness=}")
-        logger.debug(f"{self.average_fitness=}")
-
+        self.population.es_log_statistics()
         return self.population.es_get_best()
 

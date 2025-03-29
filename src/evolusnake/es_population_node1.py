@@ -37,6 +37,8 @@ class ESPopulationNode1(PSNode):
         self.population.best_fitness = self.population.population[0].fitness
         self.population.worst_fitness = self.population.population[-1].fitness
 
+        self.offset: int = int(self.population.population_size / 2)
+
     @override
     def ps_process_data(self, data: ESIndividual) -> ESIndividual:
         logger.debug("ESPopulationNode1.ps_process_data()")
@@ -44,38 +46,28 @@ class ESPopulationNode1(PSNode):
 
         self.population.es_randomize_or_accept_best(data)
         self.population.es_increase_iteration_mutation()
-        offset: int = int(self.population.population_size / 2)
-
         self.population.es_set_num_iterations()
-        logger.debug(f"Iterations: {self.population.num_of_iterations}")
 
         for i in range(self.population.num_of_iterations):
             # Create a copy of each individual before mutating it:
-            for j in range(offset):
+            for j in range(self.offset):
                 ind: ESIndividual = self.population.population[j]
-                self.population.population[j + offset] = ind.es_clone()
+                self.population.population[j + self.offset] = ind.es_clone_internal()
 
                 # Now mutate the original individual:
                 for _ in range(self.population.num_of_mutations):
-                    ind.es_mutate()
+                    ind.es_mutate_internal(self.population.es_get_mut_op())
                 ind.es_calculate_fitness()
 
             self.population.es_sort_population()
 
             if self.population.population[0].fitness <= self.population.target_fitness:
-                logger.info(f"Early exit at iteration {i}")
+                self.population.es_early_exit(i)
                 break
 
             # Change mutation rate:
             self.population.es_set_num_mutations()
 
-        self.population.best_fitness = self.population.population[0].fitness
-        self.population.worst_fitness = self.population.population[-1].fitness
-
-        best_fitness: float = self.population.best_fitness
-        worst_fitness: float = self.population.worst_fitness
-
-        logger.debug(f"{best_fitness=}, {worst_fitness=}")
-
+        self.population.es_log_statistics()
         return self.population.es_get_best()
 

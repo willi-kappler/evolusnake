@@ -45,7 +45,7 @@ class ESServer(PSServer):
 
         for _ in range(self.population_size):
             ind: ESIndividual = individual.es_clone()
-            ind.es_mutate()
+            ind.es_mutate(0)
             ind.es_calculate_fitness()
             self.population.append(ind)
 
