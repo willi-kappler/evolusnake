@@ -23,7 +23,7 @@ class TestIndividual(ESIndividual):
         self.data_size = 10
 
     @override
-    def es_mutate(self):
+    def es_mutate(self, mut_op: int):
         pos = rnd.randrange(self.data_size)
         self.data[pos] = 1 - self.data[pos]
         self.mutate_called += 1
@@ -32,7 +32,7 @@ class TestIndividual(ESIndividual):
     def es_randomize(self):
         max_random = self.data_size * 4
         for _ in range(max_random):
-            self.es_mutate()
+            self.es_mutate(0)
 
         self.randomize_called += 1
 

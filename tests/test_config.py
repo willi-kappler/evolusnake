@@ -30,7 +30,10 @@ class TestConfiguration(unittest.TestCase):
             "num_of_iterations": 12345,
             "num_of_mutations": 17,
             "accept_new_best": False,
-            "population_kind": 1
+            "population_kind": 1,
+            "increase_iteration": 5,
+            "increase_mutation": 8,
+            "mutation_operations": [7, 9, 11]
         }
 
         test_config_file: str = "test_config1.json"
@@ -52,6 +55,9 @@ class TestConfiguration(unittest.TestCase):
         self.assertEqual(config1.num_of_mutations, 17)
         self.assertEqual(config1.accept_new_best, False)
         self.assertEqual(config1.population_kind, 1)
+        self.assertEqual(config1.increase_iteration, 5)
+        self.assertEqual(config1.increase_mutation, 8)
+        self.assertEqual(config1.mutation_operations, [7, 9, 11])
 
     def test_load_config2(self):
         """
@@ -70,7 +76,10 @@ class TestConfiguration(unittest.TestCase):
             "num_of_iterations": 33333,
             "num_of_mutations": 21,
             "accept_new_best": True,
-            "population_kind": 2
+            "population_kind": 2,
+            "increase_iteration": 11,
+            "increase_mutation": 19,
+            "mutation_operations": [3, 4, 10, 13]
         }
 
         test_config_file: str = "test_config2.json"
@@ -92,6 +101,9 @@ class TestConfiguration(unittest.TestCase):
         self.assertEqual(config1.num_of_mutations, 21)
         self.assertEqual(config1.accept_new_best, True)
         self.assertEqual(config1.population_kind, 2)
+        self.assertEqual(config1.increase_iteration, 11)
+        self.assertEqual(config1.increase_mutation, 19)
+        self.assertEqual(config1.mutation_operations, [3, 4, 10, 13])
 
 if __name__ == "__main__":
     unittest.main()
