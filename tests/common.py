@@ -22,17 +22,36 @@ class TestIndividual(ESIndividual):
         self.data = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         self.data_size = 10
 
-    @override
-    def es_mutate(self, mut_op: int):
+    def flip_bit(self):
         pos = rnd.randrange(self.data_size)
         self.data[pos] = 1 - self.data[pos]
+
+    def set_one(self):
+        pos = rnd.randrange(self.data_size)
+        self.data[pos] = 1
+
+    def set_zero(self):
+        pos = rnd.randrange(self.data_size)
+        self.data[pos] = 0
+
+    @override
+    def es_mutate(self, mut_op: int):
+        match mut_op:
+            case 0:
+                self.flip_bit()
+            case 1:
+                self.set_one()
+            case 2:
+                self.set_zero()
+            case _:
+                raise ValueError(f"Unknown mutation operation: {mut_op}")
+
         self.mutate_called += 1
 
     @override
     def es_randomize(self):
-        max_random = self.data_size * 4
-        for _ in range(max_random):
-            self.es_mutate(0)
+        for i in range(self.data_size):
+            self.data[i] = rnd.randrange(2)
 
         self.randomize_called += 1
 
