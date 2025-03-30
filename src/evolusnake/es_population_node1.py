@@ -68,6 +68,8 @@ class ESPopulationNode1(PSNode):
             # Change mutation rate:
             self.population.es_set_num_mutations()
 
+        self.population.best_fitness = self.population.population[0].fitness
+        self.population.worst_fitness = self.population.population[-1].fitness
         self.population.es_log_statistics()
         return self.population.es_get_best()
 
