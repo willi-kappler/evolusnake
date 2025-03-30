@@ -123,28 +123,29 @@ class ESPopulation:
             self.num_of_mutations = 1
 
     def es_set_num_iterations(self):
-        self.num_of_iterations = rnd.randrange(self.half_iterations, self.max_iterations)
+        self.num_of_iterations = rnd.randrange(self.half_iterations, self.max_iterations + 1)
         logger.debug(f"Iterations: {self.num_of_iterations}")
 
     def es_randomize_worst(self):
         worst = self.population[self.worst_index]
         worst.es_randomize()
         worst.es_calculate_fitness()
-        # Now maybe no lionger the worst!
+        # Now maybe no longer the worst!
 
     def es_replace_best(self, individual: ESIndividual):
-        self.population[self.best_index] = individual
-        self.best_fitness = individual.fitness
+        if individual.fitness < self.best_fitness:
+            self.population[self.best_index] = individual
+            self.best_fitness = individual.fitness
         # Still the best at index: self.best_index!
 
     def es_replace_worst(self, individual: ESIndividual):
         self.population[self.worst_index] = individual
-        # Now lo longer the worst!
+        # Now no longer the worst!
 
     def es_clone_best_to_worst(self):
         ind = self.population[self.best_index].es_clone()
         self.population[self.worst_index] = ind
-        # Now lo longer the worst!
+        # Now no longer the worst!
 
     def es_get_best(self) -> ESIndividual:
         return self.population[self.best_index]
