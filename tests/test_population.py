@@ -4,8 +4,6 @@
 # See: https://github.com/willi-kappler/evolusnake
 
 # Python std lib:
-from typing import override
-import random as rnd
 import unittest
 
 # Local imports:
