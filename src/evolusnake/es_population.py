@@ -173,7 +173,10 @@ class ESPopulation:
         best_fitness: float = best_individual.fitness
         worst_individual: ESIndividual = self.population[self.worst_index]
         worst_fitness: float = worst_individual.fitness
+        actual_best: float = best_individual.es_actual_fitness()
+        actual_worst: float = worst_individual.es_actual_fitness()
         logger.debug(f"{best_fitness=}, {worst_fitness=}")
+        logger.debug(f"{actual_best=}, {actual_worst=}")
         logger.debug(f"Best individual mutations: {best_individual.mut_op_counter}")
         logger.debug(f"Worst individual mutations: {worst_individual.mut_op_counter}")
 
