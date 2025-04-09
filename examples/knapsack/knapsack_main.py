@@ -119,6 +119,9 @@ class KnapsackIndividual(ESIndividual):
         self.selection = data["selection"]
         self.reset_penalty()
 
+    @override
+    def es_actual_fitness(self) -> float:
+        return self.penalty - self.fitness
 
 def main():
     config = ESConfiguration.from_json("knapsack_config.json")
