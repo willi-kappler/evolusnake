@@ -98,6 +98,7 @@ class KnapsackIndividual(ESIndividual):
     def es_clone(self) -> Self:
         new = KnapsackIndividual(self.items, self.capacity)
         new.selection = self.selection[:]
+        new.fitness = self.fitness
 
         return new # type: ignore
 
@@ -156,10 +157,16 @@ def main():
         (21.34, 26.59),
         (30.18, 25.71),
         (39.13, 24.73),
+        (20.38, 23.90),
+        (24.44, 21.37),
+        (25.01, 18.32),
+        (10.83, 15.77),
+        (19.99, 13.25),
+        (16.54, 17.90),
         (39.87, 35.21)
     ], 100.0)
 
-    config.target_fitness = 121.0
+    config.target_fitness = 224.0
 
     if server_mode:
         print("Create and start server.")
