@@ -27,15 +27,15 @@ class ESIndividual:
         self.es_mutate(mut_op)
 
     def es_mutate(self, mut_op: int):
-        # Must be implemented by the user
+        # Must be implemented by the user.
         raise NotImplementedError
 
     def es_randomize(self):
-        # Must be implemented by the user
+        # Must be implemented by the user.
         raise NotImplementedError
 
     def es_calculate_fitness(self):
-        # Must be implemented by the user
+        # Must be implemented by the user.
         raise NotImplementedError
 
     def es_clone_internal(self) -> Self:
@@ -44,14 +44,20 @@ class ESIndividual:
         return clone
 
     def es_clone(self) -> Self:
-        # Must be implemented by the user
+        # Must be implemented by the user.
         raise NotImplementedError
 
     def es_to_json(self) -> dict:
-        # Must be implemented by the user
+        # Must be implemented by the user.
         raise NotImplementedError
 
     def es_from_json(self, data: dict):
-        # Must be implemented by the user
+        # Must be implemented by the user.
         raise NotImplementedError
+
+    def es_actual_fitness(self) -> float:
+        # This fitness will be printed.
+        # Change it to the actual fitness if
+        # needed.
+        return self.fitness
 

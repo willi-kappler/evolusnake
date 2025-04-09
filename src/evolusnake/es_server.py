@@ -67,10 +67,12 @@ class ESServer(PSServer):
         job_done: bool = best_fitness <= self.target_fitness
 
         if job_done:
+            actual_fitness: float = self.population[0].es_actual_fitness()
             stop_time = time.time()
             time_taken = stop_time - self.start_time
             logger.info(f"Job is done, time taken: {time_taken} sec.")
             logger.debug(f"{best_fitness=} <= {self.target_fitness=}")
+            logger.debug(f"Actual fitness: {actual_fitness}")
 
         return job_done
 
@@ -103,7 +105,8 @@ class ESServer(PSServer):
             # Overwrite (kill) last (worst) individual:
             self.population[-1] = result
 
-            logger.debug(f"New fitness in population: {new_fitness}")
+            actual_fitness: float = result.es_actual_fitness()
+            logger.debug(f"New fitness in population: {new_fitness}, {actual_fitness=}")
 
             current_best_fitness: float = self.population[0].fitness
 
