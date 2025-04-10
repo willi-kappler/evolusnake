@@ -3,11 +3,11 @@
 test_kind_1() {
     python3 rosenbrock_main.py --population_kind 1 &
     sleep 2
-    python3 rosenbrock_main.py --population_kind 1 --randomize_population --num_of_iterations 30000 &
+    python3 rosenbrock_main.py --population_kind 1 --randomize_population --num_of_iterations 5000 &
     sleep 2
-    python3 rosenbrock_main.py --population_kind 1 --randomize_population --num_of_iterations 40000 &
+    python3 rosenbrock_main.py --population_kind 1 --randomize_population --num_of_iterations 10000 &
     sleep 2
-    python3 rosenbrock_main.py --population_kind 1 --randomize_population --num_of_iterations 50000 &
+    python3 rosenbrock_main.py --population_kind 1 --randomize_population --num_of_iterations 15000 &
     sleep 2
 }
 
