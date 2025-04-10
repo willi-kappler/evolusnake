@@ -86,7 +86,6 @@ class QueensIndividual(ESIndividual):
     def es_clone(self) -> Self:
         new = QueensIndividual(self.num_elems)
         new.positions = self.positions[:]
-        new.fitness = self.fitness
 
         return new # type: ignore
 

@@ -98,7 +98,6 @@ class KnapsackIndividual(ESIndividual):
     def es_clone(self) -> Self:
         new = KnapsackIndividual(self.items, self.capacity)
         new.selection = self.selection[:]
-        new.fitness = self.fitness
 
         return new # type: ignore
 

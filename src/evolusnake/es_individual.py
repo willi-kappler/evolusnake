@@ -39,8 +39,10 @@ class ESIndividual:
         raise NotImplementedError
 
     def es_clone_internal(self) -> Self:
+        # Clone internal structures.
         clone = self.es_clone()
         clone.mut_op_counter = Counter(self.mut_op_counter)
+        clone.fitness = self.fitness
         return clone
 
     def es_clone(self) -> Self:

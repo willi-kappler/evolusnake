@@ -105,7 +105,6 @@ class TSPIndividual(ESIndividual):
         new = TSPIndividual()
         new.positions = self.positions[:]
         new.num_elems = self.num_elems
-        new.fitness = self.fitness
 
         return new # type: ignore
 

@@ -176,7 +176,6 @@ class SudokuIndividual(ESIndividual):
         new = SudokuIndividual()
         new.numbers1 = self.numbers1[:]
         new.numbers2 = self.numbers2[:]
-        new.fitness = self.fitness
 
         return new # type: ignore
 
