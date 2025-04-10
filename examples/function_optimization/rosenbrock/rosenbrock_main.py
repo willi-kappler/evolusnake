@@ -38,28 +38,27 @@ class RosenbrockIndividual(ESIndividual):
 
         self.values[i] += rnd.random()
         if self.values[i] > self.upper_bound:
-            self.values[i] = self.lower_bound
+            self.values[i] = self.upper_bound
 
     def dec_value(self):
         i = rnd.randrange(self.dimensions)
 
         self.values[i] -= rnd.random()
         if self.values[i] < self.lower_bound:
-            self.values[i] = self.upper_bound
+            self.values[i] = self.lower_bound
 
-    def swap_values(self):
-        i = rnd.randrange(self.dimensions)
-        j = rnd.randrange(self.dimensions)
-
-        while i == j:
-            j = rnd.randrange(self.dimensions)
-
-        (self.values[i], self.values[j]) = (self.values[j], self.values[i])
-
-    def random_value(self):
+    def random_value1(self):
         i = rnd.randrange(self.dimensions)
 
         self.values[i] = self.gen_rnd_value()
+
+    def random_value2(self):
+        i = rnd.randrange(self.dimensions)
+
+        lower = int(self.lower_bound)
+        upper = int(self.upper_bound) + 1
+
+        self.values[i] = float(rnd.randrange(lower, upper))
 
     @override
     def es_mutate(self, mut_op: int):
@@ -69,9 +68,9 @@ class RosenbrockIndividual(ESIndividual):
             case 1:
                 self.dec_value()
             case 2:
-                self.swap_values()
+                self.random_value1()
             case 3:
-                self.random_value()
+                self.random_value2()
             case _:
                 raise ValueError(f"Unknown mutation operation: {mut_op}")
 
