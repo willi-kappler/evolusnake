@@ -26,7 +26,7 @@ class ESPopulationNode8(PSNode):
     def __init__(self, config: ESConfiguration, individual: ESIndividual):
         logger.info("Init population node type 8")
         logger.info("Best individual at index 0. Increase factor with index.")
-        logger.info("Set limit bases on factor and best fitness.")
+        logger.info("Set limit based on factor and best fitness.")
 
         super().__init__(config.parasnake_config)
         logger.debug(f"Node ID: {self.node_id}")
@@ -35,6 +35,7 @@ class ESPopulationNode8(PSNode):
         self.population.best_index = 0
         self.population.worst_index = self.population.population_size - 1
         self.limit_factor = 10.0**(1.0 / self.population.population_size)
+        logger.debug(f"{self.limit_factor=}")
 
     @override
     def ps_process_data(self, data: ESIndividual) -> ESIndividual:
@@ -75,6 +76,7 @@ class ESPopulationNode8(PSNode):
             # Change mutation rate:
             self.population.es_set_num_mutations()
 
+        self.population.es_sort_population()
         self.population.es_log_statistics()
         return self.population.es_get_best()
 
