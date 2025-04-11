@@ -55,10 +55,13 @@ class RosenbrockIndividual(ESIndividual):
     def random_value2(self):
         i = rnd.randrange(self.dimensions)
 
-        lower = int(self.lower_bound)
-        upper = int(self.upper_bound) + 1
+        self.values[i] = round(self.gen_rnd_value())
 
-        self.values[i] = float(rnd.randrange(lower, upper))
+    def all_equal(self):
+        value: float = self.gen_rnd_value()
+
+        for i in range(self.dimensions):
+            self.values[i] = value
 
     @override
     def es_mutate(self, mut_op: int):
@@ -71,6 +74,8 @@ class RosenbrockIndividual(ESIndividual):
                 self.random_value1()
             case 3:
                 self.random_value2()
+            case 4:
+                self.all_equal()
             case _:
                 raise ValueError(f"Unknown mutation operation: {mut_op}")
 
@@ -94,7 +99,6 @@ class RosenbrockIndividual(ESIndividual):
     def es_clone(self) -> Self:
         new = RosenbrockIndividual(self.dimensions, self.lower_bound, self.upper_bound)
         new.values = self.values
-        new.fitness = self.fitness
 
         return new # type: ignore
 
@@ -145,7 +149,7 @@ def main():
 
     # The theoretical minimum is 0.0, when all values are
     # exactly 1.0
-    config.target_fitness = 0.0
+    config.target_fitness = 0.0001
 
     if server_mode:
         print("Create and start server.")
