@@ -77,6 +77,17 @@ test_kind_7() {
     sleep 2
 }
 
+test_kind_8() {
+    python3 sudoku_main.py --population_kind 8 &
+    sleep 2
+    python3 sudoku_main.py --population_kind 8 --randomize_population &
+    sleep 2
+    python3 sudoku_main.py --population_kind 8 --randomize_population &
+    sleep 2
+    python3 sudoku_main.py --population_kind 8 --randomize_population &
+    sleep 2
+}
+
 test_all_kinds() {
     python3 sudoku_main.py --population_kind 1 &
     sleep 2
@@ -91,6 +102,8 @@ test_all_kinds() {
     python3 sudoku_main.py --population_kind 6 &
     sleep 2
     python3 sudoku_main.py --population_kind 7 &
+    sleep 2
+    python3 sudoku_main.py --population_kind 8 &
     sleep 2
 }
 

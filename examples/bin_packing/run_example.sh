@@ -77,6 +77,17 @@ test_kind_7() {
     sleep 2
 }
 
+test_kind_8() {
+    python3 bin_packing_main.py --population_kind 8 &
+    sleep 2
+    python3 bin_packing_main.py --population_kind 8 --randomize_population --num_of_iterations 30000 &
+    sleep 2
+    python3 bin_packing_main.py --population_kind 8 --randomize_population --num_of_iterations 40000 &
+    sleep 2
+    python3 bin_packing_main.py --population_kind 8 --randomize_population --num_of_iterations 50000 &
+    sleep 2
+}
+
 test_all_kinds() {
     python3 bin_packing_main.py --population_kind 1 &
     sleep 2
@@ -91,6 +102,8 @@ test_all_kinds() {
     python3 bin_packing_main.py --population_kind 6 --num_of_iterations 1000 &
     sleep 2
     python3 bin_packing_main.py --population_kind 7 --num_of_iterations 1000 &
+    sleep 2
+    python3 bin_packing_main.py --population_kind 8 &
     sleep 2
 }
 
