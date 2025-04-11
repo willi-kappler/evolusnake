@@ -15,6 +15,7 @@ from evolusnake.es_population_node4 import ESPopulationNode4
 from evolusnake.es_population_node5 import ESPopulationNode5
 from evolusnake.es_population_node6 import ESPopulationNode6
 from evolusnake.es_population_node7 import ESPopulationNode7
+from evolusnake.es_population_node8 import ESPopulationNode8
 
 # External imports:
 from parasnake.ps_node import PSNode
@@ -41,6 +42,8 @@ def es_select_population(configuration: ESConfiguration, individual: ESIndividua
             return ESPopulationNode6(configuration, individual)
         case 7:
             return ESPopulationNode7(configuration, individual)
+        case 8:
+            return ESPopulationNode8(configuration, individual)
         case _:
             raise ValueError(f"Unknown population kind: {pop_kind}")
 
