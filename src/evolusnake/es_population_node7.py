@@ -4,7 +4,7 @@
 # See: https://github.com/willi-kappler/evolusnake
 
 """
-This module defines the class for population type 1.
+This module defines the class for population type 7.
 """
 
 # Python std lib:
