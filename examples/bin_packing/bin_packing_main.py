@@ -158,7 +158,7 @@ def main():
         16.54, 17.90, 39.87, 35.21
     ], 100.0)
 
-    config.target_fitness = 224.0
+    config.target_fitness = 8.0
 
     if server_mode:
         print("Create and start server.")
