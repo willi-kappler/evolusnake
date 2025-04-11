@@ -10,7 +10,7 @@ import os
 
 # Local imports:
 from evolusnake.es_config import ESConfiguration
-#from evolusnake.es_population import ESPopulation
+# from evolusnake.es_population import ESPopulation
 
 from evolusnake.es_server import ESServer
 from tests.common import TestIndividual
@@ -95,7 +95,7 @@ class TestServer(unittest.TestCase):
         server1.population[0].fitness = 0.0
 
         self.assertEqual(server1.ps_is_job_done(), True)
- 
+
     def test_server_is_job_done2(self):
         """
         Test if job is done.
@@ -130,7 +130,7 @@ class TestServer(unittest.TestCase):
 
         for _ in range(10):
             ind2 = server1.ps_get_new_data(node_id1)
-            if ind1.data == ind2.data: # type: ignore
+            if ind1.data == ind2.data:  # type: ignore
                 best_counter += 1
 
         self.assertEqual(best_counter, 10)
@@ -154,7 +154,7 @@ class TestServer(unittest.TestCase):
 
         for _ in range(10):
             ind2 = server1.ps_get_new_data(node_id1)
-            if ind1.data == ind2.data: # type: ignore
+            if ind1.data == ind2.data:  # type: ignore
                 best_counter += 1
 
         self.assertLess(best_counter, 9)

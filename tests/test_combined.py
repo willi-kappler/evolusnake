@@ -10,7 +10,7 @@ import unittest
 from evolusnake.es_config import ESConfiguration
 from evolusnake.es_individual import ESIndividual
 from evolusnake.es_population_node1 import ESPopulationNode1
-#from evolusnake.es_population import ESPopulation
+# from evolusnake.es_population import ESPopulation
 
 from evolusnake.es_server import ESServer
 from tests.common import TestIndividual
@@ -40,14 +40,14 @@ class TestServer(unittest.TestCase):
         population1: ESPopulationNode1 = ESPopulationNode1(config1, ind1)
         population2: ESPopulationNode1 = ESPopulationNode1(config1, ind1)
 
-        ind_from_server: ESIndividual = server1.ps_get_new_data(node_id1) # type: ignore
+        ind_from_server: ESIndividual = server1.ps_get_new_data(node_id1)  # type: ignore
         print(f"fitness from server: {ind_from_server.fitness}")
         result1 = population1.ps_process_data(ind_from_server)
         server1.ps_process_result(node_id1, result1)
         job_done = server1.ps_is_job_done()
         print(f"Population1, best: {result1.fitness}, {job_done=}")
 
-        ind_from_server: ESIndividual = server1.ps_get_new_data(node_id1) # type: ignore
+        ind_from_server: ESIndividual = server1.ps_get_new_data(node_id1)  # type: ignore
         print(f"fitness from server: {ind_from_server.fitness}")
         result2 = population2.ps_process_data(ind_from_server)
         server1.ps_process_result(node_id1, result2)
@@ -55,6 +55,7 @@ class TestServer(unittest.TestCase):
         print(f"Population2, best: {result2.fitness}, {job_done=}")
 
         self.assertTrue(job_done)
+
 
 if __name__ == "__main__":
     unittest.main()

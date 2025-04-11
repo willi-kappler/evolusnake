@@ -87,7 +87,7 @@ class QueensIndividual(ESIndividual):
         new = QueensIndividual(self.num_elems)
         new.positions = self.positions[:]
 
-        return new # type: ignore
+        return new  # type: ignore
 
     @override
     def es_to_json(self) -> dict:
@@ -142,6 +142,7 @@ def main():
         print("Create and start node.")
         population = es_select_population(config, ind)
         population.ps_run()
+
 
 if __name__ == "__main__":
     main()

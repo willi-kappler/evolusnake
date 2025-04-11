@@ -38,7 +38,7 @@ class TestPopulation(unittest.TestCase):
                 break
 
         self.assertAlmostEqual(ind2.fitness, 0.0)
-        self.assertEqual(ind2.data, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) # type: ignore
+        self.assertEqual(ind2.data, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0])  # type: ignore
 
         self.assertEqual(population1.population.best_index, 0)
         self.assertAlmostEqual(population1.population.best_fitness, 0.0)
@@ -64,7 +64,7 @@ class TestPopulation(unittest.TestCase):
                 break
 
         self.assertAlmostEqual(ind2.fitness, 0.0)
-        self.assertEqual(ind2.data, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) # type: ignore
+        self.assertEqual(ind2.data, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0])  # type: ignore
 
         self.assertEqual(population1.population.best_index, 0)
         self.assertAlmostEqual(population1.population.best_fitness, 0.0)
@@ -76,6 +76,7 @@ class TestPopulation(unittest.TestCase):
                 mut_counter += 1
 
         self.assertGreater(mut_counter, 0)
+
 
 if __name__ == "__main__":
     unittest.main()

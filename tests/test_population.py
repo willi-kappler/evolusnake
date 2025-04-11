@@ -30,7 +30,7 @@ class TestPopulation(unittest.TestCase):
         self.assertEqual(population1.num_of_iterations, config1.num_of_iterations)
         self.assertEqual(population1.num_of_mutations, config1.num_of_mutations)
         self.assertEqual(population1.accept_new_best, config1.accept_new_best)
-        self.assertEqual(population1.randomize_population , config1.randomize_population)
+        self.assertEqual(population1.randomize_population, config1.randomize_population)
         self.assertAlmostEqual(population1.target_fitness, config1.target_fitness)
         self.assertEqual(population1.best_index, 0)
         self.assertAlmostEqual(population1.best_fitness, 0.0)
@@ -59,10 +59,10 @@ class TestPopulation(unittest.TestCase):
         self.assertEqual(len(ind1.mut_op_counter), 0)
 
         for ind in population1.population:
-            self.assertEqual(ind.mutate_called, 0) # type: ignore
-            self.assertEqual(ind.calc_fitness_called, 1) # type: ignore
-            self.assertEqual(ind.clone_called, 0) # type: ignore
-            self.assertEqual(ind.randomize_called, 1) # type: ignore
+            self.assertEqual(ind.mutate_called, 0)  # type: ignore
+            self.assertEqual(ind.calc_fitness_called, 1)  # type: ignore
+            self.assertEqual(ind.clone_called, 0)  # type: ignore
+            self.assertEqual(ind.randomize_called, 1)  # type: ignore
             self.assertEqual(len(ind.mut_op_counter), 0)
 
     def test_population_invalid_config1(self):
@@ -479,6 +479,7 @@ class TestPopulation(unittest.TestCase):
         population1.es_log_statistics()
 
         # TODO: Find a way to check logs via assert.
+
 
 if __name__ == "__main__":
     unittest.main()

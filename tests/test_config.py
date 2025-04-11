@@ -105,6 +105,7 @@ class TestConfiguration(unittest.TestCase):
         self.assertEqual(config1.increase_mutation, 19)
         self.assertEqual(config1.mutation_operations, [3, 4, 10, 13])
 
+
 if __name__ == "__main__":
     unittest.main()
 

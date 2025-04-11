@@ -100,7 +100,7 @@ class RosenbrockIndividual(ESIndividual):
         new = RosenbrockIndividual(self.dimensions, self.lower_bound, self.upper_bound)
         new.values = self.values
 
-        return new # type: ignore
+        return new  # type: ignore
 
     @override
     def es_to_json(self) -> dict:
@@ -119,6 +119,7 @@ class RosenbrockIndividual(ESIndividual):
         self.lower_bound = data["lower_bound"]
         self.upper_bound = data["upper_bound"]
         self.values = data["values"]
+
 
 def main():
     config = ESConfiguration.from_json("rosenbrock_config.json")
@@ -159,6 +160,7 @@ def main():
         print("Create and start node.")
         population = es_select_population(config, ind)
         population.ps_run()
+
 
 if __name__ == "__main__":
     main()

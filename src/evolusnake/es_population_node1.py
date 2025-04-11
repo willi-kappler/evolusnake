@@ -21,6 +21,7 @@ from evolusnake.es_population import ESPopulation
 
 logger = logging.getLogger(__name__)
 
+
 class ESPopulationNode1(PSNode):
     def __init__(self, config: ESConfiguration, individual: ESIndividual):
         logger.info("Init population node type 1")

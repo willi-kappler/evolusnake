@@ -99,7 +99,7 @@ class KnapsackIndividual(ESIndividual):
         new = KnapsackIndividual(self.items, self.capacity)
         new.selection = self.selection[:]
 
-        return new # type: ignore
+        return new  # type: ignore
 
     @override
     def es_to_json(self) -> dict:
@@ -122,6 +122,7 @@ class KnapsackIndividual(ESIndividual):
     @override
     def es_actual_fitness(self) -> float:
         return self.penalty - self.fitness
+
 
 def main():
     config = ESConfiguration.from_json("knapsack_config.json")
@@ -175,6 +176,7 @@ def main():
         print("Create and start node.")
         population = es_select_population(config, ind)
         population.ps_run()
+
 
 if __name__ == "__main__":
     main()

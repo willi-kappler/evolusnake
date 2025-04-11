@@ -10,6 +10,7 @@ import random as rnd
 # Local imports:
 from evolusnake.es_individual import ESIndividual
 
+
 class TestIndividual(ESIndividual):
     def __init__(self):
         super().__init__()
@@ -69,7 +70,7 @@ class TestIndividual(ESIndividual):
 
         self.clone_called += 1
 
-        return new # type: ignore
+        return new  # type: ignore
 
     @override
     def es_to_json(self) -> dict:

@@ -120,30 +120,30 @@ class ESConfiguration:
 
         self.server_mode = args.server
 
-        if args.target_fitness != None:
+        if args.target_fitness is not None:
             self.target_fitness = args.target_fitness
 
-        if args.population_size != None:
+        if args.population_size is not None:
             self.node_population_size = args.population_size
 
-        if args.num_of_mutations != None:
+        if args.num_of_mutations is not None:
             self.num_of_mutations = args.num_of_mutations
 
-        if args.num_of_iterations != None:
+        if args.num_of_iterations is not None:
             self.num_of_iterations = args.num_of_iterations
 
-        if args.population_kind != None:
+        if args.population_kind is not None:
             self.population_kind = args.population_kind
 
         self.randomize_population = args.randomize_population
 
-        if args.increase_iteration != None:
+        if args.increase_iteration is not None:
             self.increase_iteration = args.increase_iteration
 
-        if args.increase_mutation != None:
+        if args.increase_mutation is not None:
             self.increase_mutation = args.increase_mutation
 
-        if args.mutation_operations != None:
+        if args.mutation_operations is not None:
             self.mutation_operations = [int(n) for n in args.mutation_operations.split(",")]
 
         # print(f"{self.server_mode}")

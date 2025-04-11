@@ -15,10 +15,11 @@ from collections import Counter
 
 logger = logging.getLogger(__name__)
 
+
 class ESIndividual:
     def __init__(self):
         self.fitness: float = float_info.max
-        self.mut_op_counter = Counter()
+        self.mut_op_counter: Counter = Counter()
 
     def es_mutate_internal(self, mut_op: int):
         # Statistics: keep track of how many times

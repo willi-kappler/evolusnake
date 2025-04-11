@@ -18,6 +18,7 @@ from evolusnake.es_config import ESConfiguration
 
 logger = logging.getLogger(__name__)
 
+
 class ESPopulation:
     def __init__(self, config: ESConfiguration, individual: ESIndividual):
         if config.node_population_size < 2:

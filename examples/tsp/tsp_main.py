@@ -106,7 +106,7 @@ class TSPIndividual(ESIndividual):
         new.positions = self.positions[:]
         new.num_elems = self.num_elems
 
-        return new # type: ignore
+        return new  # type: ignore
 
     @override
     def es_to_json(self) -> dict:
@@ -160,7 +160,7 @@ def main():
     # Possible good limit: 8230.0
     ind.load_data("city_positions2.txt")
     config.target_fitness = 8230.0
-    #config.target_fitness = 9000.0
+    # config.target_fitness = 9000.0
 
     if server_mode:
         print("Create and start server.")
@@ -170,6 +170,7 @@ def main():
         print("Create and start node.")
         population = es_select_population(config, ind)
         population.ps_run()
+
 
 if __name__ == "__main__":
     main()

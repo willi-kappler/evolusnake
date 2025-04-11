@@ -36,17 +36,17 @@ class SudokuIndividual(ESIndividual):
         # 8, 1, 9,   2, 6, 5,   4, 3, 7
 
         self.numbers1: list = [
-        0, 8, 0,   0, 9, 4,   0, 0, 0,
-        2, 0, 3,   0, 0, 0,   9, 4, 0,
-        0, 0, 0,   0, 0, 2,   1, 0, 3,
+            0, 8, 0,   0, 9, 4,   0, 0, 0,
+            2, 0, 3,   0, 0, 0,   9, 4, 0,
+            0, 0, 0,   0, 0, 2,   1, 0, 3,
 
-        0, 0, 8,   0, 0, 0,   7, 9, 0,
-        9, 2, 0,   0, 0, 0,   0, 5, 6,
-        0, 7, 6,   0, 0, 0,   3, 0, 0,
+            0, 0, 8,   0, 0, 0,   7, 9, 0,
+            9, 2, 0,   0, 0, 0,   0, 5, 6,
+            0, 7, 6,   0, 0, 0,   3, 0, 0,
 
-        0, 5, 7,   0, 0, 0,   2, 0, 1,
-        3, 0, 2,   1, 0, 0,   0, 0, 0,
-        0, 0, 0,   2, 6, 0,   0, 3, 0
+            0, 5, 7,   0, 0, 0,   2, 0, 1,
+            3, 0, 2,   1, 0, 0,   0, 0, 0,
+            0, 0, 0,   2, 6, 0,   0, 3, 0
         ]
 
         self.numbers2: list = self.numbers1[:]
@@ -136,12 +136,12 @@ class SudokuIndividual(ESIndividual):
 
         for (c, r) in self.empty_positions:
             numbers: list = self.get_possible_numbers(c, r)
-            l: int = len(numbers)
+            len_num: int = len(numbers)
 
-            if l == 1:
+            if len_num == 1:
                 self.set_value2(c, r, numbers[0])
-            elif l > 1:
-                i = rnd.randrange(l)
+            elif len_num > 1:
+                i = rnd.randrange(len_num)
                 self.set_value2(c, r, numbers[i])
 
     @override
@@ -177,7 +177,7 @@ class SudokuIndividual(ESIndividual):
         new.numbers1 = self.numbers1[:]
         new.numbers2 = self.numbers2[:]
 
-        return new # type: ignore
+        return new  # type: ignore
 
     @override
     def es_to_json(self) -> dict:
@@ -233,6 +233,7 @@ def main():
         print("Create and start node.")
         population = es_select_population(config, ind)
         population.ps_run()
+
 
 if __name__ == "__main__":
     main()
