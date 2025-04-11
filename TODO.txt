@@ -2,12 +2,6 @@
 TODO:
 
 - add quit notification to parasnake.
-- test cases for population kind 4.
-- test cases for population kind 5.
-- test cases for population kind 6.
-- test cases for population kind 7.
-- test cases for new methods in population.
-
 
 DONE:
 
@@ -16,4 +10,10 @@ DONE:
 # early exit at iteration 0: use sleep() for one second to avoid spamming the server.
 # keep track of mutation operation: statistics on the most used operation for the best individual.
 # use mutation_opertation_max and set the mutation operation when the population calls the individual es_mutate() method.
+# test cases for population kind 4.
+# test cases for population kind 5.
+# test cases for population kind 6.
+# test cases for population kind 7.
+# test cases for new methods in population.
+# add population 8: limit depends on best individual fitness * factor
 
