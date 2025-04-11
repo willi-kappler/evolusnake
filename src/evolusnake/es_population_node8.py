@@ -10,6 +10,7 @@ This module defines the class for population type 8.
 # Python std lib:
 import logging
 from typing import override
+import random as rnd
 
 # External imports:
 from parasnake.ps_node import PSNode
@@ -34,8 +35,6 @@ class ESPopulationNode8(PSNode):
         self.population = ESPopulation(config, individual)
         self.population.best_index = 0
         self.population.worst_index = self.population.population_size - 1
-        self.limit_factor = 10.0**(1.0 / self.population.population_size)
-        logger.debug(f"{self.limit_factor=}")
 
     @override
     def ps_process_data(self, data: ESIndividual) -> ESIndividual:
@@ -46,6 +45,10 @@ class ESPopulationNode8(PSNode):
         self.population.es_increase_iteration_mutation()
         self.population.es_set_num_iterations()
         self.population.minimum_found = False
+
+        limit_range: float = rnd.uniform(2.0, 10.0)
+        limit_factor = limit_range**(1.0 / self.population.population_size)
+        logger.debug(f"{limit_range=}, {limit_factor=}")
 
         for i in range(self.population.num_of_iterations):
             for j in range(self.population.population_size):
@@ -64,7 +67,7 @@ class ESPopulationNode8(PSNode):
                         break
                 else:
                     if j > 0:
-                        fitness_limit: float = current_best_fitness * (self.limit_factor**j)
+                        fitness_limit: float = current_best_fitness * (limit_factor**j)
                         if ind.fitness < fitness_limit:
                             self.population.population[j] = ind
                         elif ind.fitness < self.population.population[j].fitness:
