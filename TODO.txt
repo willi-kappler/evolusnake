@@ -2,6 +2,9 @@
 TODO:
 
 - add quit notification to parasnake.
+- population 10: clone from best, fitness can exist multiple times.
+- population 11: use sine wave for fitness limit.
+
 
 DONE:
 
@@ -16,4 +19,5 @@ DONE:
 # test cases for population kind 7.
 # test cases for new methods in population.
 # add population 8: limit depends on best individual fitness * factor
+# add population 9: clone from best and mutate, fitness must be unique
 
