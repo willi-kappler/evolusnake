@@ -34,7 +34,6 @@ class ESPopulationNode9(PSNode):
         self.population = ESPopulation(config, individual)
         self.population.best_index = 0
         self.population.worst_index = self.population.population_size - 1
-        self.population.es_sort_population()
 
     @override
     def ps_process_data(self, data: ESIndividual) -> ESIndividual:
@@ -48,11 +47,17 @@ class ESPopulationNode9(PSNode):
         for i in range(self.population.num_of_iterations):
             self.population.es_sort_population()
             single_ind: ESIndividual = self.population.population[0]
+
+            if single_ind.fitness <= self.population.target_fitness:
+                self.population.es_early_exit(i)
+                break
+
             self.population.population = [single_ind]
             current_size: int = 1
 
+            new_ind: ESIndividual = single_ind.es_clone_internal()
+
             while current_size < self.population.population_size:
-                new_ind: ESIndividual = single_ind.es_clone_internal()
                 new_ind.es_mutate_internal(self.population.es_get_mut_op())
                 new_ind.es_calculate_fitness()
 
@@ -64,7 +69,7 @@ class ESPopulationNode9(PSNode):
                         break
 
                 if not already_in_population:
-                    self.population.population.append(new_ind)
+                    self.population.population.append(new_ind.es_clone_internal())
                     current_size += 1
 
         self.population.es_sort_population()
