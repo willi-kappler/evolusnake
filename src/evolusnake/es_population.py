@@ -98,6 +98,7 @@ class ESPopulation:
 
     def es_random_population(self):
         for ind in self.population:
+            ind.es_reset_counter()
             ind.es_randomize()
             ind.es_calculate_fitness()
 
