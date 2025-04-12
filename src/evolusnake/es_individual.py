@@ -21,6 +21,9 @@ class ESIndividual:
         self.fitness: float = float_info.max
         self.mut_op_counter: Counter = Counter()
 
+    def es_reset_counter(self):
+        self.mut_op_counter = Counter()
+
     def es_mutate_internal(self, mut_op: int):
         # Statistics: keep track of how many times
         # each mutation operation has been used.
