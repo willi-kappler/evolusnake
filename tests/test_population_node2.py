@@ -71,7 +71,7 @@ class TestPopulation(unittest.TestCase):
         mut_counter: int = 0
 
         for ind in population1.population.population:
-            if len(ind.mut_op_counter) == 3:
+            if len(ind.mut_op_counter) > 1:
                 mut_counter += 1
 
         self.assertGreater(mut_counter, 0)

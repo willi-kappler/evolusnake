@@ -8,7 +8,7 @@ import unittest
 
 # Local imports:
 from evolusnake.es_config import ESConfiguration
-from evolusnake.es_population_node3 import ESPopulationNode3
+from evolusnake.es_population_node11 import ESPopulationNode11
 from evolusnake.es_individual import ESIndividual
 
 from tests.common import TestIndividual
@@ -27,9 +27,10 @@ class TestPopulation(unittest.TestCase):
         config1.randomize_population = False
         config1.accept_new_best = True
         config1.parasnake_config = PSConfiguration("12345678901234567890123456789012")
+        config1.num_of_mutations = 1
         ind1: TestIndividual = TestIndividual()
 
-        population1: ESPopulationNode3 = ESPopulationNode3(config1, ind1)
+        population1: ESPopulationNode11 = ESPopulationNode11(config1, ind1)
 
         self.assertEqual(population1.population.mutation_operations, [])
 
@@ -52,10 +53,11 @@ class TestPopulation(unittest.TestCase):
         config1.randomize_population = False
         config1.accept_new_best = True
         config1.parasnake_config = PSConfiguration("12345678901234567890123456789012")
+        config1.num_of_mutations = 1
         config1.mutation_operations = [0, 1, 2]
         ind1: TestIndividual = TestIndividual()
 
-        population1: ESPopulationNode3 = ESPopulationNode3(config1, ind1)
+        population1: ESPopulationNode11 = ESPopulationNode11(config1, ind1)
         self.assertEqual(population1.population.mutation_operations, [0, 1, 2])
 
         while True:

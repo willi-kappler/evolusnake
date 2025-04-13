@@ -41,18 +41,14 @@ class TestServer(unittest.TestCase):
         population2: ESPopulationNode1 = ESPopulationNode1(config1, ind1)
 
         ind_from_server: ESIndividual = server1.ps_get_new_data(node_id1)  # type: ignore
-        print(f"fitness from server: {ind_from_server.fitness}")
         result1 = population1.ps_process_data(ind_from_server)
         server1.ps_process_result(node_id1, result1)
         job_done = server1.ps_is_job_done()
-        print(f"Population1, best: {result1.fitness}, {job_done=}")
 
         ind_from_server: ESIndividual = server1.ps_get_new_data(node_id1)  # type: ignore
-        print(f"fitness from server: {ind_from_server.fitness}")
         result2 = population2.ps_process_data(ind_from_server)
         server1.ps_process_result(node_id1, result2)
         job_done = server1.ps_is_job_done()
-        print(f"Population2, best: {result2.fitness}, {job_done=}")
 
         self.assertTrue(job_done)
 

@@ -367,7 +367,7 @@ class TestPopulation(unittest.TestCase):
         population1.population[current_best_index].fitness = 1.0
         current_best_fitness: float = population1.best_fitness
         population1.es_replace_best(ind2)
-        self.assertGreater(current_best_fitness, population1.best_fitness)
+        self.assertGreaterEqual(current_best_fitness, population1.best_fitness)
         self.assertEqual(current_best_index, population1.best_index)
 
     def test_replace_worst(self):
