@@ -10,7 +10,6 @@ This module defines the class for population type 9.
 # Python std lib:
 import logging
 from typing import override
-import random as rnd
 
 # External imports:
 from parasnake.ps_node import PSNode
@@ -26,7 +25,9 @@ logger = logging.getLogger(__name__)
 class ESPopulationNode9(PSNode):
     def __init__(self, config: ESConfiguration, individual: ESIndividual):
         logger.info("Init population node type 9")
-        logger.info("")
+        logger.info("Sort population and take the best individual.")
+        logger.info("Repopulate the whole population from this individual.")
+        logger.info("No duplicates are allowed.")
 
         super().__init__(config.parasnake_config)
         logger.debug(f"Node ID: {self.node_id}")
@@ -58,7 +59,8 @@ class ESPopulationNode9(PSNode):
             new_ind: ESIndividual = single_ind.es_clone_internal()
 
             while current_size < self.population.population_size:
-                new_ind.es_mutate_internal(self.population.es_get_mut_op())
+                for _ in range(self.population.num_of_mutations):
+                    new_ind.es_mutate_internal(self.population.es_get_mut_op())
                 new_ind.es_calculate_fitness()
 
                 already_in_population: bool = False
@@ -71,6 +73,9 @@ class ESPopulationNode9(PSNode):
                 if not already_in_population:
                     self.population.population.append(new_ind.es_clone_internal())
                     current_size += 1
+
+            # Change mutation rate:
+            self.population.es_set_num_mutations()
 
         self.population.es_sort_population()
         self.population.es_log_statistics()
