@@ -88,6 +88,39 @@ test_kind_8() {
     sleep 2
 }
 
+test_kind_9() {
+    python3 tsp_main.py --population_kind 9 &
+    sleep 2
+    python3 tsp_main.py --population_kind 9 --randomize_population --num_of_iterations 30000 &
+    sleep 2
+    python3 tsp_main.py --population_kind 9 --randomize_population --num_of_iterations 40000 &
+    sleep 2
+    python3 tsp_main.py --population_kind 9 --randomize_population --num_of_iterations 50000 &
+    sleep 2
+}
+
+test_kind_10() {
+    python3 tsp_main.py --population_kind 10 &
+    sleep 2
+    python3 tsp_main.py --population_kind 10 --randomize_population --num_of_iterations 30000 &
+    sleep 2
+    python3 tsp_main.py --population_kind 10 --randomize_population --num_of_iterations 40000 &
+    sleep 2
+    python3 tsp_main.py --population_kind 10 --randomize_population --num_of_iterations 50000 &
+    sleep 2
+}
+
+test_kind_11() {
+    python3 tsp_main.py --population_kind 11 --sine_base 10000.0 --sine_amplitude 2000.0 --sine_freq 0.0001 &
+    sleep 2
+    python3 tsp_main.py --population_kind 11 --sine_base 10000.0 --sine_amplitude 2000.0 --sine_freq 0.0001 --randomize_population --num_of_iterations 30000 &
+    sleep 2
+    python3 tsp_main.py --population_kind 11 --sine_base 10000.0 --sine_amplitude 2000.0 --sine_freq 0.0001 --randomize_population --num_of_iterations 40000 &
+    sleep 2
+    python3 tsp_main.py --population_kind 11 --sine_base 10000.0 --sine_amplitude 2000.0 --sine_freq 0.0001 --randomize_population --num_of_iterations 50000 &
+    sleep 2
+}
+
 test_all_kinds() {
     python3 tsp_main.py --population_kind 1 &
     sleep 2
@@ -105,6 +138,12 @@ test_all_kinds() {
     sleep 2
     python3 tsp_main.py --population_kind 8 &
     sleep 2
+    python3 tsp_main.py --population_kind 9 &
+    sleep 2
+    python3 tsp_main.py --population_kind 10 &
+    sleep 2
+    python3 tsp_main.py --population_kind 11 --sine_base 10000.0 --sine_amplitude 2000.0 --sine_freq 0.0001 &
+    sleep 2
 }
 
 reset
@@ -113,5 +152,5 @@ export PYTHONPATH=$PYTHONPATH:"../../src/"
 
 python3 tsp_main.py --server &
 sleep 2
-test_kind_1
+test_kind_11
 echo "All nodes running"

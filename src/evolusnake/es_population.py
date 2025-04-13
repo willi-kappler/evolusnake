@@ -59,6 +59,10 @@ class ESPopulation:
         self.mutation_operations_len: int = len(config.mutation_operations)
         self.minimum_found: bool = False
 
+        self.sine_base: float = config.sine_base
+        self.sine_amplitude: float = config.sine_amplitude
+        self.sine_freq: float = config.sine_freq
+
         # Init random number generator:
         rnd.seed()
 

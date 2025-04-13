@@ -46,6 +46,9 @@ class ESConfiguration:
         self.increase_iteration: int = 0
         self.increase_mutation: int = 0
         self.mutation_operations: list = []
+        self.sine_base: float = 0.0
+        self.sine_amplitude: float = 0.0
+        self.sine_freq: float = 0.0
 
     @staticmethod
     def from_json(file_name) -> Any:
@@ -98,6 +101,12 @@ class ESConfiguration:
                     config.increase_mutation = value
                 case "mutation_operations":
                     config.mutation_operations = value
+                case "sine_base":
+                    config.sine_base = value
+                case "sine_amplitude":
+                    config.sine_amplitude = value
+                case "sine_freq":
+                    config.sine_freq = value
                 case _:
                     logger.debug(f"Unknown evolusnake configuration option: {key=}, {value=}")
 
@@ -115,6 +124,9 @@ class ESConfiguration:
         parser.add_argument("--increase_iteration", type=int)
         parser.add_argument("--increase_mutation", type=int)
         parser.add_argument("--mutation_operations")
+        parser.add_argument("--sine_base", type=float)
+        parser.add_argument("--sine_amplitude", type=float)
+        parser.add_argument("--sine_freq", type=float)
 
         args = parser.parse_args()
 
@@ -145,6 +157,15 @@ class ESConfiguration:
 
         if args.mutation_operations is not None:
             self.mutation_operations = [int(n) for n in args.mutation_operations.split(",")]
+
+        if args.sine_base is not None:
+            self.sine_base = args.sine_base
+
+        if args.sine_amplitude is not None:
+            self.sine_amplitude = args.sine_amplitude
+
+        if args.sine_freq is not None:
+            self.sine_freq = args.sine_freq
 
         # print(f"{self.server_mode}")
         # print(f"{self.target_fitness}")
