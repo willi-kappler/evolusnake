@@ -60,10 +60,12 @@ class ESPopulationNode4(PSNode):
 
                 if tmp_ind.fitness < self.global_fitness:
                     self.population.population[j] = tmp_ind
+                elif tmp_ind.fitness < self.population.population[j].fitness:
+                    self.population.population[j] = tmp_ind
 
-                    if tmp_ind.fitness <= self.population.target_fitness:
-                        self.population.es_early_exit(i)
-                        break
+                if tmp_ind.fitness <= self.population.target_fitness:
+                    self.population.es_early_exit(i)
+                    break
 
             if self.population.minimum_found:
                 break
