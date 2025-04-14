@@ -3,55 +3,55 @@
 test_kind_1() {
     python3 tsp_main.py --population_kind 1 &
     sleep 2
-    python3 tsp_main.py --population_kind 1 --randomize_population --num_of_iterations 30000 &
-    sleep 2
-    python3 tsp_main.py --population_kind 1 --randomize_population --num_of_iterations 40000 &
+    python3 tsp_main.py --population_kind 1 --num_of_mutations 1 &
     sleep 2
     python3 tsp_main.py --population_kind 1 --randomize_population --num_of_iterations 50000 &
+    sleep 2
+    python3 tsp_main.py --population_kind 1 --randomize_population --num_of_iterations 50000 --num_of_mutations 1 &
     sleep 2
 }
 
 test_kind_2() {
     python3 tsp_main.py --population_kind 2 &
     sleep 2
-    python3 tsp_main.py --population_kind 2 --randomize_population --num_of_iterations 30000 &
-    sleep 2
-    python3 tsp_main.py --population_kind 2 --randomize_population --num_of_iterations 40000 &
+    python3 tsp_main.py --population_kind 2 --num_of_mutations 1 &
     sleep 2
     python3 tsp_main.py --population_kind 2 --randomize_population --num_of_iterations 50000 &
+    sleep 2
+    python3 tsp_main.py --population_kind 2 --randomize_population --num_of_iterations 50000 --num_of_mutations 1 &
     sleep 2
 }
 
 test_kind_3() {
     python3 tsp_main.py --population_kind 3 &
     sleep 2
-    python3 tsp_main.py --population_kind 3 --randomize_population --num_of_iterations 30000 &
-    sleep 2
-    python3 tsp_main.py --population_kind 3 --randomize_population --num_of_iterations 40000 &
+    python3 tsp_main.py --population_kind 3 --num_of_mutations 1 &
     sleep 2
     python3 tsp_main.py --population_kind 3 --randomize_population --num_of_iterations 50000 &
+    sleep 2
+    python3 tsp_main.py --population_kind 3 --randomize_population --num_of_iterations 50000 --num_of_mutations 1 &
     sleep 2
 }
 
 test_kind_4() {
     python3 tsp_main.py --population_kind 4 &
     sleep 2
-    python3 tsp_main.py --population_kind 4 --num_of_iterations 30000 &
+    python3 tsp_main.py --population_kind 4 --num_of_mutations 1 &
     sleep 2
-    python3 tsp_main.py --population_kind 4 --num_of_iterations 40000 &
+    python3 tsp_main.py --population_kind 4 --randomize_population --num_of_iterations 50000 &
     sleep 2
-    python3 tsp_main.py --population_kind 4 --num_of_iterations 50000 &
+    python3 tsp_main.py --population_kind 4 --randomize_population --num_of_iterations 50000 --num_of_mutations 1 &
     sleep 2
 }
 
 test_kind_5() {
     python3 tsp_main.py --population_kind 5 &
     sleep 2
-    python3 tsp_main.py --population_kind 5 --num_of_iterations 30000 &
+    python3 tsp_main.py --population_kind 5 --num_of_mutations 1 &
     sleep 2
-    python3 tsp_main.py --population_kind 5 --num_of_iterations 40000 &
+    python3 tsp_main.py --population_kind 5 --randomize_population --num_of_iterations 50000 &
     sleep 2
-    python3 tsp_main.py --population_kind 5 --num_of_iterations 50000 &
+    python3 tsp_main.py --population_kind 5 --randomize_population --num_of_iterations 50000 --num_of_mutations 1 &
     sleep 2
 }
 
@@ -80,33 +80,33 @@ test_kind_7() {
 test_kind_8() {
     python3 tsp_main.py --population_kind 8 &
     sleep 2
-    python3 tsp_main.py --population_kind 8 --randomize_population --num_of_iterations 30000 &
-    sleep 2
-    python3 tsp_main.py --population_kind 8 --randomize_population --num_of_iterations 40000 &
+    python3 tsp_main.py --population_kind 8 --num_of_mutations 1 &
     sleep 2
     python3 tsp_main.py --population_kind 8 --randomize_population --num_of_iterations 50000 &
+    sleep 2
+    python3 tsp_main.py --population_kind 8 --randomize_population --num_of_iterations 50000 --num_of_mutations 1 &
     sleep 2
 }
 
 test_kind_9() {
     python3 tsp_main.py --population_kind 9 &
     sleep 2
-    python3 tsp_main.py --population_kind 9 --randomize_population --num_of_iterations 30000 &
-    sleep 2
-    python3 tsp_main.py --population_kind 9 --randomize_population --num_of_iterations 40000 &
+    python3 tsp_main.py --population_kind 9 --num_of_mutations 1 &
     sleep 2
     python3 tsp_main.py --population_kind 9 --randomize_population --num_of_iterations 50000 &
+    sleep 2
+    python3 tsp_main.py --population_kind 9 --randomize_population --num_of_iterations 50000 --num_of_mutations 1 &
     sleep 2
 }
 
 test_kind_10() {
     python3 tsp_main.py --population_kind 10 &
     sleep 2
-    python3 tsp_main.py --population_kind 10 --randomize_population --num_of_iterations 30000 &
-    sleep 2
-    python3 tsp_main.py --population_kind 10 --randomize_population --num_of_iterations 40000 &
+    python3 tsp_main.py --population_kind 10 --num_of_mutations 1 &
     sleep 2
     python3 tsp_main.py --population_kind 10 --randomize_population --num_of_iterations 50000 &
+    sleep 2
+    python3 tsp_main.py --population_kind 10 --randomize_population --num_of_iterations 50000 --num_of_mutations 1 &
     sleep 2
 }
 
@@ -152,5 +152,5 @@ export PYTHONPATH=$PYTHONPATH:"../../src/"
 
 python3 tsp_main.py --server &
 sleep 2
-test_kind_11
+test_kind_1
 echo "All nodes running"
