@@ -8,6 +8,8 @@
     "save_new_fitness": true,
     "mutation_operations": [
         0,
-        1
+        1,
+        2,
+        3
     ]
 }

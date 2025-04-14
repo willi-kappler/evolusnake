@@ -69,6 +69,30 @@ class TSPIndividual(ESIndividual):
         (i1, i2) = self.get_two_indices()
         (self.positions[i1], self.positions[i2]) = (self.positions[i2], self.positions[i1])
 
+    def shift_left(self):
+        (i1, i2) = self.get_two_indices()
+
+        if i1 > i2:
+            (i1, i2) = (i2, i1)
+
+        elements_to_shift = self.positions[i1:i2]
+        remaining_left = self.positions[:i1]
+        remaining_right = self.positions[i2:]
+
+        self.positions = remaining_left + elements_to_shift[1:] + elements_to_shift[:1] + remaining_right
+
+    def shift_right(self):
+        (i1, i2) = self.get_two_indices()
+
+        if i1 > i2:
+            (i1, i2) = (i2, i1)
+
+        elements_to_shift = self.positions[i1:i2]
+        remaining_left = self.positions[:i1]
+        remaining_right = self.positions[i2:]
+
+        self.positions = remaining_left + elements_to_shift[-1:] + elements_to_shift[:-1] + remaining_right
+
     @override
     def es_mutate(self, mut_op: int):
         match mut_op:
@@ -76,6 +100,10 @@ class TSPIndividual(ESIndividual):
                 self.reverse()
             case 1:
                 self.just_swap()
+            case 2:
+                self.shift_left()
+            case 3:
+                self.shift_right()
             case _:
                 raise ValueError(f"Unknown mutation operation: {mut_op}")
 
