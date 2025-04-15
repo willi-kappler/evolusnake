@@ -184,11 +184,14 @@ def main():
     # ind.load_data("city_positions1.txt")
     # config.target_fitness = 380.0
 
-    # Best fitness with city_positions2: 8219.322949926998
-    # Possible good limit: 8230.0
+    # Best fitness with city_positions2:
+    # 8219.322949926998
+    # 8212.526035104422
+    # 8179.069972589102
+    # 8167.227694644111
+    # Possible good limit: 9000.0
     ind.load_data("city_positions2.txt")
-    config.target_fitness = 8230.0
-    # config.target_fitness = 9000.0
+    config.target_fitness = 9000.0
 
     if server_mode:
         print("Create and start server.")
