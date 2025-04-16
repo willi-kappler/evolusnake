@@ -189,6 +189,7 @@ def main():
     # 8212.526035104422
     # 8179.069972589102
     # 8167.227694644111
+    # 8152.298987922809
     # Possible good limit: 9000.0
     ind.load_data("city_positions2.txt")
     config.target_fitness = 9000.0
