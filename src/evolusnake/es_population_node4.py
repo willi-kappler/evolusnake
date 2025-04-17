@@ -84,6 +84,8 @@ class ESPopulationNode4(PSNode):
                 self.global_fitness = self.global_fitness * 1.01
                 all_above_global += 1
 
+        logger.debug(f"{all_above_global=}")
+
         self.population.es_find_best_and_worst_individual()
         self.population.es_log_statistics()
         self.population.es_clone_best_to_worst()
