@@ -68,10 +68,13 @@ class ESPopulationNode8(PSNode):
                 else:
                     if j > 0:
                         fitness_limit: float = current_best_fitness * (limit_factor**j)
-                        if ind.fitness < fitness_limit:
-                            self.population.population[j] = ind
-                        elif ind.fitness < self.population.population[j].fitness:
-                            self.population.population[j] = ind
+
+                        self.population.es_check_limit(ind, fitness_limit, j)
+
+                        # if ind.fitness < fitness_limit:
+                        #     self.population.population[j] = ind
+                        # elif ind.fitness < self.population.population[j].fitness:
+                        #     self.population.population[j] = ind
 
             if self.population.minimum_found:
                 break

@@ -62,10 +62,12 @@ class ESPopulationNode11(PSNode):
                     ind.es_mutate_internal(self.population.es_get_mut_op())
                 ind.es_calculate_fitness()
 
-                if ind.fitness < current_limit:
-                    self.population.population[j] = ind
-                elif ind.fitness < self.population.population[j].fitness:
-                    self.population.population[j] = ind
+                self.population.es_check_limit(ind, current_limit, j)
+
+                # if ind.fitness < current_limit:
+                #     self.population.population[j] = ind
+                # elif ind.fitness < self.population.population[j].fitness:
+                #     self.population.population[j] = ind
 
                 if ind.fitness < self.population.target_fitness:
                     self.population.es_early_exit(i)

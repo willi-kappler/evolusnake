@@ -166,6 +166,10 @@ class ESPopulation:
                 i = rnd.randrange(self.mutation_operations_len)
                 return self.mutation_operations[i]
 
+    def es_check_limit(self, ind: ESIndividual, limit: float, i: int):
+        if (ind.fitness < limit) or (ind.fitness < self.population[i].fitness):
+            self.population[i] = ind
+
     def es_early_exit(self, iteration: int):
         logger.info(f"Early exit at iteration {iteration}")
         self.minimum_found = True

@@ -58,10 +58,12 @@ class ESPopulationNode4(PSNode):
                     tmp_ind.es_mutate_internal(self.population.es_get_mut_op())
                 tmp_ind.es_calculate_fitness()
 
-                if tmp_ind.fitness < self.global_fitness:
-                    self.population.population[j] = tmp_ind
-                elif tmp_ind.fitness < self.population.population[j].fitness:
-                    self.population.population[j] = tmp_ind
+                self.population.es_check_limit(tmp_ind, self.global_fitness, j)
+
+                # if tmp_ind.fitness < self.global_fitness:
+                #     self.population.population[j] = tmp_ind
+                # elif tmp_ind.fitness < self.population.population[j].fitness:
+                #     self.population.population[j] = tmp_ind
 
                 if tmp_ind.fitness <= self.population.target_fitness:
                     self.population.es_early_exit(i)
