@@ -43,10 +43,9 @@ class ESPopulationNode10(PSNode):
         self.population.es_randomize_or_accept_best(data)
         self.population.es_increase_iteration_mutation()
         self.population.es_set_num_iterations()
+        self.population.es_sort_population()
 
         for i in range(self.population.num_of_iterations):
-            self.population.es_sort_population()
-
             best_ind: ESIndividual = self.population.population[0]
 
             if best_ind.fitness <= self.population.target_fitness:
@@ -64,6 +63,8 @@ class ESPopulationNode10(PSNode):
 
             # Change mutation rate:
             self.population.es_set_num_mutations()
+
+            self.population.es_sort_population()
 
         self.population.es_log_statistics()
         return self.population.es_get_best()
