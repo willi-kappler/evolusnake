@@ -11,6 +11,7 @@ This module defines the class for population type 9.
 import logging
 from typing import override
 import math
+import random as rnd
 
 # External imports:
 from parasnake.ps_node import PSNode
@@ -32,12 +33,8 @@ class ESPopulationNode11(PSNode):
         logger.debug(f"Node ID: {self.node_id}")
 
         self.population = ESPopulation(config, individual)
-        self.population.best_index = 0
-        self.population.worst_index = self.population.population_size - 1
-
-        logger.info(f"Sine base: {self.population.sine_base}")
-        logger.info(f"Sine amplitude: {self.population.sine_amplitude}")
-        logger.info(f"Sine frequency: {self.population.sine_freq}")
+        self.sine_base: float = 0.0
+        self.sine_amplitude: float = 0.0
 
     @override
     def ps_process_data(self, data: ESIndividual) -> ESIndividual:
@@ -49,12 +46,13 @@ class ESPopulationNode11(PSNode):
         self.population.es_set_num_iterations()
         self.population.minimum_found = False
 
-        sine_base: float = self.population.sine_base
-        sine_amplitude: float = self.population.sine_amplitude
-        sine_freq: float = self.population.sine_freq
+        sine_freq: float = math.tau / float(self.population.num_of_iterations)
+        logger.debug(f"{sine_freq=}")
         current_limit: float = 0.0
 
         for i in range(self.population.num_of_iterations):
+            current_limit = self.sine_base + (self.sine_amplitude * math.sin(sine_freq * i))
+
             for j in range(self.population.population_size):
                 ind: ESIndividual = self.population.population[j].es_clone_internal()
 
@@ -79,9 +77,13 @@ class ESPopulationNode11(PSNode):
             # Change mutation rate:
             self.population.es_set_num_mutations()
 
-            current_limit = sine_base + (sine_amplitude * math.cos(sine_freq * i))
-
         self.population.es_find_best_and_worst_individual()
+
+        mid_fitness: float = (self.population.best_fitness + self.population.worst_fitness) / 2.0
+        self.sine_base = self.population.best_fitness
+        self.sine_amplitude = mid_fitness - self.population.best_fitness
+        logger.debug(f"{mid_fitness=}, {self.sine_base=}, {self.sine_amplitude=}")
+
         self.population.es_log_statistics()
         return self.population.es_get_best()
 
