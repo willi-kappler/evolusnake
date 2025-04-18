@@ -10,6 +10,7 @@ This module defines the class for population type 4.
 # Python std lib:
 import logging
 from typing import override
+import random as rnd
 
 # External imports:
 from parasnake.ps_node import PSNode
@@ -49,6 +50,9 @@ class ESPopulationNode4(PSNode):
         self.population.minimum_found = False
         ind_below_global: int = 0
         all_above_global: int = 0
+        min_num_ind: int = rnd.randrange(1, int(self.population.population_size / 2))
+
+        logger.debug(f"{min_num_ind=}")
 
         for i in range(self.population.num_of_iterations):
             for j in range(self.population.population_size):
@@ -80,7 +84,7 @@ class ESPopulationNode4(PSNode):
                 if ind.fitness < self.global_fitness:
                     ind_below_global += 1
 
-            if ind_below_global >= 2:
+            if ind_below_global >= min_num_ind:
                 self.global_fitness = self.global_fitness * 0.9
             else:
                 self.global_fitness = self.global_fitness * 1.01
