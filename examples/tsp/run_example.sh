@@ -43,6 +43,8 @@ run_kind() {
 }
 
 run_all_kinds() {
+    echo "Run all population kinds."
+
     python3 $main_file -k 1 -m 1 -i 10000 &
     sleep 2
     python3 $main_file -k 2 -m 1 -i 10000 &
