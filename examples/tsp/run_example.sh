@@ -13,10 +13,18 @@ run_kind() {
     iterations4="40000"
 
     case $1 in
-    4 | 7 | 11)
+    4 | 11)
         randomize=""
         ;;
-    6 | 7)
+    6)
+        num_of_mutations="20"
+        iterations1="1000"
+        iterations2="2000"
+        iterations3="3000"
+        iterations4="4000"
+        ;;
+    7)
+        randomize=""
         iterations1="1000"
         iterations2="2000"
         iterations3="3000"
@@ -45,7 +53,7 @@ run_all_kinds() {
     sleep 2
     python3 $main_file -k 5 -m 1 -i 10000 &
     sleep 2
-    python3 $main_file -k 6 -m 1 -i 1000 &
+    python3 $main_file -k 6 -m 20 -i 1000 &
     sleep 2
     python3 $main_file -k 7 -m 1 -i 1000 &
     sleep 2
