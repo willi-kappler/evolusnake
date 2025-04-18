@@ -34,13 +34,13 @@ test_kind_3() {
 }
 
 test_kind_4() {
-    python3 tsp_main.py --population_kind 4 &
+    python3 tsp_main.py --population_kind 4 --num_of_iterations 10000 --num_of_mutations 1 &
     sleep 2
-    python3 tsp_main.py --population_kind 4 --num_of_mutations 1 &
+    python3 tsp_main.py --population_kind 4 --num_of_iterations 20000 --num_of_mutations 1 &
     sleep 2
-    python3 tsp_main.py --population_kind 4 --num_of_iterations 50000 &
+    python3 tsp_main.py --population_kind 4 --num_of_iterations 30000 --num_of_mutations 1 &
     sleep 2
-    python3 tsp_main.py --population_kind 4 --num_of_iterations 50000 --num_of_mutations 1 &
+    python3 tsp_main.py --population_kind 4 --num_of_iterations 40000 --num_of_mutations 1 &
     sleep 2
 }
 
@@ -111,13 +111,13 @@ test_kind_10() {
 }
 
 test_kind_11() {
-    python3 tsp_main.py --population_kind 11 --sine_base 10000.0 --sine_amplitude 2000.0 --sine_freq 0.0001 &
+    python3 tsp_main.py --population_kind 11 --num_of_mutations 1 --num_of_iterations 10000 &
     sleep 2
-    python3 tsp_main.py --population_kind 11 --sine_base 10000.0 --sine_amplitude 2000.0 --sine_freq 0.0001 --randomize_population --num_of_iterations 30000 &
+    python3 tsp_main.py --population_kind 11 --num_of_mutations 1 --num_of_iterations 20000 &
     sleep 2
-    python3 tsp_main.py --population_kind 11 --sine_base 10000.0 --sine_amplitude 2000.0 --sine_freq 0.0001 --randomize_population --num_of_iterations 40000 &
+    python3 tsp_main.py --population_kind 11 --num_of_mutations 1 --num_of_iterations 30000 &
     sleep 2
-    python3 tsp_main.py --population_kind 11 --sine_base 10000.0 --sine_amplitude 2000.0 --sine_freq 0.0001 --randomize_population --num_of_iterations 50000 &
+    python3 tsp_main.py --population_kind 11 --num_of_mutations 1 --num_of_iterations 40000 &
     sleep 2
 }
 
