@@ -13,6 +13,7 @@ import json
 import time
 import random as rnd
 from typing import override, Optional
+from collections import Counter
 
 # External imports:
 from parasnake.ps_server import PSServer
@@ -43,6 +44,7 @@ class ESServer(PSServer):
         self.allow_same_fitness: bool = config.allow_same_fitness
         self.share_only_best: bool = config.share_only_best
         self.new_fitness_counter: int = 0
+        self.node_stats: Counter = Counter()
 
         for _ in range(self.population_size):
             ind: ESIndividual = individual.es_clone()
@@ -119,6 +121,9 @@ class ESServer(PSServer):
                 logger.info(f"New best fitness: {new_fitness}, previous: {current_best_fitness}")
                 logger.info(f"From node: {node_id}, new fitness counter: {self.new_fitness_counter}")
                 logger.debug(f"Worst fitness: {self.population[-1].fitness}")
+
+                self.node_stats[node_id] += 1
+                logger.debug(f"{self.node_stats}")
 
                 if self.save_new_fitness:
                     self.es_save_data(f"{self.new_fitness_counter}_{self.result_filename}")
