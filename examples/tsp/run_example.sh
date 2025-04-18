@@ -38,9 +38,9 @@ test_kind_4() {
     sleep 2
     python3 tsp_main.py --population_kind 4 --num_of_mutations 1 &
     sleep 2
-    python3 tsp_main.py --population_kind 4 --randomize_population --num_of_iterations 50000 &
+    python3 tsp_main.py --population_kind 4 --num_of_iterations 50000 &
     sleep 2
-    python3 tsp_main.py --population_kind 4 --randomize_population --num_of_iterations 50000 --num_of_mutations 1 &
+    python3 tsp_main.py --population_kind 4 --num_of_iterations 50000 --num_of_mutations 1 &
     sleep 2
 }
 
