@@ -79,10 +79,14 @@ class ESPopulationNode11(PSNode):
 
         self.population.es_find_best_and_worst_individual()
 
-        mid_fitness: float = (self.population.best_fitness + self.population.worst_fitness) / 2.0
         self.sine_base = self.population.best_fitness
-        self.sine_amplitude = mid_fitness - self.population.best_fitness
-        logger.debug(f"{mid_fitness=}, {self.sine_base=}, {self.sine_amplitude=}")
+
+        if self.population.best_fitness < 30.0:
+            self.sine_amplitude = rnd.uniform(1.0, 5.0)
+        else:
+            self.sine_amplitude = self.population.best_fitness * rnd.uniform(0.1, 0.2)
+
+        logger.debug(f"{self.sine_base=}, {self.sine_amplitude=}")
 
         self.population.es_log_statistics()
         return self.population.es_get_best()
