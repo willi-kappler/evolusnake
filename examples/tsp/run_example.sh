@@ -73,7 +73,7 @@ reset
 
 export PYTHONPATH=$PYTHONPATH:"../../src/"
 
-python3 tsp_main.py --server &
+python3 $main_file --server &
 sleep 2
 run_kind 1
 echo "All nodes running"
