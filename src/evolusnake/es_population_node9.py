@@ -57,6 +57,7 @@ class ESPopulationNode9(PSNode):
             current_size: int = 1
 
             new_ind: ESIndividual = single_ind.es_clone_internal()
+            loop_counter: int = 0
 
             while current_size < self.population.population_size:
                 for _ in range(self.population.num_of_mutations):
@@ -73,6 +74,14 @@ class ESPopulationNode9(PSNode):
                 if not already_in_population:
                     self.population.population.append(new_ind.es_clone_internal())
                     current_size += 1
+                    loop_counter = 0
+                else:
+                    # To prevent endless loops:
+                    loop_counter += 1
+                    if loop_counter >= 100:
+                        self.population.population.append(new_ind.es_clone_internal())
+                        current_size += 1
+                        loop_counter = 0
 
             # Change mutation rate:
             self.population.es_set_num_mutations()
