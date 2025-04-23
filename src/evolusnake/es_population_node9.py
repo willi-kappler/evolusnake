@@ -27,7 +27,7 @@ class ESPopulationNode9(PSNode):
         logger.info("Init population node type 9")
         logger.info("Sort population and take the best individual.")
         logger.info("Repopulate the whole population from this individual.")
-        logger.info("No duplicates are allowed.")
+        logger.info("Try to avoid duplicates.")
 
         super().__init__(config.parasnake_config)
         logger.debug(f"Node ID: {self.node_id}")
