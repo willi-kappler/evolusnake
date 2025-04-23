@@ -1,0 +1,17 @@
+{
+    "server_address": "127.0.0.1",
+    "server_port": 8080,
+    "heartbeat_timeout": 100,
+    "secret_key": "azaoThu1ecio4jeb2DeciekahDeungoh",
+    "node_population_size": 100,
+    "num_of_iterations": 5000,
+    "num_of_mutations": 1,
+    "save_new_fitness": true,
+    "mutation_operations": [
+        0,
+        1,
+        2,
+        3,
+        4
+    ]
+}
