@@ -119,6 +119,13 @@ class SudokuIndividual(ESIndividual):
 
         return errors
 
+    def fill_numbers(self, possible_numbers, positions):
+        possible_numbers2: list = list(possible_numbers)
+        rnd.shuffle(possible_numbers2)
+
+        for (c, r) in positions:
+            self.set_value2(c, r, possible_numbers2.pop())
+
     def set_random_number(self):
         (c, r) = rnd.choice(self.empty_positions)
         n = rnd.randrange(1, 10)
@@ -159,38 +166,51 @@ class SudokuIndividual(ESIndividual):
     def random_col(self):
         (c, _) = rnd.choice(self.empty_positions)
         possible_numbers: set = {1, 2, 3, 4, 5, 6, 7, 8, 9}
+        new_pos: list = []
 
         for r in range(9):
             n: int = self.get_value1(c, r) > 0
             if n > 0:
                 possible_numbers.discard(n)
+            else:
+                new_pos.append((c, r))
 
-        possible_numbers2: list = list(possible_numbers)
-        rnd.shuffle(possible_numbers2)
-
-        for r in range(9):
-            if self.get_value1(c, r) == 0:
-                self.set_value2(c, r, possible_numbers2.pop())
+        self.fill_numbers(possible_numbers, new_pos)
 
     def random_row(self):
         (_, r) = rnd.choice(self.empty_positions)
         possible_numbers: set = {1, 2, 3, 4, 5, 6, 7, 8, 9}
+        new_pos: list = []
 
         for c in range(9):
             n: int = self.get_value1(c, r) > 0
             if n > 0:
                 possible_numbers.discard(n)
+            else:
+                new_pos.append((c, r))
 
-        possible_numbers2: list = list(possible_numbers)
-        rnd.shuffle(possible_numbers2)
-
-        for c in range(9):
-            if self.get_value1(c, r) == 0:
-                self.set_value2(c, r, possible_numbers2.pop())
+        self.fill_numbers(possible_numbers, new_pos)
 
     def random_block(self):
-        (c, r) = rnd.choice(self.empty_positions)
+        (c1, r1) = rnd.choice(self.empty_positions)
         possible_numbers: set = {1, 2, 3, 4, 5, 6, 7, 8, 9}
+        new_pos: list = []
+
+        bc: int = int(c1 / 3)
+        br: int = int(r1 / 3)
+
+        for c2 in range(3):
+            for r2 in range(3):
+                c: int = (bc * 3) + c2
+                r: int = (br * 3) + r2
+
+                n = self.get_value1(c, r)
+                if n > 0:
+                    possible_numbers.discard(n)
+                else:
+                    new_pos.append((c, r))
+
+        self.fill_numbers(possible_numbers, new_pos)
 
     @override
     def es_mutate(self, mut_op: int):
