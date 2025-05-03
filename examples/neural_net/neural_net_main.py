@@ -29,11 +29,13 @@ class Neuron:
         self.bias = rnd.uniform(-1.0, 1.0)
 
     def add_input_connection(self, index: int):
-        if index not in self.input_connections:
-            weight: float = rnd.random()
-            self.input_connections.append([index, weight])
-        else:
-            self.input_connections[index][1] = rnd.uniform(-1.0, 1.0)
+        for (index2, _) in self.input_connections:
+            if index == index2:
+                self.input_connections[index][1] = rnd.uniform(-1.0, 1.0)
+                return
+
+        weight: float = rnd.random()
+        self.input_connections.append([index, weight])
 
     def remove_input_connection(self):
         l: int = len(self.input_connections)
@@ -54,11 +56,13 @@ class Neuron:
             self.input_connections[index][1] = rnd.uniform(-1.0, 1.0)
 
     def add_hidden_connection(self, index: int):
-        if index not in self.hidden_connections:
-            weight: float = rnd.random()
-            self.hidden_connections.append([index, weight])
-        else:
-            self.hidden_connections[index][1] = rnd.uniform(-1.0, 1.0)
+        for (index2, _) in self.hidden_connections:
+            if index == index2:
+                self.hidden_connections[index][1] = rnd.uniform(-1.0, 1.0)
+                return
+
+        weight: float = rnd.random()
+        self.hidden_connections.append([index, weight])
 
     def remove_hidden_connection(self):
         l: int = len(self.hidden_connections)
