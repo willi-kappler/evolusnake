@@ -37,15 +37,6 @@ class Neuron:
         weight: float = rnd.random()
         self.input_connections.append([index, weight])
 
-    def remove_input_connection(self):
-        l: int = len(self.input_connections)
-
-        if l == 0:
-            return
-        else:
-            index: int = rnd.randrange(l)
-            self.input_connections.pop(index)
-
     def change_input_connection(self):
         l: int = len(self.input_connections)
 
@@ -63,15 +54,6 @@ class Neuron:
 
         weight: float = rnd.random()
         self.hidden_connections.append([index, weight])
-
-    def remove_hidden_connection(self):
-        l: int = len(self.hidden_connections)
-
-        if l == 0:
-            return
-        else:
-            index: int = rnd.randrange(l)
-            self.hidden_connections.pop(index)
 
     def change_hidden_connection(self):
         l: int = len(self.hidden_connections)
@@ -155,36 +137,28 @@ class NeuralNetIndividual(ESIndividual):
 
     def mutate_neuron(self):
         index1: int = rnd.randrange(self.hidden_layer_size)
-        mut_op: int = rnd.randrange(7)
+        mut_op: int = rnd.randrange(3)
         neuron = self.hidden_layer[index1]
 
         match mut_op:
             case 0:
                 neuron.change_bias()
             case 1:
-                index2 = rnd.randrange(self.input_size)
-                neuron.add_input_connection(index2)
+                n = rnd.randrange(100)
+
+                if n == 0:
+                    index2 = rnd.randrange(self.input_size)
+                    neuron.add_input_connection(index2)
+                else:
+                    neuron.change_input_connection()
             case 2:
                 n = rnd.randrange(100)
 
                 if n == 0:
-                    neuron.remove_input_connection()
+                    index2: int = rnd.randrange(self.hidden_layer_size)
+                    neuron.add_hidden_connection(index2)
                 else:
-                    self.mutate_neuron()
-            case 3:
-                neuron.change_input_connection()
-            case 4:
-                index2: int = rnd.randrange(self.hidden_layer_size)
-                neuron.add_hidden_connection(index2)
-            case 5:
-                n = rnd.randrange(100)
-
-                if n == 0:
-                    neuron.remove_hidden_connection()
-                else:
-                    self.mutate_neuron()
-            case 6:
-                neuron.change_hidden_connection()
+                    neuron.change_hidden_connection()
 
     @override
     def es_mutate(self, mut_op: int):
