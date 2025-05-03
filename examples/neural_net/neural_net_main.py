@@ -31,7 +31,7 @@ class Neuron:
     def add_input_connection(self, index: int):
         for (index2, _) in self.input_connections:
             if index == index2:
-                self.input_connections[index][1] = rnd.uniform(-1.0, 1.0)
+                self.change_input_connection()
                 return
 
         weight: float = rnd.random()
@@ -58,7 +58,7 @@ class Neuron:
     def add_hidden_connection(self, index: int):
         for (index2, _) in self.hidden_connections:
             if index == index2:
-                self.hidden_connections[index][1] = rnd.uniform(-1.0, 1.0)
+                self.change_hidden_connection()
                 return
 
         weight: float = rnd.random()
