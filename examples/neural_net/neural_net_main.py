@@ -95,6 +95,14 @@ class Neuron:
         # self.current_value = max(1.0, max(0.0, new_value))
         self.current_value = max(0.0, new_value)
 
+    def clone(self) -> Self:
+        n = Neuron()
+        n.input_connections = self.input_connections[:]
+        n.hidden_connections = self.hidden_connections[:]
+        n.bias = self.bias
+
+        return n  # type: ignore
+
     def to_json(self) -> dict:
         data = {
             "input_connections": self.input_connections,
@@ -138,7 +146,7 @@ class NeuralNetIndividual(ESIndividual):
         if n == 0:
             self.hidden_layer.append(Neuron())
             self.hidden_layer_size += 1
-            logger.debug(f"{self.hidden_layer_size=}")
+            # logger.debug(f"{self.hidden_layer_size=}")
         else:
             self.mutate_neuron()
 
@@ -222,7 +230,7 @@ class NeuralNetIndividual(ESIndividual):
     @override
     def es_clone(self) -> Self:
         clone = NeuralNetIndividual(self.input_size, self.output_size)
-        clone.hidden_layer = self.hidden_layer[:]
+        clone.hidden_layer = [n.clone() for n in self.hidden_layer]
         clone.hidden_layer_size = self.hidden_layer_size
         return clone  # type: ignore
 
