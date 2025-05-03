@@ -18,6 +18,16 @@ from evolusnake.es_server import ESServer
 
 logger = logging.getLogger(__name__)
 
+def change_delta(value: float) -> float:
+    delta: float = rnd.uniform(-0.1, 0.1)
+    value += delta
+    if value < -1.0:
+        return -1.0
+    elif value > 1.0:
+        return 1.0
+    else:
+        return value
+
 class Neuron:
     def __init__(self):
         self.input_connections: list = []
@@ -26,7 +36,7 @@ class Neuron:
         self.current_value: float = 0.0
 
     def change_bias(self):
-        self.bias = rnd.uniform(-1.0, 1.0)
+        self.bias = change_delta(self.bias)
 
     def add_input_connection(self, index: int):
         for (index2, _) in self.input_connections:
@@ -34,7 +44,7 @@ class Neuron:
                 self.change_input_connection()
                 return
 
-        weight: float = rnd.random()
+        weight: float = rnd.uniform(-1.0, 1.0)
         self.input_connections.append([index, weight])
 
     def change_input_connection(self):
@@ -44,7 +54,8 @@ class Neuron:
             return
         else:
             index: int = rnd.randrange(l)
-            self.input_connections[index][1] = rnd.uniform(-1.0, 1.0)
+            connection: list = self.input_connections[index]
+            connection[1] = change_delta(connection[1])
 
     def add_hidden_connection(self, index: int):
         for (index2, _) in self.hidden_connections:
@@ -52,7 +63,7 @@ class Neuron:
                 self.change_hidden_connection()
                 return
 
-        weight: float = rnd.random()
+        weight: float = rnd.uniform(-1.0, 1.0)
         self.hidden_connections.append([index, weight])
 
     def change_hidden_connection(self):
@@ -62,7 +73,8 @@ class Neuron:
             return
         else:
             index: int = rnd.randrange(l)
-            self.hidden_connections[index][1] = rnd.uniform(-1.0, 1.0)
+            connection: list = self.hidden_connections[index]
+            connection[1] = change_delta(connection[1])
 
     def evaluate(self, input_values: list, hidden_layer: list):
         new_value: float = self.bias
