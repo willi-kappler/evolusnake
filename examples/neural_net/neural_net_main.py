@@ -117,6 +117,7 @@ class NeuralNetIndividual(ESIndividual):
 
         self.input_size: int = input_size
         self.output_size: int = output_size
+        self.extend_propability: integer = 1000
 
         self.es_randomize()
 
@@ -130,7 +131,7 @@ class NeuralNetIndividual(ESIndividual):
 
         # The first neurons are output neurons
         for i in range(self.output_size):
-            error += abs(expected_output[i] - self.hidden_layer[i].current_value)
+            error += (expected_output[i] - self.hidden_layer[i].current_value)**2.0
 
         return error
 
@@ -156,7 +157,7 @@ class NeuralNetIndividual(ESIndividual):
             case 0:
                 neuron.change_bias()
             case 1:
-                n = rnd.randrange(100)
+                n = rnd.randrange(self.extend_propability)
 
                 if n == 0:
                     index2 = rnd.randrange(self.input_size)
@@ -164,7 +165,7 @@ class NeuralNetIndividual(ESIndividual):
                 else:
                     neuron.change_input_connection()
             case 2:
-                n = rnd.randrange(100)
+                n = rnd.randrange(self.extend_propability)
 
                 if n == 0:
                     index2: int = rnd.randrange(self.hidden_layer_size)
@@ -176,7 +177,7 @@ class NeuralNetIndividual(ESIndividual):
     def es_mutate(self, mut_op: int):
         match mut_op:
             case 0:
-                n = rnd.randrange(100)
+                n = rnd.randrange(self.extend_propability)
 
                 if n == 0:
                     self.add_neuron()
@@ -194,10 +195,13 @@ class NeuralNetIndividual(ESIndividual):
         for _ in range(self.output_size):
             self.hidden_layer.append(Neuron())
 
+        self.hidden_layer_size = self.output_size
+
         # Start with one neuron
         self.add_neuron()
-
-        self.hidden_layer_size = self.output_size + 1
+        # With one connection to an imput layer
+        index = rnd.randrange(self.input_size)
+        self.hidden_layer[-1].add_input_connection(index)
 
     @override
     def es_calculate_fitness(self):
