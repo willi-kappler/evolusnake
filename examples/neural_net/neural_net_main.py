@@ -89,11 +89,7 @@ class Neuron:
             new_value += weight * input_values[index]
 
         for (index, weight) in self.hidden_connections:
-            l: int = len(hidden_layer)
-            if index >= l:
-                logger.debug(f"index out of range: {index}, length: {l}")
-            else:
-                new_value += weight * hidden_layer[index].current_value
+            new_value += weight * hidden_layer[index].current_value
 
         # ReLU
         # self.current_value = max(1.0, max(0.0, new_value))
@@ -145,14 +141,11 @@ class NeuralNetIndividual(ESIndividual):
         return error
 
     def add_neuron(self):
-        n = rnd.randrange(1000)
-
-        if n == 0:
-            self.hidden_layer.append(Neuron())
-            self.hidden_layer_size += 1
-            # logger.debug(f"{self.hidden_layer_size=}")
-        else:
-            self.mutate_neuron()
+        new_neuron: Neuron = Neuron()
+        index: int = rnd.randrange(self.hidden_layer_size)
+        new_neuron.add_hidden_connection(index)
+        self.hidden_layer.append(new_neuron)
+        self.hidden_layer_size += 1
 
     def swap_neurons(self):
         i1 = rnd.randrange(self.hidden_layer_size)
@@ -197,7 +190,12 @@ class NeuralNetIndividual(ESIndividual):
     def es_mutate(self, mut_op: int):
         match mut_op:
             case 0:
-                self.add_neuron()
+                n = rnd.randrange(100)
+
+                if n == 0:
+                    self.add_neuron()
+                else:
+                    self.mutate_neuron()
             case 1:
                 self.swap_neurons()
             case 2:
@@ -210,7 +208,10 @@ class NeuralNetIndividual(ESIndividual):
         for _ in range(self.output_size):
             self.hidden_layer.append(Neuron())
 
-        self.hidden_layer_size = self.output_size
+        # Start with one neuron
+        self.add_neuron()
+
+        self.hidden_layer_size = self.output_size + 1
 
     @override
     def es_calculate_fitness(self):
@@ -289,7 +290,7 @@ def main():
 
     ind = NeuralNetIndividual(2, 1)
 
-    config.target_fitness = 0.0
+    config.target_fitness = 0.01
 
     if server_mode:
         print("Create and start server.")
