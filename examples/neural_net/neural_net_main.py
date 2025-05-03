@@ -29,8 +29,11 @@ class Neuron:
         self.bias = rnd.uniform(-1.0, 1.0)
 
     def add_input_connection(self, index: int):
-        weight: float = rnd.random()
-        self.input_connections.append([index, weight])
+        if index not in self.input_connections:
+            weight: float = rnd.random()
+            self.input_connections.append([index, weight])
+        else:
+            self.input_connections[index][1] = rnd.uniform(-1.0, 1.0)
 
     def remove_input_connection(self):
         l: int = len(self.input_connections)
@@ -51,8 +54,11 @@ class Neuron:
             self.input_connections[index][1] = rnd.uniform(-1.0, 1.0)
 
     def add_hidden_connection(self, index: int):
-        weight: float = rnd.random()
-        self.hidden_connections.append([index, weight])
+        if index not in self.hidden_connections:
+            weight: float = rnd.random()
+            self.hidden_connections.append([index, weight])
+        else:
+            self.hidden_connections[index][1] = rnd.uniform(-1.0, 1.0)
 
     def remove_hidden_connection(self):
         l: int = len(self.hidden_connections)
@@ -79,10 +85,15 @@ class Neuron:
             new_value += weight * input_values[index]
 
         for (index, weight) in self.hidden_connections:
-            new_value += weight * hidden_layer[index].current_value
+            l: int = len(hidden_layer)
+            if index >= l:
+                logger.debug(f"index out of range: {index}, length: {l}")
+            else:
+                new_value += weight * hidden_layer[index].current_value
 
         # ReLU
-        self.current_value = max(1.0, max(0.0, new_value))
+        # self.current_value = max(1.0, max(0.0, new_value))
+        self.current_value = max(0.0, new_value)
 
     def to_json(self) -> dict:
         data = {
@@ -117,16 +128,17 @@ class NeuralNetIndividual(ESIndividual):
 
         # The first neurons are output neurons
         for i in range(self.output_size):
-            error += (expected_output[i] - self.hidden_layer[i].current_value)**2.0
+            error += abs(expected_output[i] - self.hidden_layer[i].current_value)
 
         return error
 
     def add_neuron(self):
-        n = rnd.randrange(100)
+        n = rnd.randrange(1000)
 
         if n == 0:
             self.hidden_layer.append(Neuron())
             self.hidden_layer_size += 1
+            logger.debug(f"{self.hidden_layer_size=}")
         else:
             self.mutate_neuron()
 
@@ -148,14 +160,24 @@ class NeuralNetIndividual(ESIndividual):
                 index2 = rnd.randrange(self.input_size)
                 neuron.add_input_connection(index2)
             case 2:
-                neuron.remove_input_connection()
+                n = rnd.randrange(100)
+
+                if n == 0:
+                    neuron.remove_input_connection()
+                else:
+                    self.mutate_neuron()
             case 3:
                 neuron.change_input_connection()
             case 4:
                 index2: int = rnd.randrange(self.hidden_layer_size)
                 neuron.add_hidden_connection(index2)
             case 5:
-                neuron.remove_hidden_connection()
+                n = rnd.randrange(100)
+
+                if n == 0:
+                    neuron.remove_hidden_connection()
+                else:
+                    self.mutate_neuron()
             case 6:
                 neuron.change_hidden_connection()
 
