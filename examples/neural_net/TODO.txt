@@ -1,0 +1,7 @@
+Transfer Function Mutation: If your nodes use different activation functions (e.g., sigmoid, ReLU, tanh), you could introduce a mutation that changes the activation function of a randomly selected node. This can introduce new non-linearities and potentially improve the network's representational power.
+
+
+Topology Change - Split Node: You could split an existing node into two, with the incoming connections of the original node being randomly distributed (or duplicated with slight weight variations) to the two new nodes. The new nodes would then have their own outgoing connections (potentially inherited from the original node). This can allow for more complex feature extraction.
+
+
+
