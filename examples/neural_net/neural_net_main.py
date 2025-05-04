@@ -131,6 +131,10 @@ class NeuralNetIndividual(ESIndividual):
         #logger.debug(f"{self.new_connection_prob=}")
 
     def evaluate(self, input_values: list):
+        # First reset all values to 0.0:
+        for neuron in self.hidden_layer:
+            neuron.current_value = 0.0
+
         for _ in range(2):
             for neuron in self.hidden_layer:
                 neuron.evaluate(input_values, self.hidden_layer)
