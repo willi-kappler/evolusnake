@@ -18,7 +18,7 @@ from evolusnake.es_server import ESServer
 logger = logging.getLogger(__name__)
 
 def change_delta(value: float) -> float:
-    n = rnd.randrange(10)
+    n = rnd.randrange(100)
     if n == 0:
         return rnd.uniform(-1.0, 1.0)
     else:
@@ -37,6 +37,9 @@ class Neuron:
         self.hidden_connections: list = []
         self.bias: float = rnd.uniform(-1.0, 1.0)
         self.current_value: float = 0.0
+
+    def is_empty(self) -> bool:
+        return (self.input_connections == []) and (self.hidden_connections == [])
 
     def mutate_bias(self):
         self.bias = change_delta(self.bias)
@@ -119,7 +122,7 @@ class NeuralNetIndividual(ESIndividual):
 
         self.input_size: int = input_size
         self.output_size: int = output_size
-        self.new_node_prob: int = 1000
+        self.new_node_prob: int = 100
         self.new_connection_prob: int = 100
 
         self.es_randomize()
@@ -151,6 +154,14 @@ class NeuralNetIndividual(ESIndividual):
     def swap_neurons(self):
         i1 = rnd.randrange(self.hidden_layer_size)
         i2 = rnd.randrange(self.hidden_layer_size)
+
+        if self.hidden_layer[i1].is_empty():
+            self.mutate_neuron()
+            return
+
+        if self.hidden_layer[i2].is_empty():
+            self.mutate_neuron()
+            return
 
         (self.hidden_layer[i1], self.hidden_layer[i2]) = (self.hidden_layer[i2], self.hidden_layer[i1])
 
@@ -191,6 +202,7 @@ class NeuralNetIndividual(ESIndividual):
                     self.mutate_neuron()
             case 1:
                 self.swap_neurons()
+                self.mutate_neuron()
             case 2:
                 self.mutate_neuron()
 
