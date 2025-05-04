@@ -122,13 +122,8 @@ class NeuralNetIndividual(ESIndividual):
 
         self.input_size: int = input_size
         self.output_size: int = output_size
-        self.new_node_prob: int = 100
-        self.new_connection_prob: int = 100
 
         self.es_randomize()
-
-        #logger.debug(f"{self.new_node_prob=}")
-        #logger.debug(f"{self.new_connection_prob=}")
 
     def evaluate(self, input_values: list):
         # First reset all values to 0.0:
@@ -232,6 +227,9 @@ class NeuralNetIndividual(ESIndividual):
         index = rnd.randrange(self.input_size)
         self.hidden_layer[-1].add_input_connection(index)
 
+        self.new_node_prob: int = rnd.randint(100, 1000)
+        self.new_connection_prob: int = rnd.randint(100, 1000)
+
     @override
     def es_calculate_fitness(self):
         self.fitness: float = 0.0
@@ -256,6 +254,9 @@ class NeuralNetIndividual(ESIndividual):
         clone = NeuralNetIndividual(self.input_size, self.output_size)
         clone.hidden_layer = [n.clone() for n in self.hidden_layer]
         clone.hidden_layer_size = self.hidden_layer_size
+        clone.new_node_prob = self.new_node_prob
+        clone.new_connection_prob = self.new_connection_prob
+
         return clone  # type: ignore
 
     @override
@@ -264,6 +265,8 @@ class NeuralNetIndividual(ESIndividual):
             "fitness": self.fitness,
             "input_size": self.input_size,
             "output_size": self.output_size,
+            "new_node_prob": self.new_node_prob,
+            "new_connection_prob": self.new_connection_prob,
             "hidden_layer": [n.to_json() for n in self.hidden_layer]
         }
 
@@ -274,6 +277,8 @@ class NeuralNetIndividual(ESIndividual):
         self.fitness = data["fitness"]
         self.input_size = data["input_size"]
         self.output_size = data["output_size"]
+        self.new_node_prob = data["new_node_prob"]
+        self.new_connection_prob = data["new_connection_prob"]
 
         for n in data["hidden_layer"]:
             neuron = Neuron()
