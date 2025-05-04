@@ -57,11 +57,23 @@ class Neuron:
         l: int = len(self.input_connections)
 
         if l == 0:
+            self.mutate_bias()
             return
         else:
             index: int = rnd.randrange(l)
             connection: list = self.input_connections[index]
             connection[1] = change_delta(connection[1])
+
+    def replace_input_connection(self, new_index: int):
+        l: int = len(self.input_connections)
+
+        if l == 0:
+            self.mutate_bias()
+            return
+        else:
+            index: int = rnd.randrange(l)
+            connection: list = self.input_connections[index]
+            connection[0] = new_index
 
     def add_hidden_connection(self, index: int):
         for (index2, _) in self.hidden_connections:
@@ -72,15 +84,30 @@ class Neuron:
         weight: float = rnd.uniform(-1.0, 1.0)
         self.hidden_connections.append([index, weight])
 
+        # logger.debug(f"add_hidden_connection, {index=}")
+
     def mutate_hidden_connection(self):
         l: int = len(self.hidden_connections)
 
         if l == 0:
+            self.mutate_bias()
             return
         else:
             index: int = rnd.randrange(l)
             connection: list = self.hidden_connections[index]
             connection[1] = change_delta(connection[1])
+
+    def replace_hidden_connection(self, new_index: int):
+        l: int = len(self.hidden_connections)
+
+        if l == 0:
+            self.mutate_bias()
+            return
+        else:
+            index: int = rnd.randrange(l)
+            connection: list = self.hidden_connections[index]
+            connection[0] = new_index
+            # logger.debug(f"replace_hidden_connection, {new_index=}")
 
     def evaluate(self, input_values: list, hidden_layer: list):
         new_value: float = self.bias
@@ -96,8 +123,8 @@ class Neuron:
 
     def clone(self) -> Self:
         n = Neuron()
-        n.input_connections = self.input_connections[:]
-        n.hidden_connections = self.hidden_connections[:]
+        n.input_connections = [[i, w] for (i, w) in self.input_connections]
+        n.hidden_connections = [[i, w] for (i, w) in self.hidden_connections]
         n.bias = self.bias
 
         return n  # type: ignore
@@ -122,6 +149,8 @@ class NeuralNetIndividual(ESIndividual):
 
         self.input_size: int = input_size
         self.output_size: int = output_size
+        self.new_node_prob: int = 1000
+        self.new_connection_prob: int = 100
 
         self.es_randomize()
 
@@ -157,6 +186,8 @@ class NeuralNetIndividual(ESIndividual):
         self.hidden_layer.append(new_neuron)
         self.hidden_layer_size += 1
 
+        # logger.debug(f"add_neuron, layer_size: {self.hidden_layer_size}, len: {len(self.hidden_layer)}")
+
     def swap_neurons(self):
         i1 = rnd.randrange(self.hidden_layer_size)
         i2 = rnd.randrange(self.hidden_layer_size)
@@ -173,7 +204,7 @@ class NeuralNetIndividual(ESIndividual):
 
     def mutate_neuron(self):
         index1: int = rnd.randrange(self.hidden_layer_size)
-        mut_op: int = rnd.randrange(3)
+        mut_op: int = rnd.randrange(5)
         neuron: Neuron = self.hidden_layer[index1]
 
         match mut_op:
@@ -195,6 +226,13 @@ class NeuralNetIndividual(ESIndividual):
                     neuron.add_hidden_connection(index2)
                 else:
                     neuron.mutate_hidden_connection()
+            case 3:
+                index2 = rnd.randrange(self.input_size)
+                neuron.replace_input_connection(index2)
+            case 4:
+                index2: int = rnd.randrange(self.hidden_layer_size)
+                neuron.replace_hidden_connection(index2)
+                # logger.debug(f"replace hidden connection: {index2}, layer size: {self.hidden_layer_size}, len: {len(self.hidden_layer)}")
 
     @override
     def es_mutate(self, mut_op: int):
@@ -208,7 +246,7 @@ class NeuralNetIndividual(ESIndividual):
                     self.mutate_neuron()
             case 1:
                 self.swap_neurons()
-                self.mutate_neuron()
+                #self.mutate_neuron()
             case 2:
                 self.mutate_neuron()
 
@@ -227,8 +265,8 @@ class NeuralNetIndividual(ESIndividual):
         index = rnd.randrange(self.input_size)
         self.hidden_layer[-1].add_input_connection(index)
 
-        self.new_node_prob: int = rnd.randint(100, 1000)
-        self.new_connection_prob: int = rnd.randint(100, 1000)
+        #self.new_node_prob: int = rnd.randint(100, 1000)
+        #self.new_connection_prob: int = rnd.randint(100, 1000)
 
     @override
     def es_calculate_fitness(self):
@@ -254,8 +292,6 @@ class NeuralNetIndividual(ESIndividual):
         clone = NeuralNetIndividual(self.input_size, self.output_size)
         clone.hidden_layer = [n.clone() for n in self.hidden_layer]
         clone.hidden_layer_size = self.hidden_layer_size
-        clone.new_node_prob = self.new_node_prob
-        clone.new_connection_prob = self.new_connection_prob
 
         return clone  # type: ignore
 
@@ -265,8 +301,6 @@ class NeuralNetIndividual(ESIndividual):
             "fitness": self.fitness,
             "input_size": self.input_size,
             "output_size": self.output_size,
-            "new_node_prob": self.new_node_prob,
-            "new_connection_prob": self.new_connection_prob,
             "hidden_layer": [n.to_json() for n in self.hidden_layer]
         }
 
@@ -277,8 +311,6 @@ class NeuralNetIndividual(ESIndividual):
         self.fitness = data["fitness"]
         self.input_size = data["input_size"]
         self.output_size = data["output_size"]
-        self.new_node_prob = data["new_node_prob"]
-        self.new_connection_prob = data["new_connection_prob"]
 
         for n in data["hidden_layer"]:
             neuron = Neuron()
