@@ -7,7 +7,6 @@ import logging
 import pathlib
 from typing import override, Self
 import random as rnd
-import math
 
 # Local imports:
 from evolusnake.es_config import ESConfiguration
@@ -19,14 +18,18 @@ from evolusnake.es_server import ESServer
 logger = logging.getLogger(__name__)
 
 def change_delta(value: float) -> float:
-    delta: float = rnd.uniform(-0.1, 0.1)
-    value += delta
-    if value < -1.0:
-        return -1.0
-    elif value > 1.0:
-        return 1.0
+    n = rnd.randrange(10)
+    if n == 0:
+        return rnd.uniform(-1.0, 1.0)
     else:
-        return value
+        delta: float = rnd.uniform(-0.1, 0.1)
+        value += delta
+        if value < -1.0:
+            return -1.0
+        elif value > 1.0:
+            return 1.0
+        else:
+            return value
 
 class Neuron:
     def __init__(self):
@@ -35,19 +38,19 @@ class Neuron:
         self.bias: float = rnd.uniform(-1.0, 1.0)
         self.current_value: float = 0.0
 
-    def change_bias(self):
+    def mutate_bias(self):
         self.bias = change_delta(self.bias)
 
     def add_input_connection(self, index: int):
         for (index2, _) in self.input_connections:
             if index == index2:
-                self.change_input_connection()
+                self.mutate_input_connection()
                 return
 
         weight: float = rnd.uniform(-1.0, 1.0)
         self.input_connections.append([index, weight])
 
-    def change_input_connection(self):
+    def mutate_input_connection(self):
         l: int = len(self.input_connections)
 
         if l == 0:
@@ -60,13 +63,13 @@ class Neuron:
     def add_hidden_connection(self, index: int):
         for (index2, _) in self.hidden_connections:
             if index == index2:
-                self.change_hidden_connection()
+                self.mutate_hidden_connection()
                 return
 
         weight: float = rnd.uniform(-1.0, 1.0)
         self.hidden_connections.append([index, weight])
 
-    def change_hidden_connection(self):
+    def mutate_hidden_connection(self):
         l: int = len(self.hidden_connections)
 
         if l == 0:
@@ -86,7 +89,6 @@ class Neuron:
             new_value += weight * hidden_layer[index].current_value
 
         # ReLU
-        # self.current_value = max(1.0, max(0.0, new_value))
         self.current_value = max(0.0, new_value)
 
     def clone(self) -> Self:
@@ -117,9 +119,13 @@ class NeuralNetIndividual(ESIndividual):
 
         self.input_size: int = input_size
         self.output_size: int = output_size
-        self.extend_propability: integer = 1000
+        self.new_node_prob: int = 1000
+        self.new_connection_prob: int = 100
 
         self.es_randomize()
+
+        #logger.debug(f"{self.new_node_prob=}")
+        #logger.debug(f"{self.new_connection_prob=}")
 
     def evaluate(self, input_values: list):
         for _ in range(2):
@@ -151,33 +157,33 @@ class NeuralNetIndividual(ESIndividual):
     def mutate_neuron(self):
         index1: int = rnd.randrange(self.hidden_layer_size)
         mut_op: int = rnd.randrange(3)
-        neuron = self.hidden_layer[index1]
+        neuron: Neuron = self.hidden_layer[index1]
 
         match mut_op:
             case 0:
-                neuron.change_bias()
+                neuron.mutate_bias()
             case 1:
-                n = rnd.randrange(self.extend_propability)
+                n = rnd.randrange(self.new_connection_prob)
 
                 if n == 0:
                     index2 = rnd.randrange(self.input_size)
                     neuron.add_input_connection(index2)
                 else:
-                    neuron.change_input_connection()
+                    neuron.mutate_input_connection()
             case 2:
-                n = rnd.randrange(self.extend_propability)
+                n = rnd.randrange(self.new_connection_prob)
 
                 if n == 0:
                     index2: int = rnd.randrange(self.hidden_layer_size)
                     neuron.add_hidden_connection(index2)
                 else:
-                    neuron.change_hidden_connection()
+                    neuron.mutate_hidden_connection()
 
     @override
     def es_mutate(self, mut_op: int):
         match mut_op:
             case 0:
-                n = rnd.randrange(self.extend_propability)
+                n = rnd.randrange(self.new_node_prob)
 
                 if n == 0:
                     self.add_neuron()
