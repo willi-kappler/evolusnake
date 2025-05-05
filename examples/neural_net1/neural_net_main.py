@@ -166,10 +166,12 @@ class NeuralNetIndividual(ESIndividual):
         self.evaluate_with_error(([1.0, 0.0], [1.0]))
         self.evaluate_with_error(([1.0, 1.0], [0.0]))
 
-        for values in self.data_provider.training_batch():
-            self.evaluate_with_error(values)
+        # for values in self.data_provider.training_batch():
+        #     self.evaluate_with_error(values)
+        #
+        # self.fitness = self.fitness / (4.0 + self.data_provider.batch_size)
 
-        self.fitness = self.fitness / (4.0 + self.data_provider.batch_size)
+        self.fitness = self.fitness / 4.0
 
     @override
     def es_clone(self) -> Self:
