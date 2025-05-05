@@ -123,6 +123,7 @@ class Neuron:
 
     def clone(self) -> Self:
         n = Neuron()
+        # Do proper cloning!
         n.input_connections = [[i, w] for (i, w) in self.input_connections]
         n.hidden_connections = [[i, w] for (i, w) in self.hidden_connections]
         n.bias = self.bias
@@ -346,7 +347,7 @@ def main():
 
     ind = NeuralNetIndividual(2, 1)
 
-    config.target_fitness = 0.01
+    config.target_fitness = 0.001
 
     if server_mode:
         print("Create and start server.")
