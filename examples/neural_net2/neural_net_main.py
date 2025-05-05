@@ -19,6 +19,36 @@ from dataprovider import DataProvider
 
 logger = logging.getLogger(__name__)
 
+
+def load_iris_data(filename: str) -> list:
+    result = []
+
+    with open(filename, "r") as f:
+        next(f)  # ignore column names
+        for line in f:
+            items: list = line.split(",")
+            in1: float = float(items[1])
+            in2: float = float(items[2])
+            in3: float = float(items[3])
+            in4: float = float(items[4])
+            name: str = items[5].strip()
+            kind = None
+
+            match name:
+                case "Iris-setosa":
+                    kind = [1.0, 0.0, 0.0]
+                case "Iris-versicolor":
+                    kind = [0.0, 1.0, 0.0]
+                case "Iris-virginica":
+                    kind = [0.0, 0.0, 1.0]
+                case _:
+                    raise ValueError(f"Unknown name: '{name}'")
+
+            result.append(([in1, in2, in3, in4], kind))
+
+    return result
+
+
 class NeuralNetIndividual(ESIndividual):
     def __init__(self, input_size: int, output_size: int, data_provider: DataProvider):
         super().__init__()
@@ -161,15 +191,10 @@ class NeuralNetIndividual(ESIndividual):
     def es_calculate_fitness(self):
         self.fitness: float = 0.0
 
-        self.evaluate_with_error(([0.0, 0.0], [0.0]))
-        self.evaluate_with_error(([0.0, 1.0], [1.0]))
-        self.evaluate_with_error(([1.0, 0.0], [1.0]))
-        self.evaluate_with_error(([1.0, 1.0], [0.0]))
-
         for values in self.data_provider.training_batch():
             self.evaluate_with_error(values)
 
-        self.fitness = self.fitness / (4.0 + self.data_provider.batch_size)
+        self.fitness = self.fitness / self.data_provider.batch_size
 
     @override
     def es_clone(self) -> Self:
@@ -228,20 +253,13 @@ def main():
     logging.getLogger("asyncio").setLevel(logging.WARNING)
     logging.getLogger("parasnake").setLevel(logging.WARNING)
 
-    data_values = []
+    data_values = load_iris_data("Iris.csv")
 
-    # Just simple XOR
-    for _ in range(50):
-        data_values.append(([0.0, 0.0], [0.0]))
-        data_values.append(([0.0, 1.0], [1.0]))
-        data_values.append(([1.0, 0.0], [1.0]))
-        data_values.append(([1.0, 1.0], [0.0]))
+    dp = DataProvider(data_values, 20)
 
-    dp = DataProvider(data_values, 10)
+    ind = NeuralNetIndividual(4, 3, dp)
 
-    ind = NeuralNetIndividual(2, 1, dp)
-
-    config.target_fitness = 0.001
+    config.target_fitness = 0.01
 
     if server_mode:
         print("Create and start server.")
