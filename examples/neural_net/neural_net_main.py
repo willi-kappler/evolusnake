@@ -15,19 +15,30 @@ from evolusnake.es_select_population import es_select_population
 from evolusnake.es_server import ESServer
 
 from neuron import Neuron
+from dataprovider import DataProvider
 
 logger = logging.getLogger(__name__)
 
 class NeuralNetIndividual(ESIndividual):
-    def __init__(self, input_size: int, output_size: int):
+    def __init__(self, input_size: int, output_size: int, data_provider: DataProvider):
         super().__init__()
 
         self.input_size: int = input_size
         self.output_size: int = output_size
         self.new_node_prob: int = 10000
         self.new_connection_prob: int = 100
+        self.data_provider: DataProvider = data_provider
 
         self.es_randomize()
+
+    def test_network(self) -> float:
+        loss: float = 0.0
+
+        for (input_values, expected_output) in self.data_provider.test_batch():
+            self.evaluate(input_values)
+            loss += self.calc_error(expected_output)
+
+        return loss
 
     def evaluate(self, input_values: list):
         # First reset all values to 0.0:
@@ -60,8 +71,6 @@ class NeuralNetIndividual(ESIndividual):
 
         self.hidden_layer.append(new_neuron)
         self.hidden_layer_size += 1
-
-        # logger.debug(f"add_neuron, layer_size: {self.hidden_layer_size}, len: {len(self.hidden_layer)}")
 
     def swap_neurons(self):
         i1 = rnd.randrange(self.hidden_layer_size)
@@ -107,7 +116,6 @@ class NeuralNetIndividual(ESIndividual):
             case 4:
                 index2: int = rnd.randrange(self.hidden_layer_size)
                 neuron.replace_hidden_connection(index2)
-                # logger.debug(f"replace hidden connection: {index2}, layer size: {self.hidden_layer_size}, len: {len(self.hidden_layer)}")
 
     @override
     def es_mutate(self, mut_op: int):
@@ -121,7 +129,6 @@ class NeuralNetIndividual(ESIndividual):
                     self.mutate_neuron()
             case 1:
                 self.swap_neurons()
-                #self.mutate_neuron()
             case 2:
                 self.mutate_neuron()
 
@@ -140,31 +147,17 @@ class NeuralNetIndividual(ESIndividual):
         index = rnd.randrange(self.input_size)
         self.hidden_layer[-1].add_input_connection(index)
 
-        #self.new_node_prob: int = rnd.randint(100, 1000)
-        #self.new_connection_prob: int = rnd.randint(100, 1000)
-
     @override
     def es_calculate_fitness(self):
         self.fitness: float = 0.0
 
-        # Simple XOR function
-        self.evaluate([0.0, 0.0])
-        self.fitness += self.calc_error([0.0])
-
-        self.evaluate([1.0, 0.0])
-        self.fitness += self.calc_error([1.0])
-
-        self.evaluate([0.0, 1.0])
-        self.fitness += self.calc_error([1.0])
-
-        self.evaluate([1.0, 1.0])
-        self.fitness += self.calc_error([0.0])
-
-        self.fitness
+        for (input_values, expected_output) in self.data_provider.training_batch():
+            self.evaluate(input_values)
+            self.fitness += self.calc_error(expected_output)
 
     @override
     def es_clone(self) -> Self:
-        clone = NeuralNetIndividual(self.input_size, self.output_size)
+        clone = NeuralNetIndividual(self.input_size, self.output_size, self.data_provider)
         clone.hidden_layer = [n.clone() for n in self.hidden_layer]
         clone.hidden_layer_size = self.hidden_layer_size
 
@@ -219,7 +212,23 @@ def main():
     logging.getLogger("asyncio").setLevel(logging.WARNING)
     logging.getLogger("parasnake").setLevel(logging.WARNING)
 
-    ind = NeuralNetIndividual(2, 1)
+    input_values = []
+    expected_output = []
+
+    # Just simple XOR
+    for _ in range(100):
+        input_values.append([0.0, 0.0])
+        expected_output.append([0.0])
+        input_values.append([0.0, 1.0])
+        expected_output.append([1.0])
+        input_values.append([1.0, 0.0])
+        expected_output.append([1.0])
+        input_values.append([1.0, 1.0])
+        expected_output.append([0.0])
+
+    dp = DataProvider(input_values, expected_output, 20)
+
+    ind = NeuralNetIndividual(2, 1, dp)
 
     config.target_fitness = 0.001
 
@@ -227,11 +236,13 @@ def main():
         print("Create and start server.")
         server = ESServer(config, ind)
         server.ps_run()
+        best_ind = server.population[0]
+        loss = best_ind.test_network()  # type: ignore
+        logger.info(f"Loss: {loss}")
     else:
         print("Create and start node.")
         population = es_select_population(config, ind)
         population.ps_run()
-
 
 if __name__ == "__main__":
     main()
