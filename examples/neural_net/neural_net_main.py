@@ -38,7 +38,9 @@ class NeuralNetIndividual(ESIndividual):
             self.evaluate(input_values)
             loss += self.calc_error(expected_output)
 
-        return loss
+            logger.debug(f"{loss=}, {input_values=} -> {expected_output=}")
+
+        return loss / self.data_provider.batch_size
 
     def evaluate(self, input_values: list):
         # First reset all values to 0.0:
@@ -57,6 +59,11 @@ class NeuralNetIndividual(ESIndividual):
             error += (expected_output[i] - self.hidden_layer[i].current_value)**2.0
 
         return error
+
+    def evaluate_with_error(self, values):
+        (input_values, expected_output) = values
+        self.evaluate(input_values)
+        self.fitness += self.calc_error(expected_output)
 
     def add_neuron(self):
         new_neuron: Neuron = Neuron()
@@ -141,19 +148,30 @@ class NeuralNetIndividual(ESIndividual):
 
         self.hidden_layer_size = self.output_size
 
-        # Start with one neuron
+        # Start with two neurons
         self.add_neuron()
-        # With one connection to an imput layer
-        index = rnd.randrange(self.input_size)
-        self.hidden_layer[-1].add_input_connection(index)
+        self.add_neuron()
+        # With two connection to the first two input layer
+        self.hidden_layer[-2].add_input_connection(0)
+        self.hidden_layer[-2].add_input_connection(1)
+        self.hidden_layer[-1].add_input_connection(0)
+        self.hidden_layer[-1].add_input_connection(1)
 
     @override
     def es_calculate_fitness(self):
         self.fitness: float = 0.0
 
-        for (input_values, expected_output) in self.data_provider.training_batch():
-            self.evaluate(input_values)
-            self.fitness += self.calc_error(expected_output)
+        self.evaluate_with_error(([0.0, 0.0], [0.0]))
+        self.evaluate_with_error(([0.0, 1.0], [1.0]))
+        self.evaluate_with_error(([1.0, 0.0], [1.0]))
+        self.evaluate_with_error(([1.0, 1.0], [0.0]))
+
+        # for values in self.data_provider.training_batch():
+        #     self.evaluate_with_error(values)
+        #
+        # self.fitness = self.fitness / (4.0 + self.data_provider.batch_size)
+        #
+        self.fitness = self.fitness / 4.0
 
     @override
     def es_clone(self) -> Self:
@@ -212,21 +230,16 @@ def main():
     logging.getLogger("asyncio").setLevel(logging.WARNING)
     logging.getLogger("parasnake").setLevel(logging.WARNING)
 
-    input_values = []
-    expected_output = []
+    data_values = []
 
     # Just simple XOR
-    for _ in range(100):
-        input_values.append([0.0, 0.0])
-        expected_output.append([0.0])
-        input_values.append([0.0, 1.0])
-        expected_output.append([1.0])
-        input_values.append([1.0, 0.0])
-        expected_output.append([1.0])
-        input_values.append([1.0, 1.0])
-        expected_output.append([0.0])
+    for _ in range(50):
+        data_values.append(([0.0, 0.0], [0.0]))
+        data_values.append(([0.0, 1.0], [1.0]))
+        data_values.append(([1.0, 0.0], [1.0]))
+        data_values.append(([1.0, 1.0], [0.0]))
 
-    dp = DataProvider(input_values, expected_output, 20)
+    dp = DataProvider(data_values, 10)
 
     ind = NeuralNetIndividual(2, 1, dp)
 
