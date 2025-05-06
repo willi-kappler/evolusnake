@@ -37,14 +37,10 @@ class DataProvider:
         logger.debug(f"train size: {self.training_size}")
         logger.debug(f"test size: {self.test_size}")
 
-    def get_batch(self) -> list:
-        batch_idx: list = []
-
+    def training_batch(self) -> Generator[tuple[list, list], None, None]:
         for _ in range(self.batch_size):
             n = rnd.randrange(self.training_size)
-            batch_idx.append(n)
-
-        return batch_idx
+            yield self.training_data[n]
 
     def test_batch(self) -> Generator[tuple[list, list], None, None]:
         for _ in range(self.batch_size):

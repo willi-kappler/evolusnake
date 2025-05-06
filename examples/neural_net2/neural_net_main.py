@@ -58,8 +58,6 @@ class NeuralNetIndividual(ESIndividual):
         self.new_node_prob: int = 10000
         self.new_connection_prob: int = 100
         self.data_provider: DataProvider = data_provider
-        self.batch_counter = 0
-        self.batch_idx = self.data_provider.get_batch()
 
         self.es_randomize()
 
@@ -193,16 +191,10 @@ class NeuralNetIndividual(ESIndividual):
     def es_calculate_fitness(self):
         self.fitness: float = 0.0
 
-        for idx in self.batch_idx:
-            values = self.data_provider.training_data[idx]
+        for values in self.data_provider.training_batch():
             self.evaluate_with_error(values)
 
         self.fitness = self.fitness / self.data_provider.batch_size
-
-        self.batch_counter += 1
-        if self.batch_counter >= 10:
-            self.batch_counter = 0
-            self.batch_idx = self.data_provider.get_batch()
 
     @override
     def es_clone(self) -> Self:
@@ -263,11 +255,11 @@ def main():
 
     data_values = load_iris_data("Iris.csv")
 
-    dp = DataProvider(data_values, 30)
+    dp = DataProvider(data_values, 40)
 
     ind = NeuralNetIndividual(4, 3, dp)
 
-    config.target_fitness = 0.01
+    config.target_fitness = 0.001
 
     if server_mode:
         print("Create and start server.")
