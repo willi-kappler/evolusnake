@@ -58,6 +58,7 @@ class NeuralNetIndividual(ESIndividual):
         self.new_node_prob: int = 10
         self.new_connection_prob: int = 10
         self.data_provider: DataProvider = data_provider
+        self.hidden_layer_size: int = 0
         self.prev_fitness: float = 1.0
 
         self.es_randomize()
@@ -179,20 +180,30 @@ class NeuralNetIndividual(ESIndividual):
         for _ in range(self.output_size):
             self.hidden_layer.append(Neuron())
 
+        prev_size: int = self.hidden_layer_size
         self.hidden_layer_size = self.output_size
 
         for i in range(self.input_size):
             self.add_neuron()
             self.hidden_layer[-1].add_input_connection(i)
 
+        # Did this node already have a big network ?
+        # If yes at least add the same number of neurons.
+        diff: int = prev_size - self.hidden_layer_size
+
+        if diff > 0:
+            for _ in range(diff):
+                self.add_neuron()
+
     @override
     def es_calculate_fitness(self):
-        self.fitness = self.prev_fitness
+        self.fitness = 0.0
 
         for values in self.data_provider.training_batch():
             self.evaluate_with_error(values)
 
         self.fitness = self.fitness / self.data_provider.batch_size
+        self.fitness = (self.fitness + self.prev_fitness) / 2.0
 
         self.prev_fitness = self.fitness
 
@@ -201,6 +212,7 @@ class NeuralNetIndividual(ESIndividual):
         clone = NeuralNetIndividual(self.input_size, self.output_size, self.data_provider)
         clone.hidden_layer = [n.clone() for n in self.hidden_layer]
         clone.hidden_layer_size = self.hidden_layer_size
+        clone.prev_fitness = self.prev_fitness
 
         return clone  # type: ignore
 
@@ -210,6 +222,7 @@ class NeuralNetIndividual(ESIndividual):
             "fitness": self.fitness,
             "input_size": self.input_size,
             "output_size": self.output_size,
+            "hidden_layer_size": self.hidden_layer_size,
             "hidden_layer": [n.to_json() for n in self.hidden_layer]
         }
 
