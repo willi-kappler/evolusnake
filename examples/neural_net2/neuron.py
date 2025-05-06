@@ -38,7 +38,6 @@ class Neuron:
     def add_input_connection(self, index: int):
         for (index2, _) in self.input_connections:
             if index == index2:
-                self.mutate_input_connection()
                 return
 
         weight: float = rnd.uniform(-1.0, 1.0)
@@ -48,7 +47,6 @@ class Neuron:
         l: int = len(self.input_connections)
 
         if l == 0:
-            self.mutate_bias()
             return
         else:
             index: int = rnd.randrange(l)
@@ -59,7 +57,6 @@ class Neuron:
         l: int = len(self.input_connections)
 
         if l == 0:
-            self.mutate_bias()
             return
         else:
             index: int = rnd.randrange(l)
@@ -69,19 +66,15 @@ class Neuron:
     def add_hidden_connection(self, index: int):
         for (index2, _) in self.hidden_connections:
             if index == index2:
-                self.mutate_hidden_connection()
                 return
 
         weight: float = rnd.uniform(-1.0, 1.0)
         self.hidden_connections.append([index, weight])
 
-        # logger.debug(f"add_hidden_connection, {index=}")
-
     def mutate_hidden_connection(self):
         l: int = len(self.hidden_connections)
 
         if l == 0:
-            self.mutate_bias()
             return
         else:
             index: int = rnd.randrange(l)
@@ -92,13 +85,11 @@ class Neuron:
         l: int = len(self.hidden_connections)
 
         if l == 0:
-            self.mutate_bias()
             return
         else:
             index: int = rnd.randrange(l)
             connection: list = self.hidden_connections[index]
             connection[0] = new_index
-            # logger.debug(f"replace_hidden_connection, {new_index=}")
 
     def evaluate(self, input_values: list, hidden_layer: list):
         new_value: float = self.bias
@@ -134,5 +125,4 @@ class Neuron:
         self.input_connections = data["input_connections"]
         self.hidden_connections = data["hidden_connections"]
         self.bias = data["bias"]
-
 

@@ -112,17 +112,16 @@ class NeuralNetIndividual(ESIndividual):
 
     def swap_neurons(self):
         i1 = rnd.randrange(self.hidden_layer_size)
+
+        if self.hidden_layer[i1].is_empty():
+            return
+
         i2 = rnd.randrange(self.hidden_layer_size)
 
         while i1 == i2:
             i2 = rnd.randrange(self.hidden_layer_size)
 
-        if self.hidden_layer[i1].is_empty():
-            self.mutate_neuron()
-            return
-
         if self.hidden_layer[i2].is_empty():
-            self.mutate_neuron()
             return
 
         (self.hidden_layer[i1], self.hidden_layer[i2]) = (self.hidden_layer[i2], self.hidden_layer[i1])
