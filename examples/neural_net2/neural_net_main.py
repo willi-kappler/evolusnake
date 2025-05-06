@@ -59,7 +59,8 @@ class NeuralNetIndividual(ESIndividual):
         self.new_connection_prob: int = 10
         self.data_provider: DataProvider = data_provider
         self.hidden_layer_size: int = 0
-        self.prev_fitness: float = 1.0
+        self.prev_fitness1: float = 1.0
+        self.prev_fitness2: float = 1.0
 
         self.es_randomize()
 
@@ -203,16 +204,18 @@ class NeuralNetIndividual(ESIndividual):
             self.evaluate_with_error(values)
 
         self.fitness = self.fitness / self.data_provider.batch_size
-        self.fitness = (self.fitness + self.prev_fitness) / 2.0
+        self.fitness = (self.fitness + self.prev_fitness1 + self.prev_fitness2) / 3.0
 
-        self.prev_fitness = self.fitness
+        self.prev_fitness2 = self.prev_fitness1
+        self.prev_fitness1 = self.fitness
 
     @override
     def es_clone(self) -> Self:
         clone = NeuralNetIndividual(self.input_size, self.output_size, self.data_provider)
         clone.hidden_layer = [n.clone() for n in self.hidden_layer]
         clone.hidden_layer_size = self.hidden_layer_size
-        clone.prev_fitness = self.prev_fitness
+        clone.prev_fitness1 = self.prev_fitness1
+        clone.prev_fitness2 = self.prev_fitness2
 
         return clone  # type: ignore
 
