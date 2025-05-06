@@ -91,10 +91,10 @@ class NeuralNetIndividual(ESIndividual):
 
         return error
 
-    def evaluate_with_error(self, values) -> float:
+    def evaluate_with_error(self, values):
         (input_values, expected_output) = values
         self.evaluate(input_values)
-        return self.calc_error(expected_output)
+        self.fitness += self.calc_error(expected_output)
 
     def add_neuron(self):
         new_neuron: Neuron = Neuron()
@@ -188,15 +188,14 @@ class NeuralNetIndividual(ESIndividual):
 
     @override
     def es_calculate_fitness(self):
-        new_fitness: float = 0.0
+        self.fitness = self.prev_fitness
 
         for values in self.data_provider.training_batch():
-            new_fitness += self.evaluate_with_error(values)
+            self.evaluate_with_error(values)
 
-        new_fitness = new_fitness / self.data_provider.batch_size
+        self.fitness = self.fitness / self.data_provider.batch_size
 
-        self.fitness = (self.prev_fitness + new_fitness) / 2.0
-        self.prev_fitness = new_fitness
+        self.prev_fitness = self.fitness
 
     @override
     def es_clone(self) -> Self:
