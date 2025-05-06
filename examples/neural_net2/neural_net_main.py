@@ -55,7 +55,7 @@ class NeuralNetIndividual(ESIndividual):
 
         self.input_size: int = input_size
         self.output_size: int = output_size
-        self.new_node_prob: int = 10000
+        self.new_node_prob: int = 1000
         self.new_connection_prob: int = 100
         self.data_provider: DataProvider = data_provider
 
@@ -70,7 +70,7 @@ class NeuralNetIndividual(ESIndividual):
 
             logger.debug(f"{loss=}, {input_values=} -> {expected_output=}")
 
-        return loss / self.data_provider.batch_size
+        return loss
 
     def evaluate(self, input_values: list):
         # First reset all values to 0.0:
@@ -194,8 +194,6 @@ class NeuralNetIndividual(ESIndividual):
         for values in self.data_provider.training_batch():
             self.evaluate_with_error(values)
 
-        self.fitness = self.fitness / self.data_provider.batch_size
-
     @override
     def es_clone(self) -> Self:
         clone = NeuralNetIndividual(self.input_size, self.output_size, self.data_provider)
@@ -259,7 +257,7 @@ def main():
 
     ind = NeuralNetIndividual(4, 3, dp)
 
-    config.target_fitness = 0.001
+    config.target_fitness = 0.01
 
     if server_mode:
         print("Create and start server.")
