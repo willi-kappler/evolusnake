@@ -74,9 +74,13 @@ run_selection() {
 
     python3 $main_file -k 1 -m 1 -i 10000 &
     sleep 2
+    python3 $main_file -k 1 -m 1 -i 10000 -r &
+    sleep 2
     python3 $main_file -k 1 -m 1 -i 50000 -r &
     sleep 2
     python3 $main_file -k 2 -m 1 -i 10000 &
+    sleep 2
+    python3 $main_file -k 7 -m 1 -i 10000 &
     sleep 2
     python3 $main_file -k 8 -m 1 -i 10000 &
     sleep 2
