@@ -44,6 +44,7 @@ class ESPopulationNode8(PSNode):
         self.population.es_randomize_or_accept_best(data)
         self.population.es_increase_iteration_mutation()
         self.population.es_set_num_iterations()
+        self.population.es_set_num_mutations()
         self.population.minimum_found = False
 
         limit_range: float = rnd.uniform(2.0, 10.0)
@@ -71,16 +72,8 @@ class ESPopulationNode8(PSNode):
 
                         self.population.es_check_limit(ind, fitness_limit, j)
 
-                        # if ind.fitness < fitness_limit:
-                        #     self.population.population[j] = ind
-                        # elif ind.fitness < self.population.population[j].fitness:
-                        #     self.population.population[j] = ind
-
             if self.population.minimum_found:
                 break
-
-            # Change mutation rate:
-            self.population.es_set_num_mutations()
 
         self.population.es_sort_population()
         self.population.es_log_statistics()

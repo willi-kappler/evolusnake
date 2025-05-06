@@ -48,6 +48,7 @@ class ESPopulationNode1(PSNode):
         self.population.es_randomize_or_accept_best(data)
         self.population.es_increase_iteration_mutation()
         self.population.es_set_num_iterations()
+        self.population.es_set_num_mutations()
 
         for i in range(self.population.num_of_iterations):
             # Create a copy of each individual before mutating it:
@@ -65,9 +66,6 @@ class ESPopulationNode1(PSNode):
             if self.population.population[0].fitness <= self.population.target_fitness:
                 self.population.es_early_exit(i)
                 break
-
-            # Change mutation rate:
-            self.population.es_set_num_mutations()
 
         self.population.best_fitness = self.population.population[0].fitness
         self.population.worst_fitness = self.population.population[-1].fitness

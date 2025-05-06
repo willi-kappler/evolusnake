@@ -44,6 +44,7 @@ class ESPopulationNode3(PSNode):
         self.population.es_increase_iteration_mutation()
         self.population.es_find_best_and_worst_individual()
         self.population.es_set_num_iterations()
+        self.population.es_set_num_mutations()
 
         max_iter = self.population.num_of_iterations * self.population.population_size
 
@@ -63,9 +64,6 @@ class ESPopulationNode3(PSNode):
             elif tmp_ind.fitness < self.population.worst_fitness:
                 self.population.es_replace_worst(tmp_ind)
                 self.population.es_find_worst_individual()
-
-            # Change mutation rate:
-            self.population.es_set_num_mutations()
 
         self.population.es_log_statistics()
         return self.population.es_get_best()

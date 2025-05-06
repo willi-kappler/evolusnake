@@ -44,6 +44,7 @@ class ESPopulationNode9(PSNode):
         self.population.es_randomize_or_accept_best(data)
         self.population.es_increase_iteration_mutation()
         self.population.es_set_num_iterations()
+        self.population.es_set_num_mutations()
 
         for i in range(self.population.num_of_iterations):
             self.population.es_sort_population()
@@ -82,9 +83,6 @@ class ESPopulationNode9(PSNode):
                         self.population.population.append(new_ind.es_clone_internal())
                         current_size += 1
                         loop_counter = 0
-
-            # Change mutation rate:
-            self.population.es_set_num_mutations()
 
         self.population.es_sort_population()
         self.population.es_log_statistics()

@@ -44,6 +44,7 @@ class ESPopulationNode11(PSNode):
         self.population.es_randomize_or_accept_best(data)
         self.population.es_increase_iteration_mutation()
         self.population.es_set_num_iterations()
+        self.population.es_set_num_mutations()
         self.population.minimum_found = False
 
         sine_freq: float = math.tau / float(self.population.num_of_iterations)
@@ -62,20 +63,12 @@ class ESPopulationNode11(PSNode):
 
                 self.population.es_check_limit(ind, current_limit, j)
 
-                # if ind.fitness < current_limit:
-                #     self.population.population[j] = ind
-                # elif ind.fitness < self.population.population[j].fitness:
-                #     self.population.population[j] = ind
-
                 if ind.fitness < self.population.target_fitness:
                     self.population.es_early_exit(i)
                     break
 
             if self.population.minimum_found:
                 break
-
-            # Change mutation rate:
-            self.population.es_set_num_mutations()
 
         self.population.es_find_best_and_worst_individual()
 

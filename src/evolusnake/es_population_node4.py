@@ -47,6 +47,7 @@ class ESPopulationNode4(PSNode):
         self.population.es_randomize_or_accept_best(data)
         self.population.es_increase_iteration_mutation()
         self.population.es_set_num_iterations()
+        self.population.es_set_num_mutations()
         self.population.minimum_found = False
         ind_below_global: int = 0
         all_above_global: int = 0
@@ -64,20 +65,12 @@ class ESPopulationNode4(PSNode):
 
                 self.population.es_check_limit(tmp_ind, self.global_fitness, j)
 
-                # if tmp_ind.fitness < self.global_fitness:
-                #     self.population.population[j] = tmp_ind
-                # elif tmp_ind.fitness < self.population.population[j].fitness:
-                #     self.population.population[j] = tmp_ind
-
                 if tmp_ind.fitness <= self.population.target_fitness:
                     self.population.es_early_exit(i)
                     break
 
             if self.population.minimum_found:
                 break
-
-            # Change mutation rate:
-            self.population.es_set_num_mutations()
 
             ind_below_global = 0
             for ind in self.population.population:
