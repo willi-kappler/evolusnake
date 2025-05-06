@@ -69,6 +69,21 @@ run_all_kinds() {
     sleep 2
 }
 
+run_selection() {
+    echo "Run a selection of population kinds."
+
+    python3 $main_file -k 1 -m 1 -i 10000 &
+    sleep 2
+    python3 $main_file -k 1 -m 1 -i 50000 -r &
+    sleep 2
+    python3 $main_file -k 2 -m 1 -i 10000 &
+    sleep 2
+    python3 $main_file -k 8 -m 1 -i 10000 &
+    sleep 2
+    python3 $main_file -k 10 -m 1 -i 10000 &
+    sleep 2
+}
+
 reset
 
 export PYTHONPATH=$PYTHONPATH:"../../src/"
