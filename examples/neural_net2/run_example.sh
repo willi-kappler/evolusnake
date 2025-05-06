@@ -5,7 +5,7 @@ main_file="neural_net_main.py"
 run_kind() {
     echo "Run kind $1."
 
-    num_of_mutations="5"
+    num_of_mutations="1"
     randomize="-r"
     iterations1="10000"
     iterations2="20000"
