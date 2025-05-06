@@ -58,6 +58,7 @@ class NeuralNetIndividual(ESIndividual):
         self.new_node_prob: int = 10
         self.new_connection_prob: int = 10
         self.data_provider: DataProvider = data_provider
+        self.prev_fitness: float = 1.0
 
         self.es_randomize()
 
@@ -90,10 +91,10 @@ class NeuralNetIndividual(ESIndividual):
 
         return error
 
-    def evaluate_with_error(self, values):
+    def evaluate_with_error(self, values) -> float:
         (input_values, expected_output) = values
         self.evaluate(input_values)
-        self.fitness += self.calc_error(expected_output)
+        return self.calc_error(expected_output)
 
     def add_neuron(self):
         new_neuron: Neuron = Neuron()
@@ -187,12 +188,15 @@ class NeuralNetIndividual(ESIndividual):
 
     @override
     def es_calculate_fitness(self):
-        self.fitness: float = 0.0
+        new_fitness: float = 0.0
 
         for values in self.data_provider.training_batch():
-            self.evaluate_with_error(values)
+            new_fitness += self.evaluate_with_error(values)
 
-        self.fitness = self.fitness / self.data_provider.batch_size
+        new_fitness = new_fitness / self.data_provider.batch_size
+
+        self.fitness = (self.prev_fitness + new_fitness) / 2.0
+        self.prev_fitness = new_fitness
 
     @override
     def es_clone(self) -> Self:
@@ -253,7 +257,7 @@ def main():
 
     data_values = load_iris_data("Iris.csv")
 
-    dp = DataProvider(data_values, 20)
+    dp = DataProvider(data_values, 10)
 
     ind = NeuralNetIndividual(4, 3, dp)
 
