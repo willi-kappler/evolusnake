@@ -113,6 +113,9 @@ class NeuralNetIndividual(ESIndividual):
         i1 = rnd.randrange(self.hidden_layer_size)
         i2 = rnd.randrange(self.hidden_layer_size)
 
+        while i1 == i2:
+            i2 = rnd.randrange(self.hidden_layer_size)
+
         if self.hidden_layer[i1].is_empty():
             self.mutate_neuron()
             return
@@ -178,14 +181,9 @@ class NeuralNetIndividual(ESIndividual):
 
         self.hidden_layer_size = self.output_size
 
-        # Start with two neurons
-        self.add_neuron()
-        self.add_neuron()
-        # With two connection to the first two input layer
-        self.hidden_layer[-2].add_input_connection(0)
-        self.hidden_layer[-2].add_input_connection(1)
-        self.hidden_layer[-1].add_input_connection(0)
-        self.hidden_layer[-1].add_input_connection(1)
+        for i in range(self.input_size):
+            self.add_neuron()
+            self.hidden_layer[-1].add_input_connection(i)
 
     @override
     def es_calculate_fitness(self):
@@ -253,7 +251,7 @@ def main():
 
     data_values = load_iris_data("Iris.csv")
 
-    dp = DataProvider(data_values, 40)
+    dp = DataProvider(data_values, 20)
 
     ind = NeuralNetIndividual(4, 3, dp)
 
