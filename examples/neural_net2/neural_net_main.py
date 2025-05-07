@@ -69,17 +69,18 @@ class NeuralNetIndividual(ESIndividual):
             self.prev_fitness.append(1.0)
 
     def test_network(self) -> float:
-        logger.debug(f"prev_fitness: {self.prev_fitness}")
+        # logger.debug(f"prev_fitness: {self.prev_fitness}")
 
         loss: float = 0.0
 
-        for (input_values, expected_output) in self.data_provider.test_batch():
-            self.evaluate(input_values)
-            loss += self.calc_error(expected_output)
+        for _ in range(10):
+            for (input_values, expected_output) in self.data_provider.test_batch():
+                self.evaluate(input_values)
+                loss += self.calc_error(expected_output)
 
-            logger.debug(f"{loss=}, {input_values=} -> {expected_output=}")
+                # logger.debug(f"{loss=}, {input_values=} -> {expected_output=}")
 
-        return loss / self.data_provider.batch_size
+        return loss / (self.data_provider.batch_size * 10.0)
 
     def evaluate(self, input_values: list):
         # First reset all values to 0.0:
@@ -219,8 +220,8 @@ class NeuralNetIndividual(ESIndividual):
         self.prev_fitness.popleft()
         self.prev_fitness.append(current_fitness / self.data_provider.batch_size)
         self.fitness = sum(self.prev_fitness) / self.prev_fitness_size
-        # L2 regularization, lambda = 0.01 -> Parameter
-        self.fitness += 0.01 * self.square_sum_weight()
+        # L2 regularization, lambda -> Parameter
+        self.fitness += 0.001 * self.square_sum_weight()
 
     @override
     def es_clone(self) -> Self:
@@ -237,6 +238,7 @@ class NeuralNetIndividual(ESIndividual):
             "fitness": self.fitness,
             "input_size": self.input_size,
             "output_size": self.output_size,
+            "prev_fitness": [x for x in self.prev_fitness],
             "hidden_layer_size": self.hidden_layer_size,
             "hidden_layer": [n.to_json() for n in self.hidden_layer]
         }
@@ -255,6 +257,11 @@ class NeuralNetIndividual(ESIndividual):
             self.hidden_layer.append(neuron)
 
         self.hidden_layer_size = len(self.hidden_layer)
+        self.prev_fitness = deque(data["prev_fitness"])
+
+    @override
+    def es_new_best_individual(self):
+        logger.info(f"Loss: {self.test_network()}")
 
 def main():
     config = ESConfiguration.from_json("neural_net_config.json")
@@ -293,9 +300,6 @@ def main():
         print("Create and start server.")
         server = ESServer(config, ind)
         server.ps_run()
-        best_ind = server.population[0]
-        loss = best_ind.test_network()  # type: ignore
-        logger.info(f"Loss: {loss}")
     else:
         print("Create and start node.")
         population = es_select_population(config, ind)
