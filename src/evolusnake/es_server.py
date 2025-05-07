@@ -125,6 +125,9 @@ class ESServer(PSServer):
                 self.node_stats[node_id] += 1
                 logger.debug(f"{self.node_stats}")
 
+                # User code to do some additional stuff.
+                result.es_new_best_individual()
+
                 if self.save_new_fitness:
                     self.es_save_data(f"{self.new_fitness_counter}_{self.result_filename}")
 

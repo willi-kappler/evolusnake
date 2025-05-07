@@ -67,3 +67,8 @@ class ESIndividual:
         # needed.
         return self.fitness
 
+    def es_new_best_individual(self):
+        # This method is called whenever there is a new best individual
+        # on the server (the best of the best).
+        pass
+
