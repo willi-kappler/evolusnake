@@ -3,6 +3,7 @@ TODO:
 
 - add quit notification to parasnake.
 - Compare fitness of previous best one, if better than 10% debug or info.
+- Check if port is in already in use, if so choose the next port in list.
 
 DONE:
 
