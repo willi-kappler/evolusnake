@@ -64,7 +64,7 @@ class NeuralNetIndividual(ESIndividual):
 
         self.es_randomize()
 
-        for _ in range(9):
+        for _ in range(99):
             self.prev_fitness.append(1.0)
 
     def test_network(self) -> float:
@@ -96,10 +96,9 @@ class NeuralNetIndividual(ESIndividual):
 
         return error
 
-    def evaluate_with_error(self, values):
-        (input_values, expected_output) = values
+    def evaluate_with_error(self, input_values: list, expected_output: list) -> float:
         self.evaluate(input_values)
-        self.fitness += self.calc_error(expected_output)
+        return self.calc_error(expected_output)
 
     def add_neuron(self):
         new_neuron: Neuron = Neuron()
@@ -201,15 +200,13 @@ class NeuralNetIndividual(ESIndividual):
 
     @override
     def es_calculate_fitness(self):
-        self.fitness = 0.0
+        current_fitness: float = 0.0
 
-        for values in self.data_provider.training_batch():
-            self.evaluate_with_error(values)
+        for (input_values, expected_output) in self.data_provider.training_batch():
+            current_fitness += self.evaluate_with_error(input_values, expected_output)
 
-        self.fitness = self.fitness / self.data_provider.batch_size
-        self.fitness = (self.fitness + sum(self.prev_fitness)) / 10.0
-
-        self.prev_fitness.append(self.fitness)
+        self.prev_fitness.append(current_fitness / self.data_provider.batch_size)
+        self.fitness = sum(self.prev_fitness) / 100.0
         self.prev_fitness.popleft()
 
     @override
