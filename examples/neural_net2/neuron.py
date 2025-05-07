@@ -126,3 +126,14 @@ class Neuron:
         self.hidden_connections = data["hidden_connections"]
         self.bias = data["bias"]
 
+    def square_sum_weight(self) -> float:
+        total_sum: float = 0.0
+
+        for (_, w) in self.input_connections:
+            total_sum += w**2.0
+
+        for (_, w) in self.hidden_connections:
+            total_sum += w**2.0
+
+        return total_sum
+

@@ -56,15 +56,16 @@ class NeuralNetIndividual(ESIndividual):
 
         self.input_size: int = input_size
         self.output_size: int = output_size
-        self.new_node_prob: int = 10
-        self.new_connection_prob: int = 10
+        self.new_node_prob: int = 10  # Parameter
+        self.new_connection_prob: int = 10  # Parameter
         self.data_provider: DataProvider = data_provider
         self.hidden_layer_size: int = 0
         self.prev_fitness: deque = deque()
 
         self.es_randomize()
 
-        for _ in range(9):
+        self.prev_fitness_size = 10  # Parameter
+        for _ in range(self.prev_fitness_size):
             self.prev_fitness.append(1.0)
 
     def test_network(self) -> float:
@@ -101,6 +102,14 @@ class NeuralNetIndividual(ESIndividual):
     def evaluate_with_error(self, input_values: list, expected_output: list) -> float:
         self.evaluate(input_values)
         return self.calc_error(expected_output)
+
+    def square_sum_weight(self) -> float:
+        total_sum = 0.0
+
+        for neuron in self.hidden_layer:
+            total_sum += neuron.square_sum_weight()
+
+        return total_sum
 
     def add_neuron(self):
         new_neuron: Neuron = Neuron()
@@ -207,9 +216,11 @@ class NeuralNetIndividual(ESIndividual):
         for (input_values, expected_output) in self.data_provider.training_batch():
             current_fitness += self.evaluate_with_error(input_values, expected_output)
 
-        self.prev_fitness.append(current_fitness / self.data_provider.batch_size)
-        self.fitness = sum(self.prev_fitness) / 10.0
         self.prev_fitness.popleft()
+        self.prev_fitness.append(current_fitness / self.data_provider.batch_size)
+        self.fitness = sum(self.prev_fitness) / self.prev_fitness_size
+        # L2 regularization, lambda = 0.01 -> Parameter
+        self.fitness += 0.01 * self.square_sum_weight()
 
     @override
     def es_clone(self) -> Self:
@@ -272,7 +283,7 @@ def main():
 
     data_values = load_iris_data("Iris.csv")
 
-    dp = DataProvider(data_values, 20)
+    dp = DataProvider(data_values, 10)
 
     ind = NeuralNetIndividual(4, 3, dp)
 
