@@ -64,10 +64,12 @@ class NeuralNetIndividual(ESIndividual):
 
         self.es_randomize()
 
-        for _ in range(99):
+        for _ in range(9):
             self.prev_fitness.append(1.0)
 
     def test_network(self) -> float:
+        logger.debug(f"prev_fitness: {self.prev_fitness}")
+
         loss: float = 0.0
 
         for (input_values, expected_output) in self.data_provider.test_batch():
@@ -206,7 +208,7 @@ class NeuralNetIndividual(ESIndividual):
             current_fitness += self.evaluate_with_error(input_values, expected_output)
 
         self.prev_fitness.append(current_fitness / self.data_provider.batch_size)
-        self.fitness = sum(self.prev_fitness) / 100.0
+        self.fitness = sum(self.prev_fitness) / 10.0
         self.prev_fitness.popleft()
 
     @override
@@ -270,7 +272,7 @@ def main():
 
     data_values = load_iris_data("Iris.csv")
 
-    dp = DataProvider(data_values, 10)
+    dp = DataProvider(data_values, 20)
 
     ind = NeuralNetIndividual(4, 3, dp)
 
