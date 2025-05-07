@@ -7,6 +7,7 @@ import logging
 import pathlib
 from typing import override, Self
 import random as rnd
+from collections import deque
 
 # Local imports:
 from evolusnake.es_config import ESConfiguration
@@ -59,10 +60,12 @@ class NeuralNetIndividual(ESIndividual):
         self.new_connection_prob: int = 10
         self.data_provider: DataProvider = data_provider
         self.hidden_layer_size: int = 0
-        self.prev_fitness1: float = 1.0
-        self.prev_fitness2: float = 1.0
+        self.prev_fitness: deque = deque()
 
         self.es_randomize()
+
+        for _ in range(9):
+            self.prev_fitness.append(1.0)
 
     def test_network(self) -> float:
         loss: float = 0.0
@@ -204,18 +207,17 @@ class NeuralNetIndividual(ESIndividual):
             self.evaluate_with_error(values)
 
         self.fitness = self.fitness / self.data_provider.batch_size
-        self.fitness = (self.fitness + self.prev_fitness1 + self.prev_fitness2) / 3.0
+        self.fitness = (self.fitness + sum(self.prev_fitness)) / 10.0
 
-        self.prev_fitness2 = self.prev_fitness1
-        self.prev_fitness1 = self.fitness
+        self.prev_fitness.append(self.fitness)
+        self.prev_fitness.popleft()
 
     @override
     def es_clone(self) -> Self:
         clone = NeuralNetIndividual(self.input_size, self.output_size, self.data_provider)
         clone.hidden_layer = [n.clone() for n in self.hidden_layer]
         clone.hidden_layer_size = self.hidden_layer_size
-        clone.prev_fitness1 = self.prev_fitness1
-        clone.prev_fitness2 = self.prev_fitness2
+        clone.prev_fitness = deque(self.prev_fitness)
 
         return clone  # type: ignore
 
