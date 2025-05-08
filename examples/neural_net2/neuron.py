@@ -117,7 +117,7 @@ class Neuron:
         self.bias = data["bias"]
 
     def biggest_weight(self) -> float:
-        bw = 0.0
+        bw = abs(self.bias)
 
         for (_, w) in self.input_connections:
             bw = max(abs(w), bw)
