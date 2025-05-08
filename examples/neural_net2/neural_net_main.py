@@ -64,7 +64,7 @@ class NeuralNetIndividual(ESIndividual):
 
         self.es_randomize()
 
-        self.prev_fitness_size = 20  # Parameter
+        self.prev_fitness_size = 10  # Parameter
         for _ in range(self.prev_fitness_size):
             self.prev_fitness.append(1.0)
 
@@ -110,7 +110,7 @@ class NeuralNetIndividual(ESIndividual):
         for neuron in self.hidden_layer:
             total_sum += neuron.square_sum_weight()
 
-        return total_sum / self.hidden_layer_size
+        return total_sum
 
     def add_neuron(self):
         new_neuron: Neuron = Neuron()
@@ -221,7 +221,7 @@ class NeuralNetIndividual(ESIndividual):
         self.prev_fitness.append(current_fitness / self.data_provider.batch_size)
         self.fitness = sum(self.prev_fitness) / self.prev_fitness_size
         # L2 regularization, lambda -> Parameter
-        self.fitness += 0.01 * self.square_sum_weight()
+        # self.fitness += 0.0001 * self.square_sum_weight()
 
     @override
     def es_clone(self) -> Self:
@@ -238,8 +238,8 @@ class NeuralNetIndividual(ESIndividual):
             "fitness": self.fitness,
             "input_size": self.input_size,
             "output_size": self.output_size,
-            "prev_fitness": [x for x in self.prev_fitness],
             "hidden_layer_size": self.hidden_layer_size,
+            "prev_fitness": [x for x in self.prev_fitness],
             "hidden_layer": [n.to_json() for n in self.hidden_layer]
         }
 
@@ -290,11 +290,11 @@ def main():
 
     data_values = load_iris_data("Iris.csv")
 
-    dp = DataProvider(data_values, 20)
+    dp = DataProvider(data_values, 10)
 
     ind = NeuralNetIndividual(4, 3, dp)
 
-    config.target_fitness = 0.001
+    config.target_fitness = 0.0001
 
     if server_mode:
         print("Create and start server.")
