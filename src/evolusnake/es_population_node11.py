@@ -81,6 +81,7 @@ class ESPopulationNode11(PSNode):
 
         logger.debug(f"{self.sine_base=}, {self.sine_amplitude=}")
 
+        self.population.es_after_iteration()
         self.population.es_log_statistics()
         return self.population.es_get_best()
 

@@ -186,4 +186,7 @@ class ESPopulation:
         logger.debug(f"Best individual mutations: {best_individual.mut_op_counter}")
         logger.debug(f"Worst individual mutations: {worst_individual.mut_op_counter}")
 
+    def es_after_iteration(self):
+        for ind in self.population:
+            ind.es_after_iteration()
 

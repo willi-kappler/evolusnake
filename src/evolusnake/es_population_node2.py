@@ -62,6 +62,7 @@ class ESPopulationNode2(PSNode):
                 break
 
         self.population.es_find_best_and_worst_individual()
+        self.population.es_after_iteration()
         self.population.es_log_statistics()
         return self.population.es_get_best()
 

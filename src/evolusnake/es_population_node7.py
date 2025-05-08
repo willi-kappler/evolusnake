@@ -79,6 +79,7 @@ class ESPopulationNode7(PSNode):
 
             iter_counter += 1
 
+        self.population.es_after_iteration()
         self.population.es_log_statistics()
         logger.debug(f"{iter_counter=}")
         return self.population.es_get_best()

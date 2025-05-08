@@ -69,6 +69,7 @@ class ESPopulationNode1(PSNode):
 
         self.population.best_fitness = self.population.population[0].fitness
         self.population.worst_fitness = self.population.population[-1].fitness
+        self.population.es_after_iteration()
         self.population.es_log_statistics()
         return self.population.es_get_best()
 

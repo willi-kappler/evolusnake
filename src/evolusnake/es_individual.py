@@ -72,3 +72,7 @@ class ESIndividual:
         # on the server (the best of the best).
         pass
 
+    def es_after_iteration(self):
+        # This method is called for each element after the iteration has finished.
+        pass
+

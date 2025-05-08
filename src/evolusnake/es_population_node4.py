@@ -86,6 +86,7 @@ class ESPopulationNode4(PSNode):
         logger.debug(f"{all_above_global=}")
 
         self.population.es_find_best_and_worst_individual()
+        self.population.es_after_iteration()
         self.population.es_log_statistics()
         self.population.es_clone_best_to_worst()
         return self.population.es_get_best()

@@ -76,6 +76,7 @@ class ESPopulationNode5(PSNode):
             self.population.population[-1] = second_worst
             self.es_calc_average_fitness()
 
+        self.population.es_after_iteration()
         self.population.es_log_statistics()
         return self.population.es_get_best()
 

@@ -65,6 +65,7 @@ class ESPopulationNode3(PSNode):
                 self.population.es_replace_worst(tmp_ind)
                 self.population.es_find_worst_individual()
 
+        self.population.es_after_iteration()
         self.population.es_log_statistics()
         return self.population.es_get_best()
 

@@ -76,6 +76,7 @@ class ESPopulationNode8(PSNode):
                 break
 
         self.population.es_sort_population()
+        self.population.es_after_iteration()
         self.population.es_log_statistics()
         return self.population.es_get_best()
 

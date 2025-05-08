@@ -85,6 +85,7 @@ class ESPopulationNode9(PSNode):
                         loop_counter = 0
 
         self.population.es_sort_population()
+        self.population.es_after_iteration()
         self.population.es_log_statistics()
         return self.population.es_get_best()
 
