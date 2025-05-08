@@ -127,10 +127,6 @@ class NeuralNetIndividual(ESIndividual):
         index: int = rnd.randrange(self.hidden_layer_size)
         new_neuron.add_hidden_connection(index)
 
-        # Add a connection from a random existing neuron to this new neuron:
-        index: int = rnd.randrange(self.hidden_layer_size)
-        self.hidden_layer[index].add_hidden_connection(self.hidden_layer_size)
-
         self.hidden_layer.append(new_neuron)
         self.hidden_layer_size += 1
 
@@ -163,6 +159,8 @@ class NeuralNetIndividual(ESIndividual):
         index2: int = rnd.randrange(self.hidden_layer_size)
         index3: int = rnd.randrange(self.input_size)
         prob1: int = rnd.randrange(10)
+        prob2: int = rnd.randrange(10)
+        prob3: int = rnd.randrange(100)
         neuron: Neuron = self.hidden_layer[index1]
 
         match mut_op:
@@ -170,7 +168,7 @@ class NeuralNetIndividual(ESIndividual):
                 if prob1 == 0:
                     self.add_neuron()
             case 1:
-                if prob1 == 0:
+                if prob2 == 0:
                     self.remove_neuron()
             case 2:
                 self.swap_neurons()
@@ -189,10 +187,10 @@ class NeuralNetIndividual(ESIndividual):
             case 9:
                 neuron.replace_hidden_connection(index2)
             case 10:
-                if prob1 == 0:
+                if prob3 == 0:
                     neuron.remove_input_connection()
             case 11:
-                if prob1 == 0:
+                if prob3 == 0:
                     neuron.remove_hidden_connection()
 
     @override
@@ -300,7 +298,7 @@ def main():
 
     dp = DataProvider(data_values, 10)
 
-    ind = NeuralNetIndividual(4, 3, dp, 10)
+    ind = NeuralNetIndividual(4, 3, dp)
 
     config.target_fitness = 0.00001
 
