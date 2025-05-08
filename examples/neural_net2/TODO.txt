@@ -8,3 +8,7 @@ Softmax:
 https://www.geeksforgeeks.org/how-to-implement-softmax-and-cross-entropy-in-python-and-pytorch/
 
 
+MNIST data set:
+https://github.com/cvdfoundation/mnist
+
+
