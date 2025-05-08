@@ -51,7 +51,8 @@ def load_data(filename: str) -> list:
 
 
 class NeuralNetIndividual(ESIndividual):
-    def __init__(self, input_size: int, output_size: int, data_provider: DataProvider):
+    def __init__(self, input_size: int, output_size: int,
+            data_provider: DataProvider, network_size: int = 0):
         super().__init__()
 
         self.input_size: int = input_size
@@ -61,12 +62,17 @@ class NeuralNetIndividual(ESIndividual):
         self.data_provider: DataProvider = data_provider
         self.hidden_layer_size: int = 0
         self.prev_fitness: deque = deque()
+        self.loss_penalty: float = 1.0
 
         self.es_randomize()
 
         self.prev_fitness_size = 10  # Parameter
         for _ in range(self.prev_fitness_size):
             self.prev_fitness.append(1.0)
+
+        if network_size > 0:
+            for _ in range(network_size):
+                self.add_neuron()
 
     def test_network(self) -> float:
         # logger.debug(f"prev_fitness: {self.prev_fitness}")
@@ -119,12 +125,21 @@ class NeuralNetIndividual(ESIndividual):
         index: int = rnd.randrange(self.hidden_layer_size)
         new_neuron.add_hidden_connection(index)
 
-        # Add a connection from this new neuron to a random existing neuron:
+        # Add a connection from a random existing neuron to this new neuron:
         index: int = rnd.randrange(self.hidden_layer_size)
         self.hidden_layer[index].add_hidden_connection(self.hidden_layer_size)
 
         self.hidden_layer.append(new_neuron)
         self.hidden_layer_size += 1
+
+    def remove_neuron(self):
+        if self.hidden_layer_size > self.input_size + self.output_size + 1:
+            index = rnd.randrange(self.hidden_layer_size)
+            self.hidden_layer.pop(index)
+            self.hidden_layer_size -= 1
+
+            for neuron in self.hidden_layer:
+                neuron.remove_neuron_connection(index)
 
     def swap_neurons(self):
         i1 = rnd.randrange(self.hidden_layer_size)
@@ -144,7 +159,7 @@ class NeuralNetIndividual(ESIndividual):
 
     def mutate_neuron(self):
         index1: int = rnd.randrange(self.hidden_layer_size)
-        mut_op: int = rnd.randrange(5)
+        mut_op: int = rnd.randrange(7)
         neuron: Neuron = self.hidden_layer[index1]
 
         match mut_op:
@@ -172,6 +187,10 @@ class NeuralNetIndividual(ESIndividual):
             case 4:
                 index2: int = rnd.randrange(self.hidden_layer_size)
                 neuron.replace_hidden_connection(index2)
+            case 5:
+                neuron.remove_input_connection()
+            case 6:
+                neuron.remove_hidden_connection()
 
     @override
     def es_mutate(self, mut_op: int):
@@ -181,6 +200,8 @@ class NeuralNetIndividual(ESIndividual):
 
                 if n == 0:
                     self.add_neuron()
+                # elif n == 1:
+                    # self.remove_neuron()
                 else:
                     self.mutate_neuron()
             case 1:
@@ -190,7 +211,7 @@ class NeuralNetIndividual(ESIndividual):
 
     @override
     def es_randomize(self):
-        self.hidden_layer: list = []
+        self.hidden_layer: list[Neuron] = []
 
         for _ in range(self.output_size):
             self.hidden_layer.append(Neuron())
@@ -219,7 +240,7 @@ class NeuralNetIndividual(ESIndividual):
 
         self.prev_fitness.popleft()
         self.prev_fitness.append(current_fitness / self.data_provider.batch_size)
-        self.fitness = self.biggest_weight() * sum(self.prev_fitness) / self.prev_fitness_size
+        self.fitness = self.loss_penalty * self.biggest_weight() * sum(self.prev_fitness) / self.prev_fitness_size
 
     @override
     def es_clone(self) -> Self:
@@ -262,6 +283,10 @@ class NeuralNetIndividual(ESIndividual):
         bw = self.biggest_weight()
         logger.info(f"Loss: {self.test_network()}, size: {self.hidden_layer_size}, biggest weight: {bw}")
 
+    @override
+    def es_after_iteration(self):
+        self.loss_penalty = self.test_network()
+
 def main():
     config = ESConfiguration.from_json("neural_net_config.json")
     config.from_command_line()
@@ -291,7 +316,7 @@ def main():
 
     dp = DataProvider(data_values, 10)
 
-    ind = NeuralNetIndividual(4, 3, dp)
+    ind = NeuralNetIndividual(4, 3, dp, 10)
 
     config.target_fitness = 0.00001
 
