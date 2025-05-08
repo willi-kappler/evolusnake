@@ -62,7 +62,6 @@ class NeuralNetIndividual(ESIndividual):
         self.data_provider: DataProvider = data_provider
         self.hidden_layer_size: int = 0
         self.prev_fitness: deque = deque()
-        self.loss_penalty: float = 1.0
 
         self.es_randomize()
 
@@ -79,8 +78,7 @@ class NeuralNetIndividual(ESIndividual):
 
         for _ in range(10):
             for (input_values, expected_output) in self.data_provider.test_batch():
-                self.evaluate(input_values)
-                loss += self.calc_error(expected_output)
+                loss += self.evaluate_with_error(input_values, expected_output)
 
         return loss / (self.data_provider.batch_size * 10.0)
 
@@ -236,7 +234,7 @@ class NeuralNetIndividual(ESIndividual):
 
         self.prev_fitness.popleft()
         self.prev_fitness.append(current_fitness / self.data_provider.batch_size)
-        self.fitness = self.loss_penalty * self.biggest_weight() * sum(self.prev_fitness) / self.prev_fitness_size
+        self.fitness = self.biggest_weight() * sum(self.prev_fitness) / self.prev_fitness_size
 
     @override
     def es_clone(self) -> Self:
@@ -276,12 +274,11 @@ class NeuralNetIndividual(ESIndividual):
 
     @override
     def es_new_best_individual(self):
-        bw = self.biggest_weight()
-        logger.info(f"Loss: {self.test_network()}, size: {self.hidden_layer_size}, biggest weight: {bw}")
+        logger.info(f"Loss: {self.test_network()}, size: {self.hidden_layer_size}, biggest weight: {self.biggest_weight()}")
 
     @override
     def es_after_iteration(self):
-        self.loss_penalty = self.test_network()
+        self.es_new_best_individual()
 
 def main():
     config = ESConfiguration.from_json("neural_net_config.json")
