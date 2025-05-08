@@ -21,7 +21,7 @@ from dataprovider import DataProvider
 logger = logging.getLogger(__name__)
 
 
-def load_iris_data(filename: str) -> list:
+def load_data(filename: str) -> list:
     result = []
 
     with open(filename, "r") as f:
@@ -287,7 +287,7 @@ def main():
     logging.getLogger("asyncio").setLevel(logging.WARNING)
     logging.getLogger("parasnake").setLevel(logging.WARNING)
 
-    data_values = load_iris_data("Iris.csv")
+    data_values = load_data("Iris.csv")
 
     dp = DataProvider(data_values, 10)
 
