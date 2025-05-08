@@ -96,7 +96,7 @@ class NeuralNetIndividual(ESIndividual):
 
         # The first neurons are output neurons
         for i in range(self.output_size):
-            error += (expected_output[i] - self.hidden_layer[i].current_value)**2.0
+            error += abs(expected_output[i] - self.hidden_layer[i].current_value)
 
         return error
 
@@ -153,7 +153,7 @@ class NeuralNetIndividual(ESIndividual):
 
     def mutate_neuron(self):
         index1: int = rnd.randrange(self.hidden_layer_size)
-        mut_op: int = rnd.randrange(7)
+        mut_op: int = rnd.randrange(5)
         neuron: Neuron = self.hidden_layer[index1]
 
         match mut_op:
@@ -181,10 +181,10 @@ class NeuralNetIndividual(ESIndividual):
             case 4:
                 index2: int = rnd.randrange(self.hidden_layer_size)
                 neuron.replace_hidden_connection(index2)
-            case 5:
-                neuron.remove_input_connection()
-            case 6:
-                neuron.remove_hidden_connection()
+            #case 5:
+                #neuron.remove_input_connection()
+            #case 6:
+                #neuron.remove_hidden_connection()
 
     @override
     def es_mutate(self, mut_op: int):
@@ -234,7 +234,7 @@ class NeuralNetIndividual(ESIndividual):
 
         self.prev_fitness.popleft()
         self.prev_fitness.append(current_fitness / self.data_provider.batch_size)
-        self.fitness = self.biggest_weight() * sum(self.prev_fitness) / self.prev_fitness_size
+        self.fitness = sum(self.prev_fitness) / self.prev_fitness_size
 
     @override
     def es_clone(self) -> Self:
