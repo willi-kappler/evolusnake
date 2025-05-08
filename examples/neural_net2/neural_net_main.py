@@ -162,13 +162,16 @@ class NeuralNetIndividual(ESIndividual):
         index1: int = rnd.randrange(self.hidden_layer_size)
         index2: int = rnd.randrange(self.hidden_layer_size)
         index3: int = rnd.randrange(self.input_size)
+        prob1: int = rnd.randrange(10)
         neuron: Neuron = self.hidden_layer[index1]
 
         match mut_op:
             case 0:
-                self.add_neuron()
+                if prob1 == 0:
+                    self.add_neuron()
             case 1:
-                self.remove_neuron()
+                if prob1 == 0:
+                    self.remove_neuron()
             case 2:
                 self.swap_neurons()
             case 3:
@@ -186,9 +189,11 @@ class NeuralNetIndividual(ESIndividual):
             case 9:
                 neuron.replace_hidden_connection(index2)
             case 10:
-                neuron.remove_input_connection()
+                if prob1 == 0:
+                    neuron.remove_input_connection()
             case 11:
-                neuron.remove_hidden_connection()
+                if prob1 == 0:
+                    neuron.remove_hidden_connection()
 
     @override
     def es_randomize(self):
