@@ -112,6 +112,14 @@ class NeuralNetIndividual(ESIndividual):
 
         return bw
 
+    def connections_per_neuron(self) -> float:
+        result = 0.0
+
+        for neuron in self.hidden_layer:
+            result += neuron.num_of_connections()
+
+        return result / self.hidden_layer_size
+
     def add_neuron(self):
         new_neuron: Neuron = Neuron()
 
@@ -127,13 +135,11 @@ class NeuralNetIndividual(ESIndividual):
         self.hidden_layer_size += 1
 
     def remove_neuron(self):
-        if self.hidden_layer_size > self.input_size + self.output_size + 1:
-            index = rnd.randrange(self.hidden_layer_size)
-            self.hidden_layer.pop(index)
-            self.hidden_layer_size -= 1
+        index: int = rnd.randrange(self.hidden_layer_size)
+        self.hidden_layer[index].clear()
 
-            for neuron in self.hidden_layer:
-                neuron.remove_neuron_connection(index)
+        for neuron in self.hidden_layer:
+            neuron.remove_neuron_connection(index)
 
     def swap_neurons(self):
         i1 = rnd.randrange(self.hidden_layer_size)
@@ -151,57 +157,38 @@ class NeuralNetIndividual(ESIndividual):
 
         (self.hidden_layer[i1], self.hidden_layer[i2]) = (self.hidden_layer[i2], self.hidden_layer[i1])
 
-    def mutate_neuron(self):
+    @override
+    def es_mutate(self, mut_op: int):
         index1: int = rnd.randrange(self.hidden_layer_size)
-        mut_op: int = rnd.randrange(5)
+        index2: int = rnd.randrange(self.hidden_layer_size)
+        index3: int = rnd.randrange(self.input_size)
         neuron: Neuron = self.hidden_layer[index1]
 
         match mut_op:
             case 0:
-                neuron.mutate_bias()
+                self.add_neuron()
             case 1:
-                n = rnd.randrange(self.new_connection_prob)
-
-                if n == 0:
-                    index2 = rnd.randrange(self.input_size)
-                    neuron.add_input_connection(index2)
-                else:
-                    neuron.mutate_input_connection()
+                self.remove_neuron()
             case 2:
-                n = rnd.randrange(self.new_connection_prob)
-
-                if n == 0:
-                    index2: int = rnd.randrange(self.hidden_layer_size)
-                    neuron.add_hidden_connection(index2)
-                else:
-                    neuron.mutate_hidden_connection()
-            case 3:
-                index2 = rnd.randrange(self.input_size)
-                neuron.replace_input_connection(index2)
-            case 4:
-                index2: int = rnd.randrange(self.hidden_layer_size)
-                neuron.replace_hidden_connection(index2)
-            #case 5:
-                #neuron.remove_input_connection()
-            #case 6:
-                #neuron.remove_hidden_connection()
-
-    @override
-    def es_mutate(self, mut_op: int):
-        match mut_op:
-            case 0:
-                n = rnd.randrange(self.new_node_prob)
-
-                if n == 0:
-                    self.add_neuron()
-                # elif n == 1:
-                    # self.remove_neuron()
-                else:
-                    self.mutate_neuron()
-            case 1:
                 self.swap_neurons()
-            case 2:
-                self.mutate_neuron()
+            case 3:
+                neuron.add_input_connection(index3)
+            case 4:
+                neuron.add_hidden_connection(index2)
+            case 5:
+                neuron.mutate_bias()
+            case 6:
+                neuron.mutate_input_connection()
+            case 7:
+                neuron.mutate_hidden_connection()
+            case 8:
+                neuron.replace_input_connection(index3)
+            case 9:
+                neuron.replace_hidden_connection(index2)
+            case 10:
+                neuron.remove_input_connection()
+            case 11:
+                neuron.remove_hidden_connection()
 
     @override
     def es_randomize(self):
@@ -274,11 +261,10 @@ class NeuralNetIndividual(ESIndividual):
 
     @override
     def es_new_best_individual(self):
-        logger.info(f"Loss: {self.test_network()}, size: {self.hidden_layer_size}, biggest weight: {self.biggest_weight()}")
-
-    @override
-    def es_after_iteration(self):
-        self.es_new_best_individual()
+        logger.info(f"Loss: {self.test_network()}")
+        logger.info(f"size: {self.hidden_layer_size}")
+        logger.info(f"biggest weight: {self.biggest_weight()}")
+        logger.info(f"connections per neuron: {self.connections_per_neuron()}")
 
 def main():
     config = ESConfiguration.from_json("neural_net_config.json")

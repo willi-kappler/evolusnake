@@ -95,17 +95,15 @@ class Neuron:
             index: int = rnd.randrange(l)
             self.hidden_connections.pop(index)
 
-    def remove_neuron_connection(self, index: int):
-        connection_remove: int = -1
+    def clear(self):
+        self.input_connections = []
+        self.hidden_connections = []
 
+    def remove_neuron_connection(self, index: int):
         for (i1, (i2, _)) in enumerate(self.hidden_connections):
             if i2 == index:
-                connection_remove = i1
-            elif i2 > index:
-                self.hidden_connections[i1][0] = i2 - 1
-
-        if connection_remove >= 0:
-            self.hidden_connections.pop(connection_remove)
+                self.hidden_connections.pop(i1)
+                return
 
     def evaluate(self, input_values: list, hidden_layer: list):
         new_value: float = self.bias
@@ -152,4 +150,7 @@ class Neuron:
             bw = max(abs(w), bw)
 
         return bw
+
+    def num_of_connections(self) -> int:
+        return len(self.input_connections) + len(self.hidden_connections)
 
