@@ -57,7 +57,7 @@ class NeuralNetIndividual(ESIndividual):
 
         self.input_size: int = input_size
         self.output_size: int = output_size
-        self.new_node_prob: int = 10  # Parameter
+        self.new_node_prob: int = 100  # Parameter
         self.new_connection_prob: int = 10  # Parameter
         self.data_provider: DataProvider = data_provider
         self.hidden_layer_size: int = 0
@@ -75,16 +75,12 @@ class NeuralNetIndividual(ESIndividual):
                 self.add_neuron()
 
     def test_network(self) -> float:
-        # logger.debug(f"prev_fitness: {self.prev_fitness}")
-
         loss: float = 0.0
 
         for _ in range(10):
             for (input_values, expected_output) in self.data_provider.test_batch():
                 self.evaluate(input_values)
                 loss += self.calc_error(expected_output)
-
-                # logger.debug(f"{loss=}, {input_values=} -> {expected_output=}")
 
         return loss / (self.data_provider.batch_size * 10.0)
 
