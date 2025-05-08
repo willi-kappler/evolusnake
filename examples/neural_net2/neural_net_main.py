@@ -104,13 +104,13 @@ class NeuralNetIndividual(ESIndividual):
         self.evaluate(input_values)
         return self.calc_error(expected_output)
 
-    def square_sum_weight(self) -> float:
-        total_sum = 0.0
+    def biggest_weight(self) -> float:
+        bw = 0.0
 
         for neuron in self.hidden_layer:
-            total_sum += neuron.square_sum_weight()
+            bw = max(neuron.biggest_weight(), bw)
 
-        return total_sum
+        return bw
 
     def add_neuron(self):
         new_neuron: Neuron = Neuron()
@@ -219,9 +219,7 @@ class NeuralNetIndividual(ESIndividual):
 
         self.prev_fitness.popleft()
         self.prev_fitness.append(current_fitness / self.data_provider.batch_size)
-        self.fitness = sum(self.prev_fitness) / self.prev_fitness_size
-        # L2 regularization, lambda -> Parameter
-        # self.fitness += 0.0001 * self.square_sum_weight()
+        self.fitness = self.biggest_weight() * sum(self.prev_fitness) / self.prev_fitness_size
 
     @override
     def es_clone(self) -> Self:
@@ -261,7 +259,8 @@ class NeuralNetIndividual(ESIndividual):
 
     @override
     def es_new_best_individual(self):
-        logger.info(f"Loss: {self.test_network()}")
+        bw = self.biggest_weight()
+        logger.info(f"Loss: {self.test_network()}, size: {self.hidden_layer_size}, biggest weight: {bw}")
 
 def main():
     config = ESConfiguration.from_json("neural_net_config.json")
@@ -294,7 +293,7 @@ def main():
 
     ind = NeuralNetIndividual(4, 3, dp)
 
-    config.target_fitness = 0.0001
+    config.target_fitness = 0.00001
 
     if server_mode:
         print("Create and start server.")

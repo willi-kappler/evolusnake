@@ -8,57 +8,51 @@ import random as rnd
 from typing import Self
 
 
-def change_delta(value: float) -> float:
-    n = rnd.randrange(100)
-    if n == 0:
-        return rnd.uniform(-1.0, 1.0)
-    else:
-        delta: float = rnd.uniform(-0.1, 0.1)
-        value += delta
-        if value < -1.0:
-            return -1.0
-        elif value > 1.0:
-            return 1.0
-        else:
-            return value
-
 class Neuron:
     def __init__(self):
         self.input_connections: list = []
         self.hidden_connections: list = []
-        self.bias: float = rnd.uniform(-1.0, 1.0)
         self.current_value: float = 0.0
+        self.delta_limit1: float = 0.9
+        self.delta_limit2: float = self.delta_limit1 * 0.01
+        self.bias: float = rnd.uniform(-self.delta_limit1, self.delta_limit1)
 
     def is_empty(self) -> bool:
         return (self.input_connections == []) and (self.hidden_connections == [])
 
+    def change_delta(self, value: float) -> float:
+        delta: float = rnd.uniform(-self.delta_limit2, self.delta_limit2)
+        value += delta
+        if value < -self.delta_limit1:
+            return -self.delta_limit1
+        elif value > self.delta_limit1:
+            return self.delta_limit1
+        else:
+            return value
+
     def mutate_bias(self):
-        self.bias = change_delta(self.bias)
+        self.bias = self.change_delta(self.bias)
 
     def add_input_connection(self, index: int):
         for (index2, _) in self.input_connections:
             if index == index2:
                 return
 
-        weight: float = rnd.uniform(-1.0, 1.0)
+        weight: float = rnd.uniform(-self.delta_limit1, self.delta_limit1)
         self.input_connections.append([index, weight])
 
     def mutate_input_connection(self):
         l: int = len(self.input_connections)
 
-        if l == 0:
-            return
-        else:
+        if l > 0:
             index: int = rnd.randrange(l)
             connection: list = self.input_connections[index]
-            connection[1] = change_delta(connection[1])
+            connection[1] = self.change_delta(connection[1])
 
     def replace_input_connection(self, new_index: int):
         l: int = len(self.input_connections)
 
-        if l == 0:
-            return
-        else:
+        if l > 0:
             index: int = rnd.randrange(l)
             connection: list = self.input_connections[index]
             connection[0] = new_index
@@ -68,25 +62,21 @@ class Neuron:
             if index == index2:
                 return
 
-        weight: float = rnd.uniform(-1.0, 1.0)
+        weight: float = rnd.uniform(-self.delta_limit1, self.delta_limit1)
         self.hidden_connections.append([index, weight])
 
     def mutate_hidden_connection(self):
         l: int = len(self.hidden_connections)
 
-        if l == 0:
-            return
-        else:
+        if l > 0:
             index: int = rnd.randrange(l)
             connection: list = self.hidden_connections[index]
-            connection[1] = change_delta(connection[1])
+            connection[1] = self.change_delta(connection[1])
 
     def replace_hidden_connection(self, new_index: int):
         l: int = len(self.hidden_connections)
 
-        if l == 0:
-            return
-        else:
+        if l > 0:
             index: int = rnd.randrange(l)
             connection: list = self.hidden_connections[index]
             connection[0] = new_index
@@ -126,14 +116,14 @@ class Neuron:
         self.hidden_connections = data["hidden_connections"]
         self.bias = data["bias"]
 
-    def square_sum_weight(self) -> float:
-        total_sum: float = 0.0
+    def biggest_weight(self) -> float:
+        bw = 0.0
 
         for (_, w) in self.input_connections:
-            total_sum += w**2.0
+            bw = max(abs(w), bw)
 
         for (_, w) in self.hidden_connections:
-            total_sum += w**2.0
+            bw = max(abs(w), bw)
 
-        return total_sum
+        return bw
 
