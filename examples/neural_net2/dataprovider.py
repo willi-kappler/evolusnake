@@ -17,15 +17,15 @@ class IterationNeural(ESIterationCallBack):
         pass
 
     @override
-    def es_half_iteration(self, population: ESPopulation):
+    def es_fraction_iteration(self, population: ESPopulation):
         population.population[0].data_provider.create_batch_indices()  # type: ignore
 
         for ind in population.population:
             ind.es_calculate_fitness()
 
     @override
-    def es_after_of_iteration(self, population: ESPopulation):
-        pass
+    def es_get_iteration_factor(self) -> int:
+        return 3
 
 class DataProvider:
     def __init__(self, data_values: list, batch_size: int):

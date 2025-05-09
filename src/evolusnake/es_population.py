@@ -23,11 +23,17 @@ class ESIterationCallBack:
     def __init__(self):
         pass
 
+    def es_get_iteration_factor(self) -> int:
+        # This method sets the fraction at which es_fraction_iteration()
+        # will be called. A return value of 2 means at 50%
+        # A value of 3 means 33.33% and 66.66% and so on.
+        return 1
+
     def es_before_iteration(self, population: "ESPopulation"):
         # This method is called just before the iteration starts.
         pass
 
-    def es_half_iteration(self, population: "ESPopulation"):
+    def es_fraction_iteration(self, population: "ESPopulation"):
         # This method is called when half of the iteration counter is reached.
         pass
 
@@ -79,7 +85,8 @@ class ESPopulation:
 
         self.iteration_callback = iteration_callback
         self.iteration_counter: int = 0
-        self.half_iterations: int = int(self.num_of_iterations / 2)
+        self.fraction_value: int = self.iteration_callback.es_get_iteration_factor()
+        self.fraction_iterations: int = int(self.num_of_iterations / self.fraction_value)
 
         # Init random number generator:
         rnd.seed()
@@ -149,7 +156,7 @@ class ESPopulation:
     def es_set_num_iterations(self):
         self.num_of_iterations = rnd.randrange(self.half_iterations, self.max_iterations + 1)
         self.iteration_counter = 0
-        self.half_iterations = int(self.num_of_iterations / 2)
+        self.fraction_iterations = int(self.num_of_iterations / self.fraction_value)
         logger.debug(f"Iterations: {self.num_of_iterations}")
 
     def es_randomize_worst(self):
@@ -213,11 +220,11 @@ class ESPopulation:
     def es_before_iteration(self):
         self.iteration_callback.es_before_iteration(self)
 
-    def es_half_iteration(self):
+    def es_fraction_iteration(self):
         self.iteration_counter += 1
-        if self.iteration_counter > self.half_iterations:
+        if self.iteration_counter > self.fraction_iterations:
             self.iteration_counter = 0
-            self.iteration_callback.es_half_iteration(self)
+            self.iteration_callback.es_fraction_iteration(self)
 
     def es_after_iteration(self):
         self.iteration_callback.es_after_of_iteration(self)

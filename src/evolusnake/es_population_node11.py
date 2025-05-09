@@ -55,7 +55,7 @@ class ESPopulationNode11(PSNode):
         self.population.es_before_iteration()
 
         for i in range(self.population.num_of_iterations):
-            self.population.es_half_iteration()
+            self.population.es_fraction_iteration()
 
             current_limit = self.sine_base + (self.sine_amplitude * math.sin(sine_freq * i))
 

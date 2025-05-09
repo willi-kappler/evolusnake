@@ -52,7 +52,7 @@ class ESPopulationNode3(PSNode):
         self.population.es_before_iteration()
 
         for i in range(max_iter):
-            self.population.es_half_iteration()
+            self.population.es_fraction_iteration()
 
             j = rnd.randrange(self.population.population_size)
             tmp_ind: ESIndividual = self.population.population[j].es_clone_internal()

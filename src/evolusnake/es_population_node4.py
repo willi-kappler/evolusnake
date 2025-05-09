@@ -59,7 +59,7 @@ class ESPopulationNode4(PSNode):
         self.population.es_before_iteration()
 
         for i in range(self.population.num_of_iterations):
-            self.population.es_half_iteration()
+            self.population.es_fraction_iteration()
 
             for j in range(self.population.population_size):
                 tmp_ind: ESIndividual = self.population.population[j].es_clone_internal()

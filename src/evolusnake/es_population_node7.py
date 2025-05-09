@@ -56,7 +56,7 @@ class ESPopulationNode7(PSNode):
         self.population.es_before_iteration()
 
         while True:
-            self.population.es_half_iteration()
+            self.population.es_fraction_iteration()
 
             # Create a copy of each individual before mutating it:
             for j in range(offset):
