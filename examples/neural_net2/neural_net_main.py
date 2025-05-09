@@ -62,6 +62,8 @@ class NeuralNetIndividual(ESIndividual):
         self.data_provider: DataProvider = data_provider
         self.hidden_layer_size: int = 0
         self.prev_fitness: deque = deque()
+        self.batch_indices: list = data_provider.get_batch_indices()
+        self.batch_counter: int = 0
 
         self.es_randomize()
 
@@ -219,12 +221,19 @@ class NeuralNetIndividual(ESIndividual):
     def es_calculate_fitness(self):
         current_fitness: float = 0.0
 
-        for (input_values, expected_output) in self.data_provider.training_batch():
+        for i in self.batch_indices:
+            (input_values, expected_output) = self.data_provider.training_data[i]
             current_fitness += self.evaluate_with_error(input_values, expected_output)
 
-        self.prev_fitness.popleft()
-        self.prev_fitness.append(current_fitness / self.data_provider.batch_size)
-        self.fitness = sum(self.prev_fitness) / self.prev_fitness_size
+        #self.prev_fitness.popleft()
+        #self.prev_fitness.append(current_fitness / self.data_provider.batch_size)
+        #self.fitness = sum(self.prev_fitness) / self.prev_fitness_size
+        self.fitness = current_fitness / self.data_provider.batch_size
+
+        self.batch_counter += 1
+        if self.batch_counter > 10:
+            self.batch_counter = 0
+            self.batch_indices = self.data_provider.get_batch_indices()
 
     @override
     def es_clone(self) -> Self:
