@@ -163,7 +163,7 @@ class NeuralNetIndividual(ESIndividual):
         index1: int = rnd.randrange(self.hidden_layer_size)
         index2: int = rnd.randrange(self.hidden_layer_size)
         index3: int = rnd.randrange(self.input_size)
-        prob1: int = rnd.randrange(10)  # -> Hyperparameter
+        prob1: int = rnd.randrange(100)  # -> Hyperparameter
         prob2: int = rnd.randrange(100)  # -> Hyperparameter
         prob3: int = rnd.randrange(100)  # -> Hyperparameter
         neuron: Neuron = self.hidden_layer[index1]
