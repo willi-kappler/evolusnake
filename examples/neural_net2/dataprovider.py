@@ -33,23 +33,27 @@ class DataProvider:
         self.training_size = len(self.training_data)
         self.test_size = len(self.test_data)
 
+        self.create_batch_indices()
+
         logger.debug(f"batch size: {batch_size}")
         logger.debug(f"train size: {self.training_size}")
         logger.debug(f"test size: {self.test_size}")
 
-    def get_batch_indices(self) -> list:
-        result = []
+    def create_batch_indices(self):
+        self.batch_counter: int = 0
+        self.batch_indices: list = []
 
         for _ in range(self.batch_size):
             n = rnd.randrange(self.training_size)
-            result.append(n)
-
-        return result
+            self.batch_indices.append(n)
 
     def training_batch(self) -> Generator[tuple[list, list], None, None]:
-        for _ in range(self.batch_size):
-            n = rnd.randrange(self.training_size)
-            yield self.training_data[n]
+        self.batch_counter += 1
+        if self.batch_counter > 100000:  # -> Hyperparameter
+            self.create_batch_indices()
+
+        for i in self.batch_indices:
+            yield self.training_data[i]
 
     def test_batch(self) -> Generator[tuple[list, list], None, None]:
         for _ in range(self.batch_size):

@@ -58,8 +58,6 @@ class NeuralNetIndividual(ESIndividual):
         self.output_size: int = output_size
         self.data_provider: DataProvider = data_provider
         self.hidden_layer_size: int = 0
-        self.batch_indices: list = data_provider.get_batch_indices()
-        self.batch_counter: int = 0
 
         self.es_randomize()
 
@@ -70,7 +68,7 @@ class NeuralNetIndividual(ESIndividual):
     def test_network(self) -> float:
         loss: float = 0.0
 
-        rounds: int = 100  # --> Hyperparameter
+        rounds: int = 100  # -> Hyperparameter
 
         for _ in range(rounds):
             for (input_values, expected_output) in self.data_provider.test_batch():
@@ -234,16 +232,10 @@ class NeuralNetIndividual(ESIndividual):
     def es_calculate_fitness(self):
         current_fitness: float = 0.0
 
-        for i in self.batch_indices:
-            (input_values, expected_output) = self.data_provider.training_data[i]
+        for (input_values, expected_output) in self.data_provider.training_batch():
             current_fitness += self.evaluate_with_error(input_values, expected_output)
 
         self.fitness = current_fitness / self.data_provider.batch_size
-
-        self.batch_counter += 1
-        if self.batch_counter > 100:  # -> Hyperparameter
-            self.batch_counter = 0
-            self.batch_indices = self.data_provider.get_batch_indices()
 
     @override
     def es_clone(self) -> Self:
@@ -314,7 +306,7 @@ def main():
 
     dp = DataProvider(data_values, 10)
 
-    ind = NeuralNetIndividual(4, 3, dp, 1)
+    ind = NeuralNetIndividual(4, 3, dp, 1)  # -> Hyperparameter
 
     config.target_fitness = 0.00001
 
