@@ -7,7 +7,6 @@ import logging
 import pathlib
 from typing import override, Self
 import random as rnd
-from collections import deque
 
 # Local imports:
 from evolusnake.es_config import ESConfiguration
@@ -57,19 +56,12 @@ class NeuralNetIndividual(ESIndividual):
 
         self.input_size: int = input_size
         self.output_size: int = output_size
-        self.new_node_prob: int = 100  # Parameter
-        self.new_connection_prob: int = 10  # Parameter
         self.data_provider: DataProvider = data_provider
         self.hidden_layer_size: int = 0
-        self.prev_fitness: deque = deque()
         self.batch_indices: list = data_provider.get_batch_indices()
         self.batch_counter: int = 0
 
         self.es_randomize()
-
-        self.prev_fitness_size = 10  # Parameter
-        for _ in range(self.prev_fitness_size):
-            self.prev_fitness.append(1.0)
 
         if network_size > 0:
             for _ in range(network_size):
@@ -78,11 +70,13 @@ class NeuralNetIndividual(ESIndividual):
     def test_network(self) -> float:
         loss: float = 0.0
 
-        for _ in range(10):
+        rounds: int = 100  # --> Hyperparameter
+
+        for _ in range(rounds):
             for (input_values, expected_output) in self.data_provider.test_batch():
                 loss += self.evaluate_with_error(input_values, expected_output)
 
-        return loss / (self.data_provider.batch_size * 10.0)
+        return loss / (self.data_provider.batch_size * rounds)
 
     def evaluate(self, input_values: list):
         # First reset all values to 0.0:
@@ -155,23 +149,38 @@ class NeuralNetIndividual(ESIndividual):
 
         (self.hidden_layer[i1], self.hidden_layer[i2]) = (self.hidden_layer[i2], self.hidden_layer[i1])
 
+    def mutate_neuron(self, neuron: Neuron):
+        mut_op: int = rnd.randrange(3)
+
+        match mut_op:
+            case 0:
+                neuron.mutate_bias()
+            case 1:
+                neuron.mutate_input_connection()
+            case 2:
+                neuron.mutate_hidden_connection()
+
     @override
     def es_mutate(self, mut_op: int):
         index1: int = rnd.randrange(self.hidden_layer_size)
         index2: int = rnd.randrange(self.hidden_layer_size)
         index3: int = rnd.randrange(self.input_size)
-        prob1: int = rnd.randrange(10)
-        prob2: int = rnd.randrange(10)
-        prob3: int = rnd.randrange(100)
+        prob1: int = rnd.randrange(10)  # -> Hyperparameter
+        prob2: int = rnd.randrange(100)  # -> Hyperparameter
+        prob3: int = rnd.randrange(100)  # -> Hyperparameter
         neuron: Neuron = self.hidden_layer[index1]
 
         match mut_op:
             case 0:
                 if prob1 == 0:
                     self.add_neuron()
+                else:
+                    self.mutate_neuron(neuron)
             case 1:
                 if prob2 == 0:
                     self.remove_neuron()
+                else:
+                    self.mutate_neuron(neuron)
             case 2:
                 self.swap_neurons()
             case 3:
@@ -191,9 +200,13 @@ class NeuralNetIndividual(ESIndividual):
             case 10:
                 if prob3 == 0:
                     neuron.remove_input_connection()
+                else:
+                    self.mutate_neuron(neuron)
             case 11:
                 if prob3 == 0:
                     neuron.remove_hidden_connection()
+                else:
+                    self.mutate_neuron(neuron)
 
     @override
     def es_randomize(self):
@@ -225,13 +238,10 @@ class NeuralNetIndividual(ESIndividual):
             (input_values, expected_output) = self.data_provider.training_data[i]
             current_fitness += self.evaluate_with_error(input_values, expected_output)
 
-        #self.prev_fitness.popleft()
-        #self.prev_fitness.append(current_fitness / self.data_provider.batch_size)
-        #self.fitness = sum(self.prev_fitness) / self.prev_fitness_size
         self.fitness = current_fitness / self.data_provider.batch_size
 
         self.batch_counter += 1
-        if self.batch_counter > 10:
+        if self.batch_counter > 100:  # -> Hyperparameter
             self.batch_counter = 0
             self.batch_indices = self.data_provider.get_batch_indices()
 
@@ -240,7 +250,6 @@ class NeuralNetIndividual(ESIndividual):
         clone = NeuralNetIndividual(self.input_size, self.output_size, self.data_provider)
         clone.hidden_layer = [n.clone() for n in self.hidden_layer]
         clone.hidden_layer_size = self.hidden_layer_size
-        clone.prev_fitness = deque(self.prev_fitness)
 
         return clone  # type: ignore
 
@@ -251,7 +260,6 @@ class NeuralNetIndividual(ESIndividual):
             "input_size": self.input_size,
             "output_size": self.output_size,
             "hidden_layer_size": self.hidden_layer_size,
-            "prev_fitness": [x for x in self.prev_fitness],
             "hidden_layer": [n.to_json() for n in self.hidden_layer]
         }
 
@@ -269,7 +277,6 @@ class NeuralNetIndividual(ESIndividual):
             self.hidden_layer.append(neuron)
 
         self.hidden_layer_size = len(self.hidden_layer)
-        self.prev_fitness = deque(data["prev_fitness"])
 
     @override
     def es_new_best_individual(self):
@@ -307,7 +314,7 @@ def main():
 
     dp = DataProvider(data_values, 10)
 
-    ind = NeuralNetIndividual(4, 3, dp)
+    ind = NeuralNetIndividual(4, 3, dp, 7)
 
     config.target_fitness = 0.00001
 
