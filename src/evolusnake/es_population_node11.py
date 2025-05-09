@@ -52,6 +52,8 @@ class ESPopulationNode11(PSNode):
         logger.debug(f"{sine_freq=}")
         current_limit: float = 0.0
 
+        self.population.es_before_iteration()
+
         for i in range(self.population.num_of_iterations):
             self.population.es_half_iteration()
 

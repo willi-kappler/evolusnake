@@ -56,6 +56,8 @@ class ESPopulationNode4(PSNode):
 
         logger.debug(f"{min_num_ind=}")
 
+        self.population.es_before_iteration()
+
         for i in range(self.population.num_of_iterations):
             self.population.es_half_iteration()
 

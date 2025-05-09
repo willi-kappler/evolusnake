@@ -47,6 +47,8 @@ class ESPopulationNode10(PSNode):
         self.population.es_set_num_mutations()
         self.population.es_sort_population()
 
+        self.population.es_before_iteration()
+
         for i in range(self.population.num_of_iterations):
             self.population.es_half_iteration()
 

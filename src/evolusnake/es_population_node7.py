@@ -53,6 +53,8 @@ class ESPopulationNode7(PSNode):
         best_fitness: float = previous_best_fitness
         iter_counter: int = 0
 
+        self.population.es_before_iteration()
+
         while True:
             self.population.es_half_iteration()
 

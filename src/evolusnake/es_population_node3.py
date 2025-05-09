@@ -49,6 +49,8 @@ class ESPopulationNode3(PSNode):
 
         max_iter = self.population.num_of_iterations * self.population.population_size
 
+        self.population.es_before_iteration()
+
         for i in range(max_iter):
             self.population.es_half_iteration()
 

@@ -52,6 +52,8 @@ class ESPopulationNode8(PSNode):
         limit_factor = limit_range**(1.0 / self.population.population_size)
         logger.debug(f"{limit_range=}, {limit_factor=}")
 
+        self.population.es_before_iteration()
+
         for i in range(self.population.num_of_iterations):
             self.population.es_half_iteration()
 

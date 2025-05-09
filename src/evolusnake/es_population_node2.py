@@ -44,6 +44,8 @@ class ESPopulationNode2(PSNode):
         self.population.es_set_num_mutations()
         self.population.minimum_found = False
 
+        self.population.es_before_iteration()
+
         for i in range(self.population.num_of_iterations):
             self.population.es_half_iteration()
 

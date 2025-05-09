@@ -55,6 +55,8 @@ class ESPopulationNode5(PSNode):
         self.population.minimum_found = False
         second_worst: ESIndividual = self.population.population[-2].es_clone_internal()
 
+        self.population.es_before_iteration()
+
         for i in range(self.population.num_of_iterations):
             self.population.es_half_iteration()
 

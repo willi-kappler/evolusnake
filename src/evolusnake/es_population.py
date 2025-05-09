@@ -23,6 +23,10 @@ class ESIterationCallBack:
     def __init__(self):
         pass
 
+    def es_before_iteration(self, population: "ESPopulation"):
+        # This method is called just before the iteration starts.
+        pass
+
     def es_half_iteration(self, population: "ESPopulation"):
         # This method is called when half of the iteration counter is reached.
         pass
@@ -206,12 +210,16 @@ class ESPopulation:
         logger.debug(f"Best individual mutations: {best_individual.mut_op_counter}")
         logger.debug(f"Worst individual mutations: {worst_individual.mut_op_counter}")
 
-    def es_after_iteration(self):
-        self.iteration_callback.es_after_of_iteration(self)
+    def es_before_iteration(self):
+        self.iteration_callback.es_before_iteration(self)
 
     def es_half_iteration(self):
         self.iteration_counter += 1
         if self.iteration_counter > self.half_iterations:
             self.iteration_counter = 0
             self.iteration_callback.es_half_iteration(self)
+
+    def es_after_iteration(self):
+        self.iteration_callback.es_after_of_iteration(self)
+
 
