@@ -12,3 +12,17 @@ MNIST data set:
 https://github.com/cvdfoundation/mnist
 
 
+
+Best hyper parameters:
+
+batch size: 20
+neuron weights max: 0.8
+probablilties:
+    prob1: 1000
+    prob2: 100
+    prob3: 100
+start size: 11 (7 + 4)
+iteration factor: 3
+fitness = penalty + fitness
+penalty = test_network() * 0.1
+
