@@ -60,8 +60,6 @@ class NeuralNetIndividual(ESIndividual):
         self.hidden_layer_size: int = 0
         self.batch_indices: list = data_provider.get_batch_indices()
         self.batch_counter: int = 0
-        self.penalty: float = 0.8
-        self.penalty_counter: int = 0
 
         self.es_randomize()
 
@@ -240,25 +238,18 @@ class NeuralNetIndividual(ESIndividual):
             (input_values, expected_output) = self.data_provider.training_data[i]
             current_fitness += self.evaluate_with_error(input_values, expected_output)
 
-        self.fitness = self.penalty * (current_fitness / self.data_provider.batch_size)
+        self.fitness = current_fitness / self.data_provider.batch_size
 
         self.batch_counter += 1
         if self.batch_counter > 100:  # -> Hyperparameter
             self.batch_counter = 0
             self.batch_indices = self.data_provider.get_batch_indices()
 
-        self.penalty_counter += 1
-        if self.penalty_counter > 1000: # -> Hyperparameter
-            self.penalty_counter = 0
-            self.penalty = self.biggest_weight()
-
     @override
     def es_clone(self) -> Self:
         clone = NeuralNetIndividual(self.input_size, self.output_size, self.data_provider)
         clone.hidden_layer = [n.clone() for n in self.hidden_layer]
         clone.hidden_layer_size = self.hidden_layer_size
-        clone.penalty = self.penalty
-        clone.penalty_counter = self.penalty_counter
 
         return clone  # type: ignore
 
@@ -269,7 +260,6 @@ class NeuralNetIndividual(ESIndividual):
             "input_size": self.input_size,
             "output_size": self.output_size,
             "hidden_layer_size": self.hidden_layer_size,
-            "penalty": self.penalty,
             "hidden_layer": [n.to_json() for n in self.hidden_layer]
         }
 
@@ -280,7 +270,6 @@ class NeuralNetIndividual(ESIndividual):
         self.fitness = data["fitness"]
         self.input_size = data["input_size"]
         self.output_size = data["output_size"]
-        self.penalty = data["penalty"]
 
         for n in data["hidden_layer"]:
             neuron = Neuron()
@@ -325,7 +314,7 @@ def main():
 
     dp = DataProvider(data_values, 10)
 
-    ind = NeuralNetIndividual(4, 3, dp, 5)
+    ind = NeuralNetIndividual(4, 3, dp, 1)
 
     config.target_fitness = 0.00001
 
