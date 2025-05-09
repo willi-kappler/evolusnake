@@ -42,18 +42,18 @@ class Neuron:
         self.input_connections.append([index, weight])
 
     def mutate_input_connection(self):
-        l: int = len(self.input_connections)
+        n: int = len(self.input_connections)
 
-        if l > 0:
-            index: int = rnd.randrange(l)
+        if n > 0:
+            index: int = rnd.randrange(n)
             connection: list = self.input_connections[index]
             connection[1] = self.change_delta(connection[1])
 
     def replace_input_connection(self, new_index: int):
-        l: int = len(self.input_connections)
+        n: int = len(self.input_connections)
 
-        if l > 0:
-            index: int = rnd.randrange(l)
+        if n > 0:
+            index: int = rnd.randrange(n)
             connection: list = self.input_connections[index]
             connection[0] = new_index
 
@@ -66,33 +66,33 @@ class Neuron:
         self.hidden_connections.append([index, weight])
 
     def remove_input_connection(self):
-        l: int = len(self.input_connections)
+        n: int = len(self.input_connections)
 
-        if l > 0:
-            index: int = rnd.randrange(l)
+        if n > 0:
+            index: int = rnd.randrange(n)
             self.input_connections.pop(index)
 
     def mutate_hidden_connection(self):
-        l: int = len(self.hidden_connections)
+        n: int = len(self.hidden_connections)
 
-        if l > 0:
-            index: int = rnd.randrange(l)
+        if n > 0:
+            index: int = rnd.randrange(n)
             connection: list = self.hidden_connections[index]
             connection[1] = self.change_delta(connection[1])
 
     def replace_hidden_connection(self, new_index: int):
-        l: int = len(self.hidden_connections)
+        n: int = len(self.hidden_connections)
 
-        if l > 0:
-            index: int = rnd.randrange(l)
+        if n > 0:
+            index: int = rnd.randrange(n)
             connection: list = self.hidden_connections[index]
             connection[0] = new_index
 
     def remove_hidden_connection(self):
-        l: int = len(self.hidden_connections)
+        n: int = len(self.hidden_connections)
 
-        if l > 1:
-            index: int = rnd.randrange(l)
+        if n > 1:
+            index: int = rnd.randrange(n)
             self.hidden_connections.pop(index)
 
     def clear(self):

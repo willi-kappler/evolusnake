@@ -4,7 +4,6 @@
 # See: https://github.com/willi-kappler/evolusnake
 
 import logging
-from os import popen
 import pathlib
 from typing import override, Self
 import random as rnd

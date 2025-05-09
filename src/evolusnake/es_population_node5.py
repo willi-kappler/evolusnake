@@ -17,13 +17,14 @@ from parasnake.ps_node import PSNode
 # Local imports:
 from evolusnake.es_config import ESConfiguration
 from evolusnake.es_individual import ESIndividual
-from evolusnake.es_population import ESPopulation
+from evolusnake.es_population import ESPopulation, ESIterationCallBack
 
 logger = logging.getLogger(__name__)
 
 
 class ESPopulationNode5(PSNode):
-    def __init__(self, config: ESConfiguration, individual: ESIndividual):
+    def __init__(self, config: ESConfiguration, individual: ESIndividual,
+            iteration_callback: ESIterationCallBack = ESIterationCallBack()):
         logger.info("Init population node type 5")
         logger.debug("Calculate the average fitness. If after mutation the individual is")
         logger.debug("better than the average keep it. Replace the worst with the second worst.")
@@ -31,7 +32,7 @@ class ESPopulationNode5(PSNode):
         super().__init__(config.parasnake_config)
         logger.debug(f"Node ID: {self.node_id}")
 
-        self.population: ESPopulation = ESPopulation(config, individual)
+        self.population: ESPopulation = ESPopulation(config, individual, iteration_callback)
         self.population.es_sort_population()
         self.population.best_index = 0
         self.population.worst_index = self.population.population_size - 1
@@ -55,6 +56,8 @@ class ESPopulationNode5(PSNode):
         second_worst: ESIndividual = self.population.population[-2].es_clone_internal()
 
         for i in range(self.population.num_of_iterations):
+            self.population.es_half_iteration()
+
             for j in range(self.population.population_size):
                 tmp_ind: ESIndividual = self.population.population[j].es_clone_internal()
 

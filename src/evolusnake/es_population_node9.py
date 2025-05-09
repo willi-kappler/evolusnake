@@ -17,13 +17,14 @@ from parasnake.ps_node import PSNode
 # Local imports:
 from evolusnake.es_config import ESConfiguration
 from evolusnake.es_individual import ESIndividual
-from evolusnake.es_population import ESPopulation
+from evolusnake.es_population import ESPopulation, ESIterationCallBack
 
 logger = logging.getLogger(__name__)
 
 
 class ESPopulationNode9(PSNode):
-    def __init__(self, config: ESConfiguration, individual: ESIndividual):
+    def __init__(self, config: ESConfiguration, individual: ESIndividual,
+            iteration_callback: ESIterationCallBack = ESIterationCallBack()):
         logger.info("Init population node type 9")
         logger.info("Sort population and take the best individual.")
         logger.info("Repopulate the whole population from this individual.")
@@ -32,7 +33,7 @@ class ESPopulationNode9(PSNode):
         super().__init__(config.parasnake_config)
         logger.debug(f"Node ID: {self.node_id}")
 
-        self.population = ESPopulation(config, individual)
+        self.population = ESPopulation(config, individual, iteration_callback)
         self.population.best_index = 0
         self.population.worst_index = self.population.population_size - 1
 
@@ -47,6 +48,8 @@ class ESPopulationNode9(PSNode):
         self.population.es_set_num_mutations()
 
         for i in range(self.population.num_of_iterations):
+            self.population.es_half_iteration()
+
             self.population.es_sort_population()
             single_ind: ESIndividual = self.population.population[0]
 

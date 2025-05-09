@@ -19,8 +19,22 @@ from evolusnake.es_config import ESConfiguration
 logger = logging.getLogger(__name__)
 
 
+class ESIterationCallBack:
+    def __init__(self):
+        pass
+
+    def es_half_iteration(self, population: "ESPopulation"):
+        # This method is called when half of the iteration counter is reached.
+        pass
+
+    def es_after_of_iteration(self, population: "ESPopulation"):
+        # This method is called after the end of the whole iteration.
+        pass
+
+
 class ESPopulation:
-    def __init__(self, config: ESConfiguration, individual: ESIndividual):
+    def __init__(self, config: ESConfiguration, individual: ESIndividual,
+            iteration_callback: ESIterationCallBack):
         if config.node_population_size < 2:
             raise ValueError(f"Node population must be at least 2, {config.node_population_size}")
 
@@ -58,6 +72,10 @@ class ESPopulation:
         self.mutation_operations: list = config.mutation_operations
         self.mutation_operations_len: int = len(config.mutation_operations)
         self.minimum_found: bool = False
+
+        self.iteration_callback = iteration_callback
+        self.iteration_counter: int = 0
+        self.half_iterations: int = int(self.num_of_iterations / 2)
 
         # Init random number generator:
         rnd.seed()
@@ -126,6 +144,8 @@ class ESPopulation:
 
     def es_set_num_iterations(self):
         self.num_of_iterations = rnd.randrange(self.half_iterations, self.max_iterations + 1)
+        self.iteration_counter = 0
+        self.half_iterations = int(self.num_of_iterations / 2)
         logger.debug(f"Iterations: {self.num_of_iterations}")
 
     def es_randomize_worst(self):
@@ -187,6 +207,11 @@ class ESPopulation:
         logger.debug(f"Worst individual mutations: {worst_individual.mut_op_counter}")
 
     def es_after_iteration(self):
-        for ind in self.population:
-            ind.es_after_iteration()
+        self.iteration_callback.es_after_of_iteration(self)
+
+    def es_half_iteration(self):
+        self.iteration_counter += 1
+        if self.iteration_counter > self.half_iterations:
+            self.iteration_counter = 0
+            self.iteration_callback.es_half_iteration(self)
 

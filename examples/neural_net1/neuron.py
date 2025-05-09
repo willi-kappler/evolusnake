@@ -22,6 +22,7 @@ def change_delta(value: float) -> float:
         else:
             return value
 
+
 class Neuron:
     def __init__(self):
         self.input_connections: list = []
@@ -45,24 +46,24 @@ class Neuron:
         self.input_connections.append([index, weight])
 
     def mutate_input_connection(self):
-        l: int = len(self.input_connections)
+        n: int = len(self.input_connections)
 
-        if l == 0:
+        if n == 0:
             self.mutate_bias()
             return
         else:
-            index: int = rnd.randrange(l)
+            index: int = rnd.randrange(n)
             connection: list = self.input_connections[index]
             connection[1] = change_delta(connection[1])
 
     def replace_input_connection(self, new_index: int):
-        l: int = len(self.input_connections)
+        n: int = len(self.input_connections)
 
-        if l == 0:
+        if n == 0:
             self.mutate_bias()
             return
         else:
-            index: int = rnd.randrange(l)
+            index: int = rnd.randrange(n)
             connection: list = self.input_connections[index]
             connection[0] = new_index
 
@@ -78,24 +79,24 @@ class Neuron:
         # logger.debug(f"add_hidden_connection, {index=}")
 
     def mutate_hidden_connection(self):
-        l: int = len(self.hidden_connections)
+        n: int = len(self.hidden_connections)
 
-        if l == 0:
+        if n == 0:
             self.mutate_bias()
             return
         else:
-            index: int = rnd.randrange(l)
+            index: int = rnd.randrange(n)
             connection: list = self.hidden_connections[index]
             connection[1] = change_delta(connection[1])
 
     def replace_hidden_connection(self, new_index: int):
-        l: int = len(self.hidden_connections)
+        n: int = len(self.hidden_connections)
 
-        if l == 0:
+        if n == 0:
             self.mutate_bias()
             return
         else:
-            index: int = rnd.randrange(l)
+            index: int = rnd.randrange(n)
             connection: list = self.hidden_connections[index]
             connection[0] = new_index
             # logger.debug(f"replace_hidden_connection, {new_index=}")

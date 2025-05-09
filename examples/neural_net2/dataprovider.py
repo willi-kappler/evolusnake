@@ -10,6 +10,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class DataProvider:
     def __init__(self, data_values: list, batch_size: int):
         total_length = len(data_values)
@@ -40,7 +41,6 @@ class DataProvider:
         logger.debug(f"test size: {self.test_size}")
 
     def create_batch_indices(self):
-        self.batch_counter: int = 0
         self.batch_indices: list = []
 
         for _ in range(self.batch_size):
@@ -48,10 +48,6 @@ class DataProvider:
             self.batch_indices.append(n)
 
     def training_batch(self) -> Generator[tuple[list, list], None, None]:
-        self.batch_counter += 1
-        if self.batch_counter > 100000:  # -> Hyperparameter
-            self.create_batch_indices()
-
         for i in self.batch_indices:
             yield self.training_data[i]
 

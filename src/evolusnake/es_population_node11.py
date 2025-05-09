@@ -19,20 +19,21 @@ from parasnake.ps_node import PSNode
 # Local imports:
 from evolusnake.es_config import ESConfiguration
 from evolusnake.es_individual import ESIndividual
-from evolusnake.es_population import ESPopulation
+from evolusnake.es_population import ESPopulation, ESIterationCallBack
 
 logger = logging.getLogger(__name__)
 
 
 class ESPopulationNode11(PSNode):
-    def __init__(self, config: ESConfiguration, individual: ESIndividual):
+    def __init__(self, config: ESConfiguration, individual: ESIndividual,
+            iteration_callback: ESIterationCallBack = ESIterationCallBack()):
         logger.info("Init population node type 11")
         logger.info("Use a sine wave for the fitness limit.")
 
         super().__init__(config.parasnake_config)
         logger.debug(f"Node ID: {self.node_id}")
 
-        self.population = ESPopulation(config, individual)
+        self.population = ESPopulation(config, individual, iteration_callback)
         self.sine_base: float = 0.0
         self.sine_amplitude: float = 0.0
 
@@ -52,6 +53,8 @@ class ESPopulationNode11(PSNode):
         current_limit: float = 0.0
 
         for i in range(self.population.num_of_iterations):
+            self.population.es_half_iteration()
+
             current_limit = self.sine_base + (self.sine_amplitude * math.sin(sine_freq * i))
 
             for j in range(self.population.population_size):

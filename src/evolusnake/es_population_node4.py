@@ -18,13 +18,14 @@ from parasnake.ps_node import PSNode
 # Local imports:
 from evolusnake.es_config import ESConfiguration
 from evolusnake.es_individual import ESIndividual
-from evolusnake.es_population import ESPopulation
+from evolusnake.es_population import ESIterationCallBack, ESPopulation
 
 logger = logging.getLogger(__name__)
 
 
 class ESPopulationNode4(PSNode):
-    def __init__(self, config: ESConfiguration, individual: ESIndividual):
+    def __init__(self, config: ESConfiguration, individual: ESIndividual,
+            iteration_callback: ESIterationCallBack = ESIterationCallBack()):
         logger.info("Init population node type 4")
         logger.debug("Use a global fitness that is the same for all individuals.")
         logger.debug("Mutate an individual and if it's better than the global fitness keep it.")
@@ -34,7 +35,7 @@ class ESPopulationNode4(PSNode):
         super().__init__(config.parasnake_config)
         logger.debug(f"Node ID: {self.node_id}")
 
-        self.population: ESPopulation = ESPopulation(config, individual)
+        self.population: ESPopulation = ESPopulation(config, individual, iteration_callback)
         self.population.es_find_worst_individual()
 
         self.global_fitness = self.population.worst_fitness
@@ -56,6 +57,8 @@ class ESPopulationNode4(PSNode):
         logger.debug(f"{min_num_ind=}")
 
         for i in range(self.population.num_of_iterations):
+            self.population.es_half_iteration()
+
             for j in range(self.population.population_size):
                 tmp_ind: ESIndividual = self.population.population[j].es_clone_internal()
 

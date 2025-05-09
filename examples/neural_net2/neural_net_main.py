@@ -277,6 +277,7 @@ class NeuralNetIndividual(ESIndividual):
         logger.info(f"biggest weight: {self.biggest_weight()}")
         logger.info(f"connections per neuron: {self.connections_per_neuron()}")
 
+
 def main():
     config = ESConfiguration.from_json("neural_net_config.json")
     config.from_command_line()
@@ -306,7 +307,7 @@ def main():
 
     dp = DataProvider(data_values, 10)
 
-    ind = NeuralNetIndividual(4, 3, dp, 1)  # -> Hyperparameter
+    ind = NeuralNetIndividual(4, 3, dp, 4)  # -> Hyperparameter
 
     config.target_fitness = 0.00001
 
@@ -318,6 +319,7 @@ def main():
         print("Create and start node.")
         population = es_select_population(config, ind)
         population.ps_run()
+
 
 if __name__ == "__main__":
     main()

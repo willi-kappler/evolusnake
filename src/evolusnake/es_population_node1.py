@@ -17,13 +17,14 @@ from parasnake.ps_node import PSNode
 # Local imports:
 from evolusnake.es_config import ESConfiguration
 from evolusnake.es_individual import ESIndividual
-from evolusnake.es_population import ESPopulation
+from evolusnake.es_population import ESPopulation, ESIterationCallBack
 
 logger = logging.getLogger(__name__)
 
 
 class ESPopulationNode1(PSNode):
-    def __init__(self, config: ESConfiguration, individual: ESIndividual):
+    def __init__(self, config: ESConfiguration, individual: ESIndividual,
+            iteration_callback: ESIterationCallBack = ESIterationCallBack()):
         logger.info("Init population node type 1")
         logger.info("Clone population and mutate individuals in place. Then sort population by fitness.")
         logger.info("The worst individuals are overwritten.")
@@ -31,7 +32,7 @@ class ESPopulationNode1(PSNode):
         super().__init__(config.parasnake_config)
         logger.debug(f"Node ID: {self.node_id}")
 
-        self.population = ESPopulation(config, individual)
+        self.population = ESPopulation(config, individual, iteration_callback)
         self.population.es_sort_population()
         self.population.best_index = 0
         self.population.worst_index = self.population.population_size - 1
@@ -51,6 +52,8 @@ class ESPopulationNode1(PSNode):
         self.population.es_set_num_mutations()
 
         for i in range(self.population.num_of_iterations):
+            self.population.es_half_iteration()
+
             # Create a copy of each individual before mutating it:
             for j in range(self.offset):
                 ind: ESIndividual = self.population.population[j]

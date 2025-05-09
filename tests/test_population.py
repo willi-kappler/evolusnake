@@ -8,7 +8,7 @@ import unittest
 
 # Local imports:
 from evolusnake.es_config import ESConfiguration
-from evolusnake.es_population import ESPopulation
+from evolusnake.es_population import ESPopulation, ESIterationCallBack
 from evolusnake.es_individual import ESIndividual
 
 from tests.common import TestIndividual
@@ -23,7 +23,7 @@ class TestPopulation(unittest.TestCase):
         config1: ESConfiguration = ESConfiguration()
         ind1: TestIndividual = TestIndividual()
 
-        population1: ESPopulation = ESPopulation(config1, ind1)
+        population1: ESPopulation = ESPopulation(config1, ind1, ESIterationCallBack())
 
         self.assertEqual(population1.population_size, config1.node_population_size)
         self.assertEqual(len(population1.population), config1.node_population_size)
@@ -75,7 +75,7 @@ class TestPopulation(unittest.TestCase):
         ind1: TestIndividual = TestIndividual()
 
         with self.assertRaises(ValueError):
-            population: ESPopulation = ESPopulation(config1, ind1)
+            population: ESPopulation = ESPopulation(config1, ind1, ESIterationCallBack())
             del population
 
     def test_population_invalid_config2(self):
@@ -88,7 +88,7 @@ class TestPopulation(unittest.TestCase):
         ind1: TestIndividual = TestIndividual()
 
         with self.assertRaises(ValueError):
-            population: ESPopulation = ESPopulation(config1, ind1)
+            population: ESPopulation = ESPopulation(config1, ind1, ESIterationCallBack())
             del population
 
     def test_population_invalid_config3(self):
@@ -101,7 +101,7 @@ class TestPopulation(unittest.TestCase):
         ind1: TestIndividual = TestIndividual()
 
         with self.assertRaises(ValueError):
-            population: ESPopulation = ESPopulation(config1, ind1)
+            population: ESPopulation = ESPopulation(config1, ind1, ESIterationCallBack())
             del population
 
     def test_population_find_worst_individual(self):
@@ -112,7 +112,7 @@ class TestPopulation(unittest.TestCase):
         config1: ESConfiguration = ESConfiguration()
         ind1: TestIndividual = TestIndividual()
 
-        population1: ESPopulation = ESPopulation(config1, ind1)
+        population1: ESPopulation = ESPopulation(config1, ind1, ESIterationCallBack())
 
         population1.es_find_worst_individual()
 
@@ -129,7 +129,7 @@ class TestPopulation(unittest.TestCase):
         config1: ESConfiguration = ESConfiguration()
         ind1: TestIndividual = TestIndividual()
 
-        population1: ESPopulation = ESPopulation(config1, ind1)
+        population1: ESPopulation = ESPopulation(config1, ind1, ESIterationCallBack())
 
         population1.es_find_best_and_worst_individual()
 
@@ -150,7 +150,7 @@ class TestPopulation(unittest.TestCase):
         config1: ESConfiguration = ESConfiguration()
         ind1: TestIndividual = TestIndividual()
 
-        population1: ESPopulation = ESPopulation(config1, ind1)
+        population1: ESPopulation = ESPopulation(config1, ind1, ESIterationCallBack())
 
         population1.es_sort_population()
 
@@ -167,7 +167,7 @@ class TestPopulation(unittest.TestCase):
         config1.accept_new_best = True
         ind1: TestIndividual = TestIndividual()
 
-        population1: ESPopulation = ESPopulation(config1, ind1)
+        population1: ESPopulation = ESPopulation(config1, ind1, ESIterationCallBack())
         self.assertEqual(population1.randomize_population, True)
         self.assertEqual(population1.accept_new_best, True)
 
@@ -192,7 +192,7 @@ class TestPopulation(unittest.TestCase):
         config1.accept_new_best = True
         ind1: TestIndividual = TestIndividual()
 
-        population1: ESPopulation = ESPopulation(config1, ind1)
+        population1: ESPopulation = ESPopulation(config1, ind1, ESIterationCallBack())
         self.assertEqual(population1.randomize_population, False)
         self.assertEqual(population1.accept_new_best, True)
 
@@ -218,7 +218,7 @@ class TestPopulation(unittest.TestCase):
         config1.increase_iteration = 0
         ind1: TestIndividual = TestIndividual()
 
-        population1: ESPopulation = ESPopulation(config1, ind1)
+        population1: ESPopulation = ESPopulation(config1, ind1, ESIterationCallBack())
         self.assertEqual(population1.increase_mutation, 1)
         self.assertEqual(population1.increase_iteration, 0)
         self.assertEqual(population1.max_mutations, config1.num_of_mutations)
@@ -242,7 +242,7 @@ class TestPopulation(unittest.TestCase):
         config1.increase_iteration = 1
         ind1: TestIndividual = TestIndividual()
 
-        population1: ESPopulation = ESPopulation(config1, ind1)
+        population1: ESPopulation = ESPopulation(config1, ind1, ESIterationCallBack())
         self.assertEqual(population1.increase_mutation, 0)
         self.assertEqual(population1.increase_iteration, 1)
         self.assertEqual(population1.max_mutations, config1.num_of_mutations)
@@ -266,7 +266,7 @@ class TestPopulation(unittest.TestCase):
         config1.increase_iteration = 2
         ind1: TestIndividual = TestIndividual()
 
-        population1: ESPopulation = ESPopulation(config1, ind1)
+        population1: ESPopulation = ESPopulation(config1, ind1, ESIterationCallBack())
         self.assertEqual(population1.increase_mutation, 2)
         self.assertEqual(population1.increase_iteration, 2)
         self.assertEqual(population1.max_mutations, config1.num_of_mutations)
@@ -287,7 +287,7 @@ class TestPopulation(unittest.TestCase):
 
         config1: ESConfiguration = ESConfiguration()
         ind1: TestIndividual = TestIndividual()
-        population1: ESPopulation = ESPopulation(config1, ind1)
+        population1: ESPopulation = ESPopulation(config1, ind1, ESIterationCallBack())
 
         self.assertEqual(population1.num_of_mutations, config1.num_of_mutations)
 
@@ -304,7 +304,7 @@ class TestPopulation(unittest.TestCase):
         config1: ESConfiguration = ESConfiguration()
         config1.num_of_mutations = 1
         ind1: TestIndividual = TestIndividual()
-        population1: ESPopulation = ESPopulation(config1, ind1)
+        population1: ESPopulation = ESPopulation(config1, ind1, ESIterationCallBack())
         self.assertEqual(population1.num_of_mutations, 1)
 
         for _ in range(10):
@@ -318,7 +318,7 @@ class TestPopulation(unittest.TestCase):
 
         config1: ESConfiguration = ESConfiguration()
         ind1: TestIndividual = TestIndividual()
-        population1: ESPopulation = ESPopulation(config1, ind1)
+        population1: ESPopulation = ESPopulation(config1, ind1, ESIterationCallBack())
 
         self.assertEqual(population1.num_of_iterations, config1.num_of_iterations)
 
@@ -334,7 +334,7 @@ class TestPopulation(unittest.TestCase):
 
         config1: ESConfiguration = ESConfiguration()
         ind1: TestIndividual = TestIndividual()
-        population1: ESPopulation = ESPopulation(config1, ind1)
+        population1: ESPopulation = ESPopulation(config1, ind1, ESIterationCallBack())
 
         population1.es_find_worst_individual()
         current_worst_fitness: float = population1.worst_fitness
@@ -360,7 +360,7 @@ class TestPopulation(unittest.TestCase):
         ind2: TestIndividual = TestIndividual()
         ind2.data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         ind2.fitness = 0.0
-        population1: ESPopulation = ESPopulation(config1, ind1)
+        population1: ESPopulation = ESPopulation(config1, ind1, ESIterationCallBack())
 
         population1.es_find_best_and_worst_individual()
         current_best_index: int = population1.best_index
@@ -380,7 +380,7 @@ class TestPopulation(unittest.TestCase):
         ind2: TestIndividual = TestIndividual()
         ind2.data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         ind2.fitness = 0.0
-        population1: ESPopulation = ESPopulation(config1, ind1)
+        population1: ESPopulation = ESPopulation(config1, ind1, ESIterationCallBack())
 
         population1.es_find_best_and_worst_individual()
         current_worst_fitness: float = population1.worst_fitness
@@ -396,7 +396,7 @@ class TestPopulation(unittest.TestCase):
 
         config1: ESConfiguration = ESConfiguration()
         ind1: TestIndividual = TestIndividual()
-        population1: ESPopulation = ESPopulation(config1, ind1)
+        population1: ESPopulation = ESPopulation(config1, ind1, ESIterationCallBack())
 
         population1.es_find_best_and_worst_individual()
         population1.es_clone_best_to_worst()
@@ -409,7 +409,7 @@ class TestPopulation(unittest.TestCase):
 
         config1: ESConfiguration = ESConfiguration()
         ind1: TestIndividual = TestIndividual()
-        population1: ESPopulation = ESPopulation(config1, ind1)
+        population1: ESPopulation = ESPopulation(config1, ind1, ESIterationCallBack())
 
         population1.es_find_best_and_worst_individual()
         ind2: ESIndividual = population1.es_get_best()
@@ -423,7 +423,7 @@ class TestPopulation(unittest.TestCase):
         config1: ESConfiguration = ESConfiguration()
         config1.mutation_operations = []
         ind1: TestIndividual = TestIndividual()
-        population1: ESPopulation = ESPopulation(config1, ind1)
+        population1: ESPopulation = ESPopulation(config1, ind1, ESIterationCallBack())
 
         for _ in range(10):
             self.assertEqual(population1.es_get_mut_op(), 0)
@@ -436,7 +436,7 @@ class TestPopulation(unittest.TestCase):
         config1: ESConfiguration = ESConfiguration()
         config1.mutation_operations = [3]
         ind1: TestIndividual = TestIndividual()
-        population1: ESPopulation = ESPopulation(config1, ind1)
+        population1: ESPopulation = ESPopulation(config1, ind1, ESIterationCallBack())
 
         for _ in range(10):
             self.assertEqual(population1.es_get_mut_op(), 3)
@@ -449,7 +449,7 @@ class TestPopulation(unittest.TestCase):
         config1: ESConfiguration = ESConfiguration()
         config1.mutation_operations = [3, 8, 17, 25]
         ind1: TestIndividual = TestIndividual()
-        population1: ESPopulation = ESPopulation(config1, ind1)
+        population1: ESPopulation = ESPopulation(config1, ind1, ESIterationCallBack())
 
         for _ in range(10):
             self.assertIn(population1.es_get_mut_op(), config1.mutation_operations)
@@ -461,7 +461,7 @@ class TestPopulation(unittest.TestCase):
 
         config1: ESConfiguration = ESConfiguration()
         ind1: TestIndividual = TestIndividual()
-        population1: ESPopulation = ESPopulation(config1, ind1)
+        population1: ESPopulation = ESPopulation(config1, ind1, ESIterationCallBack())
 
         self.assertFalse(population1.minimum_found)
         population1.es_early_exit(1)
@@ -474,11 +474,20 @@ class TestPopulation(unittest.TestCase):
 
         config1: ESConfiguration = ESConfiguration()
         ind1: TestIndividual = TestIndividual()
-        population1: ESPopulation = ESPopulation(config1, ind1)
+        population1: ESPopulation = ESPopulation(config1, ind1, ESIterationCallBack())
 
         population1.es_log_statistics()
 
         # TODO: Find a way to check logs via assert.
+
+    def test_new_best_callback(self):
+        raise NotImplementedError("Test case not written yet.")
+
+    def test_half_iteration(self):
+        raise NotImplementedError("Test case not written yet.")
+
+    def test_after_iteration(self):
+        raise NotImplementedError("Test case not written yet.")
 
 
 if __name__ == "__main__":

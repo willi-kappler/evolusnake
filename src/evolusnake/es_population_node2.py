@@ -17,20 +17,21 @@ from parasnake.ps_node import PSNode
 # Local imports:
 from evolusnake.es_config import ESConfiguration
 from evolusnake.es_individual import ESIndividual
-from evolusnake.es_population import ESPopulation
+from evolusnake.es_population import ESPopulation, ESIterationCallBack
 
 logger = logging.getLogger(__name__)
 
 
 class ESPopulationNode2(PSNode):
-    def __init__(self, config: ESConfiguration, individual: ESIndividual):
+    def __init__(self, config: ESConfiguration, individual: ESIndividual,
+            iteration_callback: ESIterationCallBack = ESIterationCallBack()):
         logger.info("Init population node type 2")
         logger.info("Mutate a clone and if it's better than the previous version keep it.")
 
         super().__init__(config.parasnake_config)
         logger.debug(f"Node ID: {self.node_id}")
 
-        self.population = ESPopulation(config, individual)
+        self.population = ESPopulation(config, individual, iteration_callback)
 
     @override
     def ps_process_data(self, data: ESIndividual) -> ESIndividual:
@@ -44,6 +45,8 @@ class ESPopulationNode2(PSNode):
         self.population.minimum_found = False
 
         for i in range(self.population.num_of_iterations):
+            self.population.es_half_iteration()
+
             for j in range(self.population.population_size):
                 tmp_ind: ESIndividual = self.population.population[j].es_clone_internal()
 

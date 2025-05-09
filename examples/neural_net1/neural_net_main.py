@@ -15,32 +15,34 @@ from evolusnake.es_select_population import es_select_population
 from evolusnake.es_server import ESServer
 
 from neuron import Neuron
-from dataprovider import DataProvider
 
 logger = logging.getLogger(__name__)
 
+
 class NeuralNetIndividual(ESIndividual):
-    def __init__(self, input_size: int, output_size: int, data_provider: DataProvider):
+    def __init__(self, input_size: int, output_size: int):
         super().__init__()
 
         self.input_size: int = input_size
         self.output_size: int = output_size
         self.new_node_prob: int = 10000
         self.new_connection_prob: int = 100
-        self.data_provider: DataProvider = data_provider
 
         self.es_randomize()
 
     def test_network(self) -> float:
         loss: float = 0.0
 
-        for (input_values, expected_output) in self.data_provider.test_batch():
-            self.evaluate(input_values)
-            loss += self.calc_error(expected_output)
+        self.evaluate([0.0, 0.0])
+        loss += self.calc_error([0.0])
+        self.evaluate([1.0, 0.0])
+        loss += self.calc_error([1.0])
+        self.evaluate([0.0, 1.0])
+        loss += self.calc_error([1.0])
+        self.evaluate([1.0, 1.0])
+        loss += self.calc_error([0.0])
 
-            logger.debug(f"{loss=}, {input_values=} -> {expected_output=}")
-
-        return loss / self.data_provider.batch_size
+        return loss / 4.0
 
     def evaluate(self, input_values: list):
         # First reset all values to 0.0:
@@ -166,16 +168,11 @@ class NeuralNetIndividual(ESIndividual):
         self.evaluate_with_error(([1.0, 0.0], [1.0]))
         self.evaluate_with_error(([1.0, 1.0], [0.0]))
 
-        # for values in self.data_provider.training_batch():
-        #     self.evaluate_with_error(values)
-        #
-        # self.fitness = self.fitness / (4.0 + self.data_provider.batch_size)
-
         self.fitness = self.fitness / 4.0
 
     @override
     def es_clone(self) -> Self:
-        clone = NeuralNetIndividual(self.input_size, self.output_size, self.data_provider)
+        clone = NeuralNetIndividual(self.input_size, self.output_size)
         clone.hidden_layer = [n.clone() for n in self.hidden_layer]
         clone.hidden_layer_size = self.hidden_layer_size
 
@@ -204,6 +201,7 @@ class NeuralNetIndividual(ESIndividual):
             self.hidden_layer.append(neuron)
 
         self.hidden_layer_size = len(self.hidden_layer)
+
 
 def main():
     config = ESConfiguration.from_json("neural_net_config.json")
@@ -239,9 +237,7 @@ def main():
         data_values.append(([1.0, 0.0], [1.0]))
         data_values.append(([1.0, 1.0], [0.0]))
 
-    dp = DataProvider(data_values, 10)
-
-    ind = NeuralNetIndividual(2, 1, dp)
+    ind = NeuralNetIndividual(2, 1)
 
     config.target_fitness = 0.001
 
@@ -256,6 +252,7 @@ def main():
         print("Create and start node.")
         population = es_select_population(config, ind)
         population.ps_run()
+
 
 if __name__ == "__main__":
     main()
