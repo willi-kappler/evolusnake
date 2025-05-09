@@ -5,11 +5,27 @@
 
 
 import random as rnd
-from typing import Generator
+from typing import Generator, override
 import logging
+
+from evolusnake.es_population import ESPopulation, ESIterationCallBack
 
 logger = logging.getLogger(__name__)
 
+class IterationNeural(ESIterationCallBack):
+    def __init__(self):
+        pass
+
+    @override
+    def es_half_iteration(self, population: ESPopulation):
+        population.population[0].data_provider.create_batch_indices()  # type: ignore
+
+        for ind in population.population:
+            ind.es_calculate_fitness()
+
+    @override
+    def es_after_of_iteration(self, population: ESPopulation):
+        pass
 
 class DataProvider:
     def __init__(self, data_values: list, batch_size: int):

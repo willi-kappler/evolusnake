@@ -15,7 +15,7 @@ from evolusnake.es_select_population import es_select_population
 from evolusnake.es_server import ESServer
 
 from neuron import Neuron
-from dataprovider import DataProvider
+from dataprovider import DataProvider, IterationNeural
 
 logger = logging.getLogger(__name__)
 
@@ -317,7 +317,7 @@ def main():
         server.ps_run()
     else:
         print("Create and start node.")
-        population = es_select_population(config, ind)
+        population = es_select_population(config, ind, IterationNeural())
         population.ps_run()
 
 
