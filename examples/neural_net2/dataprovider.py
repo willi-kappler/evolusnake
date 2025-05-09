@@ -25,7 +25,7 @@ class IterationNeural(ESIterationCallBack):
 
     @override
     def es_get_iteration_factor(self) -> int:
-        return 3
+        return 4
 
 class DataProvider:
     def __init__(self, data_values: list, batch_size: int):
