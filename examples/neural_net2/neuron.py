@@ -13,8 +13,8 @@ class Neuron:
         self.input_connections: list = []
         self.hidden_connections: list = []
         self.current_value: float = 0.0
-        self.delta_limit1: float = 0.8
-        self.delta_limit2: float = self.delta_limit1 * 0.01
+        self.delta_limit1: float = 0.7
+        self.delta_limit2: float = self.delta_limit1 * 0.1
         self.bias: float = rnd.uniform(-self.delta_limit1, self.delta_limit1)
 
     def is_empty(self) -> bool:
@@ -33,13 +33,27 @@ class Neuron:
     def mutate_bias(self):
         self.bias = self.change_delta(self.bias)
 
-    def add_input_connection(self, index: int):
+    def has_input_connection(self, new_index):
         for (index2, _) in self.input_connections:
-            if index == index2:
-                return
+            if new_index == index2:
+                return True
+
+        return False
+
+    def add_input_connection(self, new_index: int):
+        if self.has_input_connection(new_index):
+            self.mutate_input_connection()
+            return
 
         weight: float = rnd.uniform(-self.delta_limit1, self.delta_limit1)
-        self.input_connections.append([index, weight])
+        self.input_connections.append([new_index, weight])
+
+    def remove_input_connection(self):
+        n: int = len(self.input_connections)
+
+        if n > 0:
+            index: int = rnd.randrange(n)
+            self.input_connections.pop(index)
 
     def mutate_input_connection(self):
         n: int = len(self.input_connections)
@@ -50,6 +64,10 @@ class Neuron:
             connection[1] = self.change_delta(connection[1])
 
     def replace_input_connection(self, new_index: int):
+        if self.has_input_connection(new_index):
+            self.mutate_input_connection()
+            return
+
         n: int = len(self.input_connections)
 
         if n > 0:
@@ -57,20 +75,21 @@ class Neuron:
             connection: list = self.input_connections[index]
             connection[0] = new_index
 
-    def add_hidden_connection(self, index: int):
+    def add_hidden_connection(self, new_index: int):
         for (index2, _) in self.hidden_connections:
-            if index == index2:
+            if new_index == index2:
+                self.mutate_hidden_connection()
                 return
 
         weight: float = rnd.uniform(-self.delta_limit1, self.delta_limit1)
-        self.hidden_connections.append([index, weight])
+        self.hidden_connections.append([new_index, weight])
 
-    def remove_input_connection(self):
-        n: int = len(self.input_connections)
+    def remove_hidden_connection(self):
+        n: int = len(self.hidden_connections)
 
-        if n > 0:
+        if n > 1:
             index: int = rnd.randrange(n)
-            self.input_connections.pop(index)
+            self.hidden_connections.pop(index)
 
     def mutate_hidden_connection(self):
         n: int = len(self.hidden_connections)
@@ -81,19 +100,17 @@ class Neuron:
             connection[1] = self.change_delta(connection[1])
 
     def replace_hidden_connection(self, new_index: int):
+        for (index2, _) in self.hidden_connections:
+            if new_index == index2:
+                self.mutate_hidden_connection()
+                return
+
         n: int = len(self.hidden_connections)
 
         if n > 0:
             index: int = rnd.randrange(n)
             connection: list = self.hidden_connections[index]
             connection[0] = new_index
-
-    def remove_hidden_connection(self):
-        n: int = len(self.hidden_connections)
-
-        if n > 1:
-            index: int = rnd.randrange(n)
-            self.hidden_connections.pop(index)
 
     def clear(self):
         self.input_connections = []
