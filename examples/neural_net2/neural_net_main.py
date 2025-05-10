@@ -161,7 +161,7 @@ class NeuralNetIndividual(ESIndividual):
     @override
     def es_mutate(self, mut_op: int):
         index1: int = rnd.randrange(self.hidden_layer_size)
-        prob1: int = rnd.randrange(10000)  # -> Hyperparameter
+        prob1: int = rnd.randrange(1000)  # -> Hyperparameter
         prob2: int = rnd.randrange(10000)  # -> Hyperparameter
         prob3: int = rnd.randrange(10000)  # -> Hyperparameter
         neuron: Neuron = self.hidden_layer[index1]
@@ -312,7 +312,7 @@ def main():
 
     dp = DataProvider(data_values, 20)
 
-    ind = NeuralNetIndividual(4, 3, dp, 8)  # -> Hyperparameter
+    ind = NeuralNetIndividual(4, 3, dp, 10)  # -> Hyperparameter
 
     config.target_fitness = 0.00001
     config.target_fitness2 = 0.05

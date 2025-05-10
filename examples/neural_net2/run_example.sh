@@ -34,9 +34,9 @@ run_kind() {
 
     python3 $main_file -k $1 -m $num_of_mutations -i $iterations1 &
     sleep 2
-    python3 $main_file -k $1 -m $num_of_mutations -i $iterations1 &
+    python3 $main_file -k $1 -m $num_of_mutations -i $iterations2 &
     sleep 2
-    python3 $main_file -k $1 -m $num_of_mutations -i $iterations1 &
+    python3 $main_file -k $1 -m $num_of_mutations -i $iterations3 &
     sleep 2
     python3 $main_file -k $1 -m $num_of_mutations -i $iterations4 $randomize &
     sleep 2

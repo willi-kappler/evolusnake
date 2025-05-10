@@ -16,12 +16,12 @@ https://github.com/cvdfoundation/mnist
 Best hyper parameters:
 
 batch size: 20
-neuron weights max: 0.6
+neuron weights max: 0.8, step: 2.0 * max_val
 probablilties:
-    prob1: 10000
+    prob1: 1000
     prob2: 10000
     prob3: 10000
-start size: 11 (3 + 8)
+start size: 11 (3 + 10)
 iteration factor: 3
 
 target1: 0.00001
