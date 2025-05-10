@@ -13,8 +13,8 @@ class Neuron:
         self.input_connections: list = []
         self.hidden_connections: list = []
         self.current_value: float = 0.0
-        self.delta_limit1: float = 1.0
-        self.delta_limit2: float = self.delta_limit1 * 0.01
+        self.delta_limit1: float = 0.8
+        self.delta_limit2: float = self.delta_limit1 * 2.0
         self.bias: float = rnd.uniform(-self.delta_limit1, self.delta_limit1)
 
     def is_empty(self) -> bool:
