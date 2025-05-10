@@ -92,7 +92,6 @@ class QueensIndividual(ESIndividual):
     @override
     def es_to_json(self) -> dict:
         data = {
-            "fitness": self.fitness,
             "positions": self.positions
         }
 
@@ -100,7 +99,6 @@ class QueensIndividual(ESIndividual):
 
     @override
     def es_from_json(self, data: dict):
-        self.fitness = data["fitness"]
         self.positions = data["positions"]
         self.num_elems = len(self.positions)
 
