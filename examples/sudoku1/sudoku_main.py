@@ -182,7 +182,6 @@ class SudokuIndividual(ESIndividual):
     @override
     def es_to_json(self) -> dict:
         data = {
-            "fitness": self.fitness,
             "numbers1": self.numbers1,
             "numbers2": self.numbers2
         }
@@ -191,7 +190,6 @@ class SudokuIndividual(ESIndividual):
 
     @override
     def es_from_json(self, data: dict):
-        self.fitness = data["fitness"]
         self.numbers1 = data["numbers1"]
         self.numbers2 = data["numbers2"]
 
