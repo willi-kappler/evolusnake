@@ -58,8 +58,6 @@ class NeuralNetIndividual(ESIndividual):
         self.output_size: int = output_size
         self.data_provider: DataProvider = data_provider
         self.hidden_layer_size: int = 0
-        self.penalty: float = 1.0
-        self.penalty_counter: int = 0
 
         self.es_randomize()
 
@@ -70,7 +68,7 @@ class NeuralNetIndividual(ESIndividual):
     def test_network(self) -> float:
         loss: float = 0.0
 
-        rounds: int = 100  # -> Hyperparameter
+        rounds: int = 10  # -> Hyperparameter
 
         for _ in range(rounds):
             for (input_values, expected_output) in self.data_provider.test_batch():
@@ -223,8 +221,8 @@ class NeuralNetIndividual(ESIndividual):
             self.hidden_layer[-1].add_input_connection(i)
 
         # Did this node already have a big network ?
-        # If yes at least add the same number of neurons.
-        diff: int = prev_size - self.hidden_layer_size
+        # If yes at least add half the number of neurons.
+        diff: int = int((prev_size - self.hidden_layer_size) / 2)
 
         if diff > 0:
             for _ in range(diff):
@@ -237,31 +235,26 @@ class NeuralNetIndividual(ESIndividual):
         for (input_values, expected_output) in self.data_provider.training_batch():
             current_fitness += self.evaluate_with_error(input_values, expected_output)
 
-        self.fitness = self.penalty + (current_fitness / self.data_provider.batch_size)
+        self.fitness = current_fitness / self.data_provider.batch_size
 
-        self.penalty_counter += 1
-        if self.penalty_counter > 1000:
-            self.penalty_counter = 0
-            self.penalty = self.test_network() * 0.001
+    @override
+    def es_calculate_fitness2(self):
+        self.fitness2 = self.test_network()
 
     @override
     def es_clone(self) -> Self:
         clone = NeuralNetIndividual(self.input_size, self.output_size, self.data_provider)
         clone.hidden_layer = [n.clone() for n in self.hidden_layer]
         clone.hidden_layer_size = self.hidden_layer_size
-        clone.penalty = self.penalty
-        clone.penalty_counter = self.penalty_counter
 
         return clone  # type: ignore
 
     @override
     def es_to_json(self) -> dict:
         data = {
-            "fitness": self.fitness,
             "input_size": self.input_size,
             "output_size": self.output_size,
             "hidden_layer_size": self.hidden_layer_size,
-            "penalty": self.penalty,
             "hidden_layer": [n.to_json() for n in self.hidden_layer]
         }
 
@@ -279,7 +272,6 @@ class NeuralNetIndividual(ESIndividual):
             self.hidden_layer.append(neuron)
 
         self.hidden_layer_size = len(self.hidden_layer)
-        self.penalty = data["penalty"]
 
     @override
     def es_new_best_individual(self):
@@ -316,11 +308,12 @@ def main():
 
     data_values = load_data("Iris.csv")
 
-    dp = DataProvider(data_values, 10)
+    dp = DataProvider(data_values, 20)
 
     ind = NeuralNetIndividual(4, 3, dp, 4)  # -> Hyperparameter
 
     config.target_fitness = 0.00001
+    config.target_fitness2 = 0.05
 
     if server_mode:
         print("Create and start server.")
