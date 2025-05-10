@@ -181,7 +181,6 @@ class NeuralNetIndividual(ESIndividual):
     @override
     def es_to_json(self) -> dict:
         data = {
-            "fitness": self.fitness,
             "input_size": self.input_size,
             "output_size": self.output_size,
             "hidden_layer": [n.to_json() for n in self.hidden_layer]
@@ -191,7 +190,6 @@ class NeuralNetIndividual(ESIndividual):
 
     @override
     def es_from_json(self, data: dict):
-        self.fitness = data["fitness"]
         self.input_size = data["input_size"]
         self.output_size = data["output_size"]
 
