@@ -18,12 +18,11 @@ Best hyper parameters:
 batch size: 20
 neuron weights max: 0.6
 probablilties:
-    prob1: 1000
-    prob2: 100
-    prob3: 100
-start size: 10 (3 + 7)
+    prob1: 10000
+    prob2: 10000
+    prob3: 10000
+start size: 11 (3 + 8)
 iteration factor: 3
 
-fitness = penalty + fitness
-penalty = test_network() * 0.1
-
+target1: 0.00001
+target2: 0.05
