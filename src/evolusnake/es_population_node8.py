@@ -64,7 +64,7 @@ class ESPopulationNode8(PSNode):
                     ind.es_mutate_internal(self.population.es_get_mut_op())
                 ind.es_calculate_fitness()
 
-                current_best_fitness: float = self.population.population[0].fitness
+                current_best_fitness: float = self.population.es_get_best_fitness()
                 if ind.fitness < current_best_fitness:
                     self.population.population[0] = ind
 
@@ -82,6 +82,7 @@ class ESPopulationNode8(PSNode):
 
         self.population.es_sort_population()
         self.population.es_after_iteration()
+        self.population.es_calculate_fitness2()
         self.population.es_log_statistics()
         return self.population.es_get_best()
 

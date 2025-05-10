@@ -36,8 +36,6 @@ class ESPopulationNode1(PSNode):
         self.population.es_sort_population()
         self.population.best_index = 0
         self.population.worst_index = self.population.population_size - 1
-        self.population.best_fitness = self.population.population[0].fitness
-        self.population.worst_fitness = self.population.population[-1].fitness
 
         self.offset: int = int(self.population.population_size / 2)
 
@@ -72,9 +70,8 @@ class ESPopulationNode1(PSNode):
                 self.population.es_early_exit(i)
                 break
 
-        self.population.best_fitness = self.population.population[0].fitness
-        self.population.worst_fitness = self.population.population[-1].fitness
         self.population.es_after_iteration()
+        self.population.es_calculate_fitness2()
         self.population.es_log_statistics()
         return self.population.es_get_best()
 

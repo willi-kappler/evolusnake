@@ -48,7 +48,7 @@ class ESPopulationNode7(PSNode):
         self.population.es_set_num_iterations()
 
         offset: int = int(self.population.population_size / 2)
-        previous_best_fitness: float = self.population.population[0].fitness
+        previous_best_fitness: float = self.population.es_get_best_fitness()
         previous_best_counter: int = 0
         best_fitness: float = previous_best_fitness
         iter_counter: int = 0
@@ -68,11 +68,11 @@ class ESPopulationNode7(PSNode):
 
             self.population.es_sort_population()
 
-            if self.population.population[0].fitness <= self.population.target_fitness:
+            best_fitness = self.population.es_get_best_fitness()
+
+            if best_fitness <= self.population.target_fitness:
                 self.population.es_early_exit(iter_counter)
                 break
-
-            best_fitness = self.population.population[0].fitness
 
             if previous_best_fitness == best_fitness:
                 previous_best_counter += 1
@@ -85,6 +85,7 @@ class ESPopulationNode7(PSNode):
             iter_counter += 1
 
         self.population.es_after_iteration()
+        self.population.es_calculate_fitness2()
         self.population.es_log_statistics()
         logger.debug(f"{iter_counter=}")
         return self.population.es_get_best()

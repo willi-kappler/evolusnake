@@ -61,16 +61,17 @@ class ESPopulationNode3(PSNode):
                 tmp_ind.es_mutate_internal(self.population.es_get_mut_op())
             tmp_ind.es_calculate_fitness()
 
-            if tmp_ind.fitness < self.population.best_fitness:
+            if tmp_ind.fitness < self.population.es_get_best_fitness():
                 self.population.es_replace_best(tmp_ind)
                 if tmp_ind.fitness <= self.population.target_fitness:
                     self.population.es_early_exit(i)
                     break
-            elif tmp_ind.fitness < self.population.worst_fitness:
+            elif tmp_ind.fitness < self.population.es_get_worst_fitness():
                 self.population.es_replace_worst(tmp_ind)
                 self.population.es_find_worst_individual()
 
         self.population.es_after_iteration()
+        self.population.es_calculate_fitness2()
         self.population.es_log_statistics()
         return self.population.es_get_best()
 

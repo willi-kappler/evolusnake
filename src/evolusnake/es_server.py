@@ -39,6 +39,7 @@ class ESServer(PSServer):
             raise ValueError("Population size must be at least 2.")
 
         self.target_fitness: float = config.target_fitness
+        self.target_fitness2: float = config.target_fitness2
         self.result_filename: str = config.result_filename
         self.save_new_fitness: bool = config.save_new_fitness
         self.allow_same_fitness: bool = config.allow_same_fitness
@@ -54,7 +55,7 @@ class ESServer(PSServer):
 
         self.population.sort(key=lambda ind: ind.fitness)
 
-        logger.debug(f"{self.population_size=}, {self.target_fitness=}")
+        logger.debug(f"{self.population_size=}, {self.target_fitness=}, {self.target_fitness2=}")
         logger.debug(f"{self.result_filename=}, {self.save_new_fitness=}")
         logger.debug(f"{self.allow_same_fitness=}, {self.share_only_best=}")
 
@@ -62,19 +63,25 @@ class ESServer(PSServer):
 
     def es_save_data(self, filename: str):
         with open(filename, "w") as f:
-            json.dump(self.population[0].es_to_json(), f)
+            ind = self.population[0]
+            data = ind.es_to_json()
+            data["fitness"] = ind.fitness
+            data["fitness2"] = ind.fitness2
+            json.dump(data, f)
 
     @override
     def ps_is_job_done(self) -> bool:
         best_fitness: float = self.population[0].fitness
-        job_done: bool = best_fitness <= self.target_fitness
+        best_fitness2: float = self.population[0].fitness2
+        job_done: bool = (best_fitness <= self.target_fitness) or (best_fitness2 <= self.target_fitness2)
 
         if job_done:
             actual_fitness: float = self.population[0].es_actual_fitness()
             stop_time = time.time()
             time_taken = stop_time - self.start_time
             logger.info(f"Job is done, time taken: {time_taken} sec.")
-            logger.debug(f"{best_fitness=} <= {self.target_fitness=}")
+            logger.debug(f"{best_fitness=}, {self.target_fitness=}")
+            logger.debug(f"{best_fitness2=}, {self.target_fitness2=}")
             logger.debug(f"Actual fitness: {actual_fitness}")
 
         return job_done
@@ -97,6 +104,13 @@ class ESServer(PSServer):
         # logger.debug(f"Got new individual from node: {node_id}")
 
         new_fitness: float = result.fitness
+        new_fitness2: float = result.fitness2
+
+        if new_fitness2 < self.target_fitness2:
+            # Short cut if target 2 is met.
+            self.population[0] = result
+            logger.debug(f"Target 2 is met: {new_fitness2=}, {self.target_fitness2=}")
+            return
 
         if new_fitness < self.population[-1].fitness:
             if not self.allow_same_fitness:

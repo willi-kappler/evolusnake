@@ -80,6 +80,7 @@ class ESPopulationNode6(PSNode):
 
         self.population.es_find_best_and_worst_individual()
         self.population.es_after_iteration()
+        self.population.es_calculate_fitness2()
         self.population.es_log_statistics()
         return self.population.es_get_best()
 

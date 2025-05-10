@@ -30,6 +30,7 @@ class ESConfiguration:
         # Server config:
         self.server_mode: bool = False
         self.target_fitness: float = 0.0
+        self.target_fitness2: float = 0.0
         self.result_filename: str = "best_result.json"
         self.save_new_fitness: bool = False
         self.allow_same_fitness: bool = False
@@ -72,6 +73,8 @@ class ESConfiguration:
                     config.server_mode = value
                 case "target_fitness":
                     config.target_fitness = value
+                case "target_fitness2":
+                    config.target_fitness2 = value
                 case "result_filename":
                     config.result_filename = value
                 case "save_new_fitness":
@@ -107,6 +110,7 @@ class ESConfiguration:
         parser = argparse.ArgumentParser(add_help=False)
         parser.add_argument("-s", "--server", action="store_true")
         parser.add_argument("-f", "--target_fitness", type=float)
+        parser.add_argument("-f2", "--target_fitness2", type=float)
         parser.add_argument("-p", "--population_size", type=int)
         parser.add_argument("-m", "--num_of_mutations", type=int)
         parser.add_argument("-i", "--num_of_iterations", type=int)
@@ -122,6 +126,9 @@ class ESConfiguration:
 
         if args.target_fitness is not None:
             self.target_fitness = args.target_fitness
+
+        if args.target_fitness2 is not None:
+            self.target_fitness2 = args.target_fitness2
 
         if args.population_size is not None:
             self.node_population_size = args.population_size

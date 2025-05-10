@@ -70,6 +70,7 @@ class ESPopulationNode10(PSNode):
             self.population.es_sort_population()
 
         self.population.es_after_iteration()
+        self.population.es_calculate_fitness2()
         self.population.es_log_statistics()
         return self.population.es_get_best()
 

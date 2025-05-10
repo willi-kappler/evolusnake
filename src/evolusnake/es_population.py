@@ -71,13 +71,12 @@ class ESPopulation:
         self.accept_new_best: bool = config.accept_new_best
         self.randomize_population: bool = config.randomize_population
         self.target_fitness: float = config.target_fitness
+        self.target_fitness2: float = config.target_fitness2
         self.increase_iteration: int = config.increase_iteration
         self.increase_mutation: int = config.increase_mutation
 
         self.best_index: int = 0
-        self.best_fitness: float = 0.0
         self.worst_index: int = 0
-        self.worst_fitness: float = 0.0
 
         self.mutation_operations: list = config.mutation_operations
         self.mutation_operations_len: int = len(config.mutation_operations)
@@ -91,7 +90,7 @@ class ESPopulation:
         # Init random number generator:
         rnd.seed()
 
-        logger.debug(f"{self.population_size=}, {self.target_fitness=}")
+        logger.debug(f"{self.population_size=}, {self.target_fitness=}, {self.target_fitness2=}")
         logger.debug(f"{self.num_of_iterations=}, {self.num_of_mutations=}")
         logger.debug(f"{self.accept_new_best=}, {self.randomize_population=}")
         logger.debug(f"{self.increase_iteration=}, {self.increase_mutation=}")
@@ -99,27 +98,27 @@ class ESPopulation:
 
     def es_find_worst_individual(self):
         self.worst_index = 0
-        self.worst_fitness = self.population[0].fitness
+        worst_fitness: float = self.population[0].fitness
 
         for i in range(1, self.population_size):
             fitness: float = self.population[i].fitness
-            if fitness > self.worst_fitness:
-                self.worst_fitness = fitness
+            if fitness > worst_fitness:
+                worst_fitness = fitness
                 self.worst_index = i
 
     def es_find_best_and_worst_individual(self):
         self.worst_index = 0
-        self.worst_fitness = self.population[0].fitness
+        worst_fitness: float = self.population[0].fitness
         self.best_index = 0
-        self.best_fitness = self.population[0].fitness
+        best_fitness: float = self.population[0].fitness
 
         for i in range(1, self.population_size):
             fitness: float = self.population[i].fitness
-            if fitness > self.worst_fitness:
-                self.worst_fitness = fitness
+            if fitness > worst_fitness:
+                worst_fitness = fitness
                 self.worst_index = i
-            elif fitness < self.best_fitness:
-                self.best_fitness = fitness
+            elif fitness < best_fitness:
+                best_fitness = fitness
                 self.best_index = i
 
     def es_sort_population(self):
@@ -166,9 +165,8 @@ class ESPopulation:
         # Now maybe no longer the worst!
 
     def es_replace_best(self, individual: ESIndividual):
-        if individual.fitness < self.best_fitness:
+        if individual.fitness < self.population[self.best_index].fitness:
             self.population[self.best_index] = individual
-            self.best_fitness = individual.fitness
         # Still the best at index: self.best_index!
 
     def es_replace_worst(self, individual: ESIndividual):
@@ -182,6 +180,12 @@ class ESPopulation:
 
     def es_get_best(self) -> ESIndividual:
         return self.population[self.best_index]
+
+    def es_get_best_fitness(self) -> float:
+        return self.population[self.best_index].fitness
+
+    def es_get_worst_fitness(self) -> float:
+        return self.population[self.worst_index].fitness
 
     def es_get_mut_op(self) -> int:
         match self.mutation_operations_len:
@@ -205,14 +209,26 @@ class ESPopulation:
             # Wait some seconds to avoid spamming the server.
             time.sleep(5)
 
+    def es_calculate_fitness2(self):
+        for (i, ind) in enumerate(self.population):
+            ind.es_calculate_fitness2()
+
+            if ind.fitness2 < self.target_fitness2:
+                logger.debug(f"Target 2 is met: {ind.fitness2} at index: {i}")
+                self.best_index = i
+                return
+
     def es_log_statistics(self):
         best_individual: ESIndividual = self.population[self.best_index]
         best_fitness: float = best_individual.fitness
+        best_fitness2: float = best_individual.fitness2
         worst_individual: ESIndividual = self.population[self.worst_index]
         worst_fitness: float = worst_individual.fitness
+        worst_fitness2: float = worst_individual.fitness2
         actual_best: float = best_individual.es_actual_fitness()
         actual_worst: float = worst_individual.es_actual_fitness()
-        logger.debug(f"{best_fitness=}, {worst_fitness=}")
+        logger.debug(f"{best_fitness=}, {best_fitness2=}")
+        logger.debug(f"{worst_fitness=}, {worst_fitness2=}")
         logger.debug(f"{actual_best=}, {actual_worst=}")
         logger.debug(f"Best individual mutations: {best_individual.mut_op_counter}")
         logger.debug(f"Worst individual mutations: {worst_individual.mut_op_counter}")

@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 class ESIndividual:
     def __init__(self):
         self.fitness: float = float_info.max
+        self.fitness2: float = float_info.max
         self.mut_op_counter: Counter = Counter()
 
     def es_reset_counter(self):
@@ -42,11 +43,19 @@ class ESIndividual:
         # Must be implemented by the user.
         raise NotImplementedError
 
+    def es_calculate_fitness2(self):
+        # This method can be implemented if there is a second target
+        # that should be met.
+        # This second fitness will be only calculated after one full iteration
+        # cycle.
+        pass
+
     def es_clone_internal(self) -> Self:
         # Clone internal structures.
         clone = self.es_clone()
         clone.mut_op_counter = Counter(self.mut_op_counter)
         clone.fitness = self.fitness
+        clone.fitness2 = self.fitness2
         return clone
 
     def es_clone(self) -> Self:

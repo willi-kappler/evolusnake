@@ -82,6 +82,7 @@ class ESPopulationNode5(PSNode):
             self.es_calc_average_fitness()
 
         self.population.es_after_iteration()
+        self.population.es_calculate_fitness2()
         self.population.es_log_statistics()
         return self.population.es_get_best()
 

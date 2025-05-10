@@ -38,7 +38,7 @@ class ESPopulationNode4(PSNode):
         self.population: ESPopulation = ESPopulation(config, individual, iteration_callback)
         self.population.es_find_worst_individual()
 
-        self.global_fitness = self.population.worst_fitness
+        self.global_fitness = self.population.es_get_worst_fitness()
 
     @override
     def ps_process_data(self, data: ESIndividual) -> ESIndividual:
@@ -92,6 +92,7 @@ class ESPopulationNode4(PSNode):
 
         self.population.es_find_best_and_worst_individual()
         self.population.es_after_iteration()
+        self.population.es_calculate_fitness2()
         self.population.es_log_statistics()
         self.population.es_clone_best_to_worst()
         return self.population.es_get_best()
