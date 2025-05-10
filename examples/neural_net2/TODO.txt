@@ -21,7 +21,7 @@ probablilties:
     prob1: 1000
     prob2: 100
     prob3: 100
-start size: 11 (7 + 4)
+start size: 10 (3 + 7)
 iteration factor: 3
 
 fitness = penalty + fitness

@@ -68,7 +68,7 @@ class NeuralNetIndividual(ESIndividual):
     def test_network(self) -> float:
         loss: float = 0.0
 
-        rounds: int = 10  # -> Hyperparameter
+        rounds: int = 100  # -> Hyperparameter
 
         for _ in range(rounds):
             for (input_values, expected_output) in self.data_provider.test_batch():
@@ -161,11 +161,9 @@ class NeuralNetIndividual(ESIndividual):
     @override
     def es_mutate(self, mut_op: int):
         index1: int = rnd.randrange(self.hidden_layer_size)
-        index2: int = rnd.randrange(self.hidden_layer_size)
-        index3: int = rnd.randrange(self.input_size)
-        prob1: int = rnd.randrange(1000)  # -> Hyperparameter
-        prob2: int = rnd.randrange(100)  # -> Hyperparameter
-        prob3: int = rnd.randrange(100)  # -> Hyperparameter
+        prob1: int = rnd.randrange(10000)  # -> Hyperparameter
+        prob2: int = rnd.randrange(10000)  # -> Hyperparameter
+        prob3: int = rnd.randrange(10000)  # -> Hyperparameter
         neuron: Neuron = self.hidden_layer[index1]
 
         match mut_op:
@@ -182,8 +180,10 @@ class NeuralNetIndividual(ESIndividual):
             case 2:
                 self.swap_neurons()
             case 3:
+                index3: int = rnd.randrange(self.input_size)
                 neuron.add_input_connection(index3)
             case 4:
+                index2: int = rnd.randrange(self.hidden_layer_size)
                 neuron.add_hidden_connection(index2)
             case 5:
                 neuron.mutate_bias()
@@ -192,8 +192,10 @@ class NeuralNetIndividual(ESIndividual):
             case 7:
                 neuron.mutate_hidden_connection()
             case 8:
+                index3: int = rnd.randrange(self.input_size)
                 neuron.replace_input_connection(index3)
             case 9:
+                index2: int = rnd.randrange(self.hidden_layer_size)
                 neuron.replace_hidden_connection(index2)
             case 10:
                 if prob3 == 0:
@@ -275,7 +277,7 @@ class NeuralNetIndividual(ESIndividual):
 
     @override
     def es_new_best_individual(self):
-        logger.info(f"Loss: {self.test_network()}")
+        logger.info(f"Loss: {self.fitness2}")
         logger.info(f"size: {self.hidden_layer_size}")
         logger.info(f"biggest weight: {self.biggest_weight()}")
         logger.info(f"connections per neuron: {self.connections_per_neuron()}")
@@ -310,7 +312,7 @@ def main():
 
     dp = DataProvider(data_values, 20)
 
-    ind = NeuralNetIndividual(4, 3, dp, 4)  # -> Hyperparameter
+    ind = NeuralNetIndividual(4, 3, dp, 8)  # -> Hyperparameter
 
     config.target_fitness = 0.00001
     config.target_fitness2 = 0.05
