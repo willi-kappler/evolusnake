@@ -13,7 +13,7 @@ class Neuron:
         self.input_connections: list = []
         self.hidden_connections: list = []
         self.current_value: float = 0.0
-        self.delta_limit1: float = 0.7
+        self.delta_limit1: float = 1.0
         self.delta_limit2: float = self.delta_limit1 * 2.0
         self.bias: float = rnd.uniform(-self.delta_limit1, self.delta_limit1)
 
@@ -157,16 +157,16 @@ class Neuron:
         self.hidden_connections = data["hidden_connections"]
         self.bias = data["bias"]
 
-    def biggest_weight(self) -> float:
-        bw = abs(self.bias)
+    def abs_weight_sum(self) -> float:
+        ws: float = 0.0
 
         for (_, w) in self.input_connections:
-            bw = max(abs(w), bw)
+            ws += abs(w)
 
         for (_, w) in self.hidden_connections:
-            bw = max(abs(w), bw)
+            ws += abs(w)
 
-        return bw
+        return ws
 
     def num_of_connections(self) -> int:
         return len(self.input_connections) + len(self.hidden_connections)

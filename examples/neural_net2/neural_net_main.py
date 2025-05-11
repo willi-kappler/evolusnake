@@ -114,13 +114,13 @@ class NeuralNetIndividual(ESIndividual):
         self.evaluate(input_values)
         return self.calc_error(expected_output)
 
-    def biggest_weight(self) -> float:
-        bw = 0.0
+    def ab_weight_sum(self) -> float:
+        ws = 0.0
 
         for neuron in self.hidden_layer:
-            bw = max(neuron.biggest_weight(), bw)
+            ws += neuron.abs_weight_sum()
 
-        return bw
+        return ws
 
     def connections_per_neuron(self) -> float:
         result = 0.0
@@ -296,7 +296,7 @@ class NeuralNetIndividual(ESIndividual):
     def es_new_best_individual(self):
         logger.info(f"Loss: {self.fitness2}")
         logger.info(f"Size: {self.hidden_layer_size}")
-        logger.info(f"Biggest weight: {self.biggest_weight()}")
+        logger.info(f"Absolute weight sum: {self.ab_weight_sum()}")
         logger.info(f"Connections per neuron: {self.connections_per_neuron()}")
 
 
