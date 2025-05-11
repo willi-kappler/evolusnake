@@ -130,6 +130,10 @@ class NeuralNetIndividual(ESIndividual):
 
         return result / self.hidden_layer_size
 
+    def dec_delta_limit(self, amount: float):
+        for neuron in self.hidden_layer:
+            neuron.dec_delta_limit(amount)
+
     def add_neuron(self):
         new_neuron: Neuron = Neuron()
 
@@ -236,8 +240,9 @@ class NeuralNetIndividual(ESIndividual):
             self.hidden_layer[-1].add_input_connection(i)
 
         # Did this node already have a big network ?
-        # If yes at least add half the number of neurons.
-        diff: int = int((prev_size - self.hidden_layer_size) / 2)
+        # If yes add the same number of neurons.
+        #diff: int = int((prev_size - self.hidden_layer_size) / 2)
+        diff: int = prev_size - self.hidden_layer_size
 
         if diff > 0:
             for _ in range(diff):

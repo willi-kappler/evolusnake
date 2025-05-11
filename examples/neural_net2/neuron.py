@@ -18,6 +18,11 @@ class Neuron:
         self.delta_limit2: float = self.delta_limit1 * 0.01
         self.bias: float = rnd.uniform(-self.delta_limit1, self.delta_limit1)
 
+    def dec_delta_limit(self, amount: float):
+        if self.delta_limit1 > 0.5:
+            self.delta_limit1 -= amount
+            self.delta_limit2: float = self.delta_limit1 * 0.01
+
     def is_empty(self) -> bool:
         return (self.input_connections == []) and (self.hidden_connections == [])
 
@@ -141,6 +146,8 @@ class Neuron:
         n.input_connections = [[i, w] for (i, w) in self.input_connections]
         n.hidden_connections = [[i, w] for (i, w) in self.hidden_connections]
         n.bias = self.bias
+        n.delta_limit1 = self.delta_limit1
+        n.delta_limit2 = self.delta_limit2
 
         return n  # type: ignore
 
