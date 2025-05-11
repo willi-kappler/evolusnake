@@ -97,7 +97,7 @@ class NeuralNetIndividual(ESIndividual):
         for neuron in self.hidden_layer:
             neuron.current_value = 0.0
 
-        for _ in range(2):
+        for _ in range(3):
             for neuron in self.hidden_layer:
                 neuron.evaluate(input_values, self.hidden_layer)
 
@@ -201,24 +201,20 @@ class NeuralNetIndividual(ESIndividual):
                 index2: int = rnd.randrange(self.hidden_layer_size)
                 neuron.add_hidden_connection(index2)
             case 5:
-                neuron.mutate_bias()
+                self.mutate_neuron(neuron)
             case 6:
-                neuron.mutate_input_connection()
-            case 7:
-                neuron.mutate_hidden_connection()
-            case 8:
                 index3: int = rnd.randrange(self.input_size)
                 neuron.replace_input_connection(index3)
-            case 9:
+            case 7:
                 index2: int = rnd.randrange(self.hidden_layer_size)
                 neuron.replace_hidden_connection(index2)
-            case 10:
+            case 8:
                 prob3: int = rnd.randrange(10000)  # -> Hyperparameter
                 if prob3 == 0:
                     neuron.remove_input_connection()
                 else:
                     self.mutate_neuron(neuron)
-            case 11:
+            case 9:
                 prob3: int = rnd.randrange(10000)  # -> Hyperparameter
                 if prob3 == 0:
                     neuron.remove_hidden_connection()
@@ -294,7 +290,8 @@ class NeuralNetIndividual(ESIndividual):
 
     @override
     def es_new_best_individual(self):
-        logger.info(f"Loss: {self.fitness2}")
+        logger.info(f"Fitness: {self.fitness}")
+        logger.info(f"Fitness2: {self.fitness2}")
         logger.info(f"Size: {self.hidden_layer_size}")
         logger.info(f"Absolute weight sum: {self.ab_weight_sum()}")
         logger.info(f"Connections per neuron: {self.connections_per_neuron()}")
