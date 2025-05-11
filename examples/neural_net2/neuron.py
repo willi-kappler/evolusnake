@@ -81,6 +81,15 @@ class Neuron:
             connection: list = self.input_connections[index]
             connection[0] = new_index
 
+    def get_random_input_connection(self) -> list:
+        n: int = len(self.input_connections)
+
+        if n > 0:
+            index: int = rnd.randrange(n)
+            return self.input_connections[index]
+        else:
+            return []
+
     def add_hidden_connection(self, new_index: int):
         for (index2, _) in self.hidden_connections:
             if new_index == index2:
@@ -117,6 +126,15 @@ class Neuron:
             index: int = rnd.randrange(n)
             connection: list = self.hidden_connections[index]
             connection[0] = new_index
+
+    def get_random_hidden_connection(self) -> list:
+        n: int = len(self.hidden_connections)
+
+        if n > 0:
+            index: int = rnd.randrange(n)
+            return self.hidden_connections[index]
+        else:
+            return []
 
     def clear(self):
         self.input_connections = []

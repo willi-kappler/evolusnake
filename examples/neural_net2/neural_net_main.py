@@ -178,6 +178,21 @@ class NeuralNetIndividual(ESIndividual):
             case 2:
                 neuron.mutate_hidden_connection()
 
+    def search_connection(self, connection: list):
+        if connection:
+            best_val: float = connection[1]
+            best_fitness: float = self.fitness
+
+            for i in range(11):
+                val: float = (i - 5) / 5.0
+                connection[1] = val
+                self.es_calculate_fitness()
+                if self.fitness < best_fitness:
+                    best_val = val
+                    best_fitness = self.fitness
+
+            connection[1] = best_val
+
     def search_mutate(self, neuron: Neuron):
         mut_op: int = rnd.randrange(3)
 
@@ -186,8 +201,8 @@ class NeuralNetIndividual(ESIndividual):
                 best_val: float = neuron.bias
                 best_fitness: float = self.fitness
 
-                for i in range(21):
-                    val: float = (i - 10) / 10.0
+                for i in range(11):
+                    val: float = (i - 5) / 5.0
                     neuron.bias = val
                     self.es_calculate_fitness()
                     if self.fitness < best_fitness:
@@ -195,11 +210,12 @@ class NeuralNetIndividual(ESIndividual):
                         best_fitness = self.fitness
 
                 neuron.bias = best_val
-
             case 1:
-                neuron.mutate_input_connection()
+                connection = neuron.get_random_input_connection()
+                self.search_connection(connection)
             case 2:
-                neuron.mutate_hidden_connection()
+                connection = neuron.get_random_hidden_connection()
+                self.search_connection(connection)
 
     @override
     def es_mutate(self, mut_op: int):
@@ -281,7 +297,6 @@ class NeuralNetIndividual(ESIndividual):
         for (input_values, expected_output) in self.data_provider.training_batch():
             current_fitness += self.evaluate_with_error(input_values, expected_output)
 
-        prev_fitness: float = self.fitness
         self.fitness = current_fitness / self.data_provider.batch_size
 
     @override
