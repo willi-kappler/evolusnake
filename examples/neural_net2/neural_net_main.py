@@ -7,6 +7,7 @@ import logging
 import pathlib
 from typing import override, Self
 import random as rnd
+from sys import float_info
 
 # Local imports:
 from evolusnake.es_config import ESConfiguration
@@ -22,6 +23,9 @@ logger = logging.getLogger(__name__)
 
 def load_data(filename: str) -> list:
     result = []
+
+    min_val: float = float_info.max
+    max_val: float = -float_info.max
 
     with open(filename, "r") as f:
         next(f)  # ignore column names
@@ -45,6 +49,18 @@ def load_data(filename: str) -> list:
                     raise ValueError(f"Unknown name: '{name}'")
 
             result.append(([in1, in2, in3, in4], kind))
+
+            min_val = min(min_val, in1, in2, in3, in4)
+            max_val = max(max_val, in1, in2, in3, in4)
+
+    max_val -= min_val
+
+    # Normalize input values:
+    for (data, _) in result:
+        data[0] = (data[0] - min_val) / max_val
+        data[1] = (data[1] - min_val) / max_val
+        data[2] = (data[2] - min_val) / max_val
+        data[3] = (data[3] - min_val) / max_val
 
     return result
 
@@ -158,10 +174,6 @@ class NeuralNetIndividual(ESIndividual):
             case 2:
                 neuron.mutate_hidden_connection()
 
-    def set_delta_limits(self, new_delta_limit):
-        for neuron in self.hidden_layer:
-            neuron.set_delta_limits(new_delta_limit)
-
     @override
     def es_mutate(self, mut_op: int):
         index1: int = rnd.randrange(self.hidden_layer_size)
@@ -210,13 +222,6 @@ class NeuralNetIndividual(ESIndividual):
                 prob3: int = rnd.randrange(10000)  # -> Hyperparameter
                 if prob3 == 0:
                     neuron.remove_hidden_connection()
-                else:
-                    self.mutate_neuron(neuron)
-            case 12:
-                prob4: int = rnd.randrange(1000)  # -> Hyperparameter
-                if prob4 == 0:
-                    new_delta_limit: float = rnd.uniform(0.1, 1.0)
-                    self.set_delta_limits(new_delta_limit)
                 else:
                     self.mutate_neuron(neuron)
 
@@ -269,7 +274,6 @@ class NeuralNetIndividual(ESIndividual):
             "input_size": self.input_size,
             "output_size": self.output_size,
             "hidden_layer_size": self.hidden_layer_size,
-            "delta_limit": self.hidden_layer[0].delta_limit1,
             "hidden_layer": [n.to_json() for n in self.hidden_layer]
         }
 
@@ -287,7 +291,6 @@ class NeuralNetIndividual(ESIndividual):
             self.hidden_layer.append(neuron)
 
         self.hidden_layer_size = len(self.hidden_layer)
-        self.set_delta_limits(data["delta_limit"])
 
     @override
     def es_new_best_individual(self):
@@ -295,7 +298,6 @@ class NeuralNetIndividual(ESIndividual):
         logger.info(f"Size: {self.hidden_layer_size}")
         logger.info(f"Biggest weight: {self.biggest_weight()}")
         logger.info(f"Connections per neuron: {self.connections_per_neuron()}")
-        logger.info(f"Delta limit: {self.hidden_layer[0].delta_limit1}")
 
 
 def main():
