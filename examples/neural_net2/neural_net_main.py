@@ -264,7 +264,12 @@ class NeuralNetIndividual(ESIndividual):
                 else:
                     self.mutate_neuron(neuron)
             case 10:
-                self.search_mutate(neuron)
+                prob4: int = rnd.randrange(10)  # -> Hyperparameter
+                if prob4 == 0:
+                    self.search_mutate(neuron)
+                    neuron.remove_hidden_connection()
+                else:
+                    self.mutate_neuron(neuron)
 
 
     @override
@@ -373,7 +378,7 @@ def main():
 
     dp = DataProvider(data_values, 20)
 
-    ind = NeuralNetIndividual(4, 3, dp, 10)  # -> Hyperparameter
+    ind = NeuralNetIndividual(4, 3, dp, 1)  # -> Hyperparameter
 
     config.target_fitness = 0.00001
     config.target_fitness2 = 0.05
