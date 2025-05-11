@@ -85,7 +85,7 @@ class NeuralNetIndividual(ESIndividual):
     def test_network(self) -> float:
         loss: float = 0.0
 
-        rounds: int = 100  # -> Hyperparameter
+        rounds: int = 10  # -> Hyperparameter
 
         for _ in range(rounds):
             for (input_values, expected_output) in self.data_provider.test_batch():
@@ -252,6 +252,8 @@ class NeuralNetIndividual(ESIndividual):
             for _ in range(diff):
                 self.add_neuron()
 
+        self.opt_neuron_index = rnd.randrange(self.hidden_layer_size)
+
     @override
     def es_calculate_fitness(self):
         current_fitness: float = 0.0
@@ -334,7 +336,7 @@ def main():
 
     data_values = load_data("Iris.csv")
 
-    dp = DataProvider(data_values, 20)
+    dp = DataProvider(data_values, 10)
 
     ind = NeuralNetIndividual(4, 3, dp, 10)  # -> Hyperparameter
 
