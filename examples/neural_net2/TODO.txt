@@ -13,6 +13,10 @@ https://github.com/cvdfoundation/mnist
 
 
 
+
+
+
+
 Best hyper parameters:
 
 Population: 1
@@ -23,7 +27,7 @@ probablilties:
     prob1: 1000
     prob2: 10000
     prob3: 10000
-start size: 11 (3 + 10)
+start size: 1
 iteration factor: 3
 
 target1: 0.00001
