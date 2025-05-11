@@ -74,6 +74,7 @@ class NeuralNetIndividual(ESIndividual):
         self.output_size: int = output_size
         self.data_provider: DataProvider = data_provider
         self.hidden_layer_size: int = 0
+        self.opt_neuron_index: int = 0
 
         self.es_randomize()
 
@@ -97,7 +98,7 @@ class NeuralNetIndividual(ESIndividual):
         for neuron in self.hidden_layer:
             neuron.current_value = 0.0
 
-        for _ in range(3):
+        for _ in range(2):
             for neuron in self.hidden_layer:
                 neuron.evaluate(input_values, self.hidden_layer)
 
@@ -176,8 +177,8 @@ class NeuralNetIndividual(ESIndividual):
 
     @override
     def es_mutate(self, mut_op: int):
-        index1: int = rnd.randrange(self.hidden_layer_size)
-        neuron: Neuron = self.hidden_layer[index1]
+        #index1: int = rnd.randrange(self.hidden_layer_size)
+        neuron: Neuron = self.hidden_layer[self.opt_neuron_index]
 
         match mut_op:
             case 0:
@@ -220,6 +221,14 @@ class NeuralNetIndividual(ESIndividual):
                     neuron.remove_hidden_connection()
                 else:
                     self.mutate_neuron(neuron)
+            case 10:
+                prob4: int = rnd.randrange(10)
+
+                if prob4 == 0:
+                    self.opt_neuron_index = rnd.randrange(self.hidden_layer_size)
+                else:
+                    self.mutate_neuron(neuron)
+
 
     @override
     def es_randomize(self):
@@ -261,6 +270,7 @@ class NeuralNetIndividual(ESIndividual):
         clone = NeuralNetIndividual(self.input_size, self.output_size, self.data_provider)
         clone.hidden_layer = [n.clone() for n in self.hidden_layer]
         clone.hidden_layer_size = self.hidden_layer_size
+        clone.opt_neuron_index = self.opt_neuron_index
 
         return clone  # type: ignore
 
