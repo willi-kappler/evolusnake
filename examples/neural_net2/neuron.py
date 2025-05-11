@@ -36,10 +36,8 @@ class Neuron:
         else:
             return value
 
-    def mutate_bias(self) -> float:
-        old_val = self.bias
+    def mutate_bias(self):
         self.bias = self.change_delta(self.bias)
-        return self.bias - old_val
 
     def has_input_connection(self, new_index):
         for (index2, _) in self.input_connections:
@@ -63,17 +61,13 @@ class Neuron:
             index: int = rnd.randrange(n)
             self.input_connections.pop(index)
 
-    def mutate_input_connection(self) -> tuple[int, float]:
+    def mutate_input_connection(self):
         n: int = len(self.input_connections)
 
         if n > 0:
             index: int = rnd.randrange(n)
             connection: list = self.input_connections[index]
-            old_val = connection[1]
             connection[1] = self.change_delta(connection[1])
-            return (index, connection[1] - old_val)
-        else:
-            return (-1, 0.0)
 
     def replace_input_connection(self, new_index: int):
         if self.has_input_connection(new_index):
@@ -103,17 +97,13 @@ class Neuron:
             index: int = rnd.randrange(n)
             self.hidden_connections.pop(index)
 
-    def mutate_hidden_connection(self) -> tuple[int, float]:
+    def mutate_hidden_connection(self):
         n: int = len(self.hidden_connections)
 
         if n > 0:
             index: int = rnd.randrange(n)
             connection: list = self.hidden_connections[index]
-            old_val = connection[1]
             connection[1] = self.change_delta(connection[1])
-            return (index, connection[1] - old_val)
-        else:
-            return (-1, 0.0)
 
     def replace_hidden_connection(self, new_index: int):
         for (index2, _) in self.hidden_connections:
@@ -127,16 +117,6 @@ class Neuron:
             index: int = rnd.randrange(n)
             connection: list = self.hidden_connections[index]
             connection[0] = new_index
-
-    def apply_mut_vec(self, mut_vec: tuple[int, int, float]):
-        factor: float = rnd.uniform(0.1, 0.9)
-        match mut_vec:
-            case (0, _, diff):
-                self.bias += diff * factor
-            case (1, index, diff):
-                self.input_connections[index][1] += diff * factor
-            case (2, index, diff):
-                self.hidden_connections[index][1] += diff * factor
 
     def clear(self):
         self.input_connections = []

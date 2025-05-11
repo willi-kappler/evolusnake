@@ -74,9 +74,6 @@ class NeuralNetIndividual(ESIndividual):
         self.output_size: int = output_size
         self.data_provider: DataProvider = data_provider
         self.hidden_layer_size: int = 0
-        self.prev_mut_op = (-1, -1, 0.0)
-        self.prev_mut_vec = (-1, -1, 0.0)
-        self.prev_neuron_index = 0
 
         self.es_randomize()
 
@@ -175,26 +172,39 @@ class NeuralNetIndividual(ESIndividual):
 
         match mut_op:
             case 0:
-                diff = neuron.mutate_bias()
-                self.prev_mut_op = (0, 0, diff)
+                neuron.mutate_bias()
             case 1:
-                (index, diff) = neuron.mutate_input_connection()
-                self.prev_mut_op = (1, index, diff)
+                neuron.mutate_input_connection()
             case 2:
-                (index, diff) = neuron.mutate_hidden_connection()
-                self.prev_mut_op = (2, index, diff)
+                neuron.mutate_hidden_connection()
+
+    def search_mutate(self, neuron: Neuron):
+        mut_op: int = rnd.randrange(3)
+
+        match mut_op:
+            case 0:
+                best_val: float = neuron.bias
+                best_fitness: float = self.fitness
+
+                for i in range(21):
+                    val: float = (i - 10) / 10.0
+                    neuron.bias = val
+                    self.es_calculate_fitness()
+                    if self.fitness < best_fitness:
+                        best_val = val
+                        best_fitness = self.fitness
+
+                neuron.bias = best_val
+
+            case 1:
+                neuron.mutate_input_connection()
+            case 2:
+                neuron.mutate_hidden_connection()
 
     @override
     def es_mutate(self, mut_op: int):
-        if (self.prev_mut_vec[0] >= 0) and (self.prev_mut_vec[1] >= 0):
-            self.hidden_layer[self.prev_neuron_index].apply_mut_vec(self.prev_mut_vec)
-            self.prev_mut_op = (self.prev_mut_op[0], self.prev_mut_op[1], self.prev_mut_op[2])
-            return
-
         index1: int = rnd.randrange(self.hidden_layer_size)
         neuron: Neuron = self.hidden_layer[index1]
-        self.prev_mut_op = (-1, -1, 0.0)
-        self.prev_neuron_index = index1
 
         match mut_op:
             case 0:
@@ -237,6 +247,9 @@ class NeuralNetIndividual(ESIndividual):
                     neuron.remove_hidden_connection()
                 else:
                     self.mutate_neuron(neuron)
+            case 10:
+                self.search_mutate(neuron)
+
 
     @override
     def es_randomize(self):
@@ -271,17 +284,6 @@ class NeuralNetIndividual(ESIndividual):
         prev_fitness: float = self.fitness
         self.fitness = current_fitness / self.data_provider.batch_size
 
-        self.prev_mut_vec = (-1, -1, 0.0)
-        if self.prev_mut_op[0] >= 0:
-            if self.fitness < prev_fitness:
-                op: int = self.prev_mut_op[0]
-                index: int = self.prev_mut_op[1]
-                diff: float = self.prev_mut_op[2]
-                if index >= 0:
-                    self.prev_mut_vec = (op, index, diff)
-            else:
-                self.prev_mut_op = (-1, -1, 0.0)
-
     @override
     def es_calculate_fitness2(self):
         self.fitness2 = self.test_network()
@@ -291,9 +293,6 @@ class NeuralNetIndividual(ESIndividual):
         clone = NeuralNetIndividual(self.input_size, self.output_size, self.data_provider)
         clone.hidden_layer = [n.clone() for n in self.hidden_layer]
         clone.hidden_layer_size = self.hidden_layer_size
-        clone.prev_mut_op =  self.prev_mut_op[:]
-        clone.prev_mut_vec = self.prev_mut_vec[:]
-        clone.prev_neuron_index = self.prev_neuron_index
 
         return clone  # type: ignore
 
