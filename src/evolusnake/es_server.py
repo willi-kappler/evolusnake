@@ -110,6 +110,8 @@ class ESServer(PSServer):
             # Short cut if target 2 is met.
             self.population[0] = result
             logger.debug(f"Target 2 is met: {new_fitness2=}, {self.target_fitness2=}")
+            # User code to do some additional stuff.
+            result.es_new_best_individual()
             return
 
         if new_fitness < self.population[-1].fitness:
