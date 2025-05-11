@@ -6,6 +6,7 @@
 
 import random as rnd
 from typing import Self
+import itertools
 
 
 class Neuron:
@@ -160,10 +161,7 @@ class Neuron:
     def abs_weight_sum(self) -> float:
         ws: float = 0.0
 
-        for (_, w) in self.input_connections:
-            ws += abs(w)
-
-        for (_, w) in self.hidden_connections:
+        for (_, w) in itertools.chain(self.input_connections, self.hidden_connections):
             ws += abs(w)
 
         return ws
