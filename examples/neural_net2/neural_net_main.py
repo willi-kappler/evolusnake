@@ -74,7 +74,6 @@ class NeuralNetIndividual(ESIndividual):
         self.output_size: int = output_size
         self.data_provider: DataProvider = data_provider
         self.hidden_layer_size: int = 0
-        self.opt_neuron_index: int = 0
 
         self.es_randomize()
 
@@ -177,8 +176,8 @@ class NeuralNetIndividual(ESIndividual):
 
     @override
     def es_mutate(self, mut_op: int):
-        #index1: int = rnd.randrange(self.hidden_layer_size)
-        neuron: Neuron = self.hidden_layer[self.opt_neuron_index]
+        index1: int = rnd.randrange(self.hidden_layer_size)
+        neuron: Neuron = self.hidden_layer[index1]
 
         match mut_op:
             case 0:
@@ -221,14 +220,6 @@ class NeuralNetIndividual(ESIndividual):
                     neuron.remove_hidden_connection()
                 else:
                     self.mutate_neuron(neuron)
-            case 10:
-                prob4: int = rnd.randrange(10)
-
-                if prob4 == 0:
-                    self.opt_neuron_index = rnd.randrange(self.hidden_layer_size)
-                else:
-                    self.mutate_neuron(neuron)
-
 
     @override
     def es_randomize(self):
@@ -252,8 +243,6 @@ class NeuralNetIndividual(ESIndividual):
             for _ in range(diff):
                 self.add_neuron()
 
-        self.opt_neuron_index = rnd.randrange(self.hidden_layer_size)
-
     @override
     def es_calculate_fitness(self):
         current_fitness: float = 0.0
@@ -272,7 +261,6 @@ class NeuralNetIndividual(ESIndividual):
         clone = NeuralNetIndividual(self.input_size, self.output_size, self.data_provider)
         clone.hidden_layer = [n.clone() for n in self.hidden_layer]
         clone.hidden_layer_size = self.hidden_layer_size
-        clone.opt_neuron_index = self.opt_neuron_index
 
         return clone  # type: ignore
 
@@ -336,7 +324,7 @@ def main():
 
     data_values = load_data("Iris.csv")
 
-    dp = DataProvider(data_values, 10)
+    dp = DataProvider(data_values, 20)
 
     ind = NeuralNetIndividual(4, 3, dp, 10)  # -> Hyperparameter
 
