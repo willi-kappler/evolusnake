@@ -141,6 +141,10 @@ class NeuralNetIndividual(ESIndividual):
         index: int = rnd.randrange(self.hidden_layer_size)
         new_neuron.add_hidden_connection(index)
 
+        # Add a connection from a random existing neuron to this new neuron:
+        index: int = rnd.randrange(self.hidden_layer_size)
+        self.hidden_layer[index].add_hidden_connection(self.hidden_layer_size)
+
         self.hidden_layer.append(new_neuron)
         self.hidden_layer_size += 1
 
