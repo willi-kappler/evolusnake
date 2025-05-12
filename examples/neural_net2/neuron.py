@@ -86,6 +86,10 @@ class Neuron:
         self.mutate_input_connection()
         self.mutate_hidden_connection()
 
+    def randomize_all_values(self):
+        for connection in itertools.chain(self.input_connections, self.hidden_connections):
+            connection[1] = rnd.uniform(-1.0, 1.0)
+
     def evaluate(self, input_values: list, hidden_layer: list):
         new_value: float = self.bias
 
