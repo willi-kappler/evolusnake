@@ -12,6 +12,11 @@ MNIST data set:
 https://github.com/cvdfoundation/mnist
 
 
+- mutate_xxx: Schrittweite: 0.001, 0.1
+
+
+- swarm: set delta for each connection and move accordingly.
+  prob 100: randomly change all values.
 
 
 
