@@ -74,6 +74,7 @@ class NeuralNetIndividual(ESIndividual):
         self.output_size: int = output_size
         self.data_provider: DataProvider = data_provider
         self.hidden_layer_size: int = 0
+        self.new_fitness_needed: bool = True
 
         self.es_randomize()
 
@@ -167,12 +168,16 @@ class NeuralNetIndividual(ESIndividual):
         if fitness2 < fitness1:
             if fitness3 < fitness2:
                 neuron.bias = bias3
+                self.fitness = fitness3
             else:
                 neuron.bias = bias2
+                self.fitness = fitness2
         elif fitness3 < fitness1:
             neuron.bias = bias3
+            self.fitness = fitness3
         else:
             neuron.bias = bias1
+            self.fitness = fitness1
 
     def mutate_input_connection(self):
         index: int = rnd.randrange(self.hidden_layer_size)
@@ -199,12 +204,16 @@ class NeuralNetIndividual(ESIndividual):
             if fitness2 < fitness1:
                 if fitness3 < fitness2:
                     connection[1] = weight3
+                    self.fitness = fitness3
                 else:
                     connection[1] = weight2
+                    self.fitness = fitness2
             elif fitness3 < fitness1:
                 connection[1] = weight3
+                self.fitness = fitness3
             else:
                 connection[1] = weight1
+                self.fitness = fitness1
 
     def mutate_hidden_connection(self):
         index: int = rnd.randrange(self.hidden_layer_size)
@@ -231,12 +240,16 @@ class NeuralNetIndividual(ESIndividual):
             if fitness2 < fitness1:
                 if fitness3 < fitness2:
                     connection[1] = weight3
+                    self.fitness = fitness3
                 else:
                     connection[1] = weight2
+                    self.fitness = fitness2
             elif fitness3 < fitness1:
                 connection[1] = weight3
+                self.fitness = fitness3
             else:
                 connection[1] = weight1
+                self.fitness = fitness1
 
     def add_input_connection(self):
         index: int = rnd.randrange(self.hidden_layer_size)
@@ -258,18 +271,23 @@ class NeuralNetIndividual(ESIndividual):
         #neuron.randomize_values()
 
         for neuron in self.hidden_layer:
-            # neuron.randomize_values()
-            neuron.randomize_all_values()
+            neuron.randomize_values()
+        #    neuron.randomize_all_values()
 
     @override
     def es_mutate(self, mut_op: int):
+        self.new_fitness_needed = True
+
         match mut_op:
             case 0:
                 self.mutate_bias()
+                self.new_fitness_needed = False
             case 1:
                 self.mutate_input_connection()
+                self.new_fitness_needed = False
             case 2:
                 self.mutate_hidden_connection()
+                self.new_fitness_needed = False
             case 3:
                 prob: int = rnd.randrange(1000)
                 if prob == 0:
@@ -289,7 +307,7 @@ class NeuralNetIndividual(ESIndividual):
                 else:
                     self.es_mutate(rnd.randrange(3))
             case 6:
-                prob: int = rnd.randrange(100)
+                prob: int = rnd.randrange(1000)
                 if prob == 0:
                     self.randomize_all_neurons()
                 else:
@@ -322,12 +340,13 @@ class NeuralNetIndividual(ESIndividual):
 
     @override
     def es_calculate_fitness(self):
-        current_fitness: float = 0.0
+        if self.new_fitness_needed:
+            current_fitness: float = 0.0
 
-        for (input_values, expected_output) in self.data_provider.training_batch():
-            current_fitness += self.evaluate_with_error(input_values, expected_output)
+            for (input_values, expected_output) in self.data_provider.training_batch():
+                current_fitness += self.evaluate_with_error(input_values, expected_output)
 
-        self.fitness = current_fitness / self.data_provider.batch_size
+            self.fitness = current_fitness / self.data_provider.batch_size
 
     @override
     def es_calculate_fitness2(self):
@@ -367,7 +386,7 @@ class NeuralNetIndividual(ESIndividual):
 
     @override
     def es_new_best_individual(self):
-        logger.info(f"Fitness: {self.fitness}")
+        logger.info(f"Fitness1: {self.fitness}")
         logger.info(f"Fitness2: {self.fitness2}")
         logger.info(f"Size: {self.hidden_layer_size}")
         logger.info(f"Absolute weight sum: {self.ab_weight_sum()}")
