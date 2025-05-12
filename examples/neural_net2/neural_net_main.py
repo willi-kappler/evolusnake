@@ -307,7 +307,7 @@ class NeuralNetIndividual(ESIndividual):
                 else:
                     self.es_mutate(rnd.randrange(3))
             case 6:
-                prob: int = rnd.randrange(1000)
+                prob: int = rnd.randrange(10000)
                 if prob == 0:
                     self.randomize_all_neurons()
                 else:
