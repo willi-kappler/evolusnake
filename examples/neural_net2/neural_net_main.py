@@ -74,6 +74,7 @@ class NeuralNetIndividual(ESIndividual):
         self.output_size: int = output_size
         self.data_provider: DataProvider = data_provider
         self.hidden_layer_size: int = 0
+        self.neuron_mut_rec: tuple[int, int, int, float] = (-1, -1, -1, 0.0)
 
         self.es_randomize()
 
@@ -130,10 +131,6 @@ class NeuralNetIndividual(ESIndividual):
 
         return result / self.hidden_layer_size
 
-    def dec_delta_limit(self, amount: float):
-        for neuron in self.hidden_layer:
-            neuron.dec_delta_limit(amount)
-
     def add_neuron(self):
         new_neuron: Neuron = Neuron()
 
@@ -171,16 +168,21 @@ class NeuralNetIndividual(ESIndividual):
 
         (self.hidden_layer[i1], self.hidden_layer[i2]) = (self.hidden_layer[i2], self.hidden_layer[i1])
 
-    def mutate_neuron(self, neuron: Neuron):
+    def mutate_neuron(self, neuron: Neuron) -> tuple[int, int, float]:
         mut_op: int = rnd.randrange(3)
 
         match mut_op:
             case 0:
-                neuron.mutate_bias()
+                diff: float = neuron.mutate_bias()
+                return (0, -1, diff)
             case 1:
-                neuron.mutate_input_connection()
+                (index, diff) = neuron.mutate_input_connection()
+                return (1, index, diff)
             case 2:
-                neuron.mutate_hidden_connection()
+                (index, diff) = neuron.mutate_hidden_connection()
+                return (2, index, diff)
+            case _:
+                return (-1, -1, 0.0)
 
     def search_connection(self, connection: list):
         if connection:
@@ -226,19 +228,23 @@ class NeuralNetIndividual(ESIndividual):
         index1: int = rnd.randrange(self.hidden_layer_size)
         neuron: Neuron = self.hidden_layer[index1]
 
+        self.neuron_mut_rec = (-1, -1, -1, 0.0)
+
         match mut_op:
             case 0:
                 prob1: int = rnd.randrange(1000)  # -> Hyperparameter
                 if prob1 == 0:
                     self.add_neuron()
                 else:
-                    self.mutate_neuron(neuron)
+                    (mut_op, index2, diff) = self.mutate_neuron(neuron)
+                    self.neuron_mut_rec = (index1, mut_op, index2, diff)
             case 1:
                 prob2: int = rnd.randrange(10000)  # -> Hyperparameter
                 if prob2 == 0:
                     self.remove_neuron()
                 else:
-                    self.mutate_neuron(neuron)
+                    (mut_op, index2, diff) = self.mutate_neuron(neuron)
+                    self.neuron_mut_rec = (index1, mut_op, index2, diff)
             case 2:
                 self.swap_neurons()
             case 3:
@@ -248,7 +254,8 @@ class NeuralNetIndividual(ESIndividual):
                 index2: int = rnd.randrange(self.hidden_layer_size)
                 neuron.add_hidden_connection(index2)
             case 5:
-                self.mutate_neuron(neuron)
+                (mut_op, index2, diff) = self.mutate_neuron(neuron)
+                self.neuron_mut_rec = (index1, mut_op, index2, diff)
             case 6:
                 index3: int = rnd.randrange(self.input_size)
                 neuron.replace_input_connection(index3)
@@ -260,21 +267,23 @@ class NeuralNetIndividual(ESIndividual):
                 if prob3 == 0:
                     neuron.remove_input_connection()
                 else:
-                    self.mutate_neuron(neuron)
+                    (mut_op, index2, diff) = self.mutate_neuron(neuron)
+                    self.neuron_mut_rec = (index1, mut_op, index2, diff)
             case 9:
                 prob3: int = rnd.randrange(10000)  # -> Hyperparameter
                 if prob3 == 0:
                     neuron.remove_hidden_connection()
                 else:
-                    self.mutate_neuron(neuron)
+                    (mut_op, index2, diff) = self.mutate_neuron(neuron)
+                    self.neuron_mut_rec = (index1, mut_op, index2, diff)
             case 10:
-                prob4: int = rnd.randrange(10)  # -> Hyperparameter
+                prob4: int = rnd.randrange(100)  # -> Hyperparameter
                 if prob4 == 0:
                     self.search_mutate(neuron)
                     neuron.remove_hidden_connection()
                 else:
-                    self.mutate_neuron(neuron)
-
+                    (mut_op, index2, diff) = self.mutate_neuron(neuron)
+                    self.neuron_mut_rec = (index1, mut_op, index2, diff)
 
     @override
     def es_randomize(self):
@@ -301,12 +310,23 @@ class NeuralNetIndividual(ESIndividual):
 
     @override
     def es_calculate_fitness(self):
-        current_fitness: float = 0.0
+        for _ in range(5):
+            current_fitness: float = 0.0
 
-        for (input_values, expected_output) in self.data_provider.training_batch():
-            current_fitness += self.evaluate_with_error(input_values, expected_output)
+            for (input_values, expected_output) in self.data_provider.training_batch():
+                current_fitness += self.evaluate_with_error(input_values, expected_output)
 
-        self.fitness = current_fitness / self.data_provider.batch_size
+            prev_value: float = self.fitness
+            self.fitness = current_fitness / self.data_provider.batch_size
+
+            if self.neuron_mut_rec[2] >= 0:
+                if self.fitness < prev_value:
+                    (index1, mut_op, index2, diff) = self.neuron_mut_rec
+                    self.hidden_layer[index1].apply_mutation(mut_op, index2, diff)
+                else:
+                    break
+            else:
+                break
 
     @override
     def es_calculate_fitness2(self):
