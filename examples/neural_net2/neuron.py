@@ -19,10 +19,8 @@ class Neuron:
     def is_empty(self) -> bool:
         return (self.input_connections == []) and (self.hidden_connections == [])
 
-    def mutate_bias(self) -> float:
-        prev_value: float = self.bias
+    def mutate_bias(self):
         self.bias = rnd.uniform(-1.0, 1.0)
-        return self.bias - prev_value
 
     def has_input_connection(self, new_index):
         for (index2, _) in self.input_connections:
@@ -83,10 +81,13 @@ class Neuron:
             return []
 
     def randomize_values(self):
+        self.mutate_bias()
         self.mutate_input_connection()
         self.mutate_hidden_connection()
 
     def randomize_all_values(self):
+        self.mutate_bias()
+
         for connection in itertools.chain(self.input_connections, self.hidden_connections):
             connection[1] = rnd.uniform(-1.0, 1.0)
 
