@@ -145,20 +145,35 @@ class NeuralNetIndividual(ESIndividual):
         self.hidden_layer.append(new_neuron)
         self.hidden_layer_size += 1
 
-    def mutate_bias(self):
+    def mutate_bias1(self):
         index: int = rnd.randrange(self.hidden_layer_size)
         neuron = self.hidden_layer[index]
-        neuron.mutate_bias()
+        neuron.mutate_bias1()
 
-    def mutate_input_connection(self):
+    def mutate_bias2(self):
         index: int = rnd.randrange(self.hidden_layer_size)
         neuron = self.hidden_layer[index]
-        neuron.mutate_input_connection()
+        neuron.mutate_bias2()
 
-    def mutate_hidden_connection(self):
+    def mutate_input_connection1(self):
         index: int = rnd.randrange(self.hidden_layer_size)
         neuron = self.hidden_layer[index]
-        neuron.mutate_hidden_connection()
+        neuron.mutate_input_connection1()
+
+    def mutate_input_connection2(self):
+        index: int = rnd.randrange(self.hidden_layer_size)
+        neuron = self.hidden_layer[index]
+        neuron.mutate_input_connection2()
+
+    def mutate_hidden_connection1(self):
+        index: int = rnd.randrange(self.hidden_layer_size)
+        neuron = self.hidden_layer[index]
+        neuron.mutate_hidden_connection1()
+
+    def mutate_hidden_connection2(self):
+        index: int = rnd.randrange(self.hidden_layer_size)
+        neuron = self.hidden_layer[index]
+        neuron.mutate_hidden_connection2()
 
     def add_input_connection(self):
         index: int = rnd.randrange(self.hidden_layer_size)
@@ -182,31 +197,37 @@ class NeuralNetIndividual(ESIndividual):
     def es_mutate(self, mut_op: int):
         match mut_op:
             case 0:
-                self.mutate_bias()
+                self.mutate_bias1()
             case 1:
-                self.mutate_input_connection()
+                self.mutate_bias2()
             case 2:
-                self.mutate_hidden_connection()
+                self.mutate_input_connection1()
             case 3:
+                self.mutate_input_connection2()
+            case 4:
+                self.mutate_hidden_connection1()
+            case 5:
+                self.mutate_hidden_connection2()
+            case 6:
                 prob: int = rnd.randrange(1000)
                 if prob == 0:
                     self.add_neuron()
                 else:
                     self.es_mutate(rnd.randrange(3))
-            case 4:
+            case 7:
                 prob: int = rnd.randrange(10)
                 if prob == 0:
                     self.add_input_connection()
                 else:
                     self.es_mutate(rnd.randrange(3))
-            case 5:
+            case 8:
                 prob: int = rnd.randrange(10)
                 if prob == 0:
                     self.add_hidden_connection()
                 else:
                     self.es_mutate(rnd.randrange(3))
-            case 6:
-                prob: int = rnd.randrange(10000)
+            case 9:
+                prob: int = rnd.randrange(1000)
                 if prob == 0:
                     self.randomize_all_neurons()
                 else:

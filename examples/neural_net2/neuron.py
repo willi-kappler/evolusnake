@@ -19,8 +19,12 @@ class Neuron:
     def is_empty(self) -> bool:
         return (self.input_connections == []) and (self.hidden_connections == [])
 
-    def mutate_bias(self):
+    def mutate_bias1(self):
         self.bias = rnd.uniform(-1.0, 1.0)
+
+    def mutate_bias2(self):
+        self.bias += rnd.uniform(-0.01, 0.01)
+        self.bias = min(1.0, max(-1.0, self.bias))
 
     def has_input_connection(self, new_index):
         for (index2, _) in self.input_connections:
@@ -31,19 +35,28 @@ class Neuron:
 
     def add_input_connection(self, new_index: int):
         if self.has_input_connection(new_index):
-            self.mutate_input_connection()
+            self.mutate_input_connection1()
             return
 
         weight: float = rnd.uniform(-1.0, 1.0)
         self.input_connections.append([new_index, weight])
 
-    def mutate_input_connection(self):
+    def mutate_input_connection1(self):
         n: int = len(self.input_connections)
 
         if n > 0:
             index: int = rnd.randrange(n)
             connection: list = self.input_connections[index]
             connection[1] = rnd.uniform(-1.0, 1.0)
+
+    def mutate_input_connection2(self):
+        n: int = len(self.input_connections)
+
+        if n > 0:
+            index: int = rnd.randrange(n)
+            connection: list = self.input_connections[index]
+            connection[1] += rnd.uniform(-0.01, 0.01)
+            connection[1] = min(1.0, max(-1.0, connection[1]))
 
     def get_random_input_connection(self) -> list:
         n: int = len(self.input_connections)
@@ -57,19 +70,28 @@ class Neuron:
     def add_hidden_connection(self, new_index: int):
         for (index2, _) in self.hidden_connections:
             if new_index == index2:
-                self.mutate_hidden_connection()
+                self.mutate_hidden_connection1()
                 return
 
         weight: float = rnd.uniform(-1.0, 1.0)
         self.hidden_connections.append([new_index, weight])
 
-    def mutate_hidden_connection(self):
+    def mutate_hidden_connection1(self):
         n: int = len(self.hidden_connections)
 
         if n > 0:
             index: int = rnd.randrange(n)
             connection: list = self.hidden_connections[index]
             connection[1] = rnd.uniform(-1.0, 1.0)
+
+    def mutate_hidden_connection2(self):
+        n: int = len(self.hidden_connections)
+
+        if n > 0:
+            index: int = rnd.randrange(n)
+            connection: list = self.hidden_connections[index]
+            connection[1] += rnd.uniform(-0.01, 0.01)
+            connection[1] = min(1.0, max(-1.0, connection[1]))
 
     def get_random_hidden_connection(self) -> list:
         n: int = len(self.hidden_connections)
@@ -80,13 +102,8 @@ class Neuron:
         else:
             return []
 
-    def randomize_values(self):
-        self.mutate_bias()
-        self.mutate_input_connection()
-        self.mutate_hidden_connection()
-
     def randomize_all_values(self):
-        self.mutate_bias()
+        self.mutate_bias1()
 
         for connection in itertools.chain(self.input_connections, self.hidden_connections):
             connection[1] = rnd.uniform(-1.0, 1.0)
