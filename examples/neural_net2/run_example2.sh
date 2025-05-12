@@ -55,7 +55,7 @@ run_kind() {
     sleep 2
     python3 $main_file -k $1 -m $num_of_mutations -i $iterations5 $randomize &
     sleep 2
-}}
+}
 
 run_all_kinds() {
     echo "Run all population kinds."
