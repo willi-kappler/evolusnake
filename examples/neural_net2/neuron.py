@@ -39,36 +39,13 @@ class Neuron:
         weight: float = rnd.uniform(-1.0, 1.0)
         self.input_connections.append([new_index, weight])
 
-    def remove_input_connection(self):
-        n: int = len(self.input_connections)
-
-        if n > 0:
-            index: int = rnd.randrange(n)
-            self.input_connections.pop(index)
-
-    def mutate_input_connection(self) -> tuple[int, float]:
+    def mutate_input_connection(self):
         n: int = len(self.input_connections)
 
         if n > 0:
             index: int = rnd.randrange(n)
             connection: list = self.input_connections[index]
-            prev_value: float = connection[1]
             connection[1] = rnd.uniform(-1.0, 1.0)
-            return (index, connection[1] - prev_value)
-        else:
-            return (-1, 0.0)
-
-    def replace_input_connection(self, new_index: int):
-        if self.has_input_connection(new_index):
-            self.mutate_input_connection()
-            return
-
-        n: int = len(self.input_connections)
-
-        if n > 0:
-            index: int = rnd.randrange(n)
-            connection: list = self.input_connections[index]
-            connection[0] = new_index
 
     def get_random_input_connection(self) -> list:
         n: int = len(self.input_connections)
@@ -88,37 +65,13 @@ class Neuron:
         weight: float = rnd.uniform(-1.0, 1.0)
         self.hidden_connections.append([new_index, weight])
 
-    def remove_hidden_connection(self):
-        n: int = len(self.hidden_connections)
-
-        if n > 1:
-            index: int = rnd.randrange(n)
-            self.hidden_connections.pop(index)
-
-    def mutate_hidden_connection(self) -> tuple[int, float]:
+    def mutate_hidden_connection(self):
         n: int = len(self.hidden_connections)
 
         if n > 0:
             index: int = rnd.randrange(n)
             connection: list = self.hidden_connections[index]
-            prev_value: float = connection[1]
             connection[1] = rnd.uniform(-1.0, 1.0)
-            return (index, connection[1] - prev_value)
-        else:
-            return (-1, 0.0)
-
-    def replace_hidden_connection(self, new_index: int):
-        for (index2, _) in self.hidden_connections:
-            if new_index == index2:
-                self.mutate_hidden_connection()
-                return
-
-        n: int = len(self.hidden_connections)
-
-        if n > 0:
-            index: int = rnd.randrange(n)
-            connection: list = self.hidden_connections[index]
-            connection[0] = new_index
 
     def get_random_hidden_connection(self) -> list:
         n: int = len(self.hidden_connections)
@@ -129,37 +82,9 @@ class Neuron:
         else:
             return []
 
-    def apply_mutation(self, mut_op: int, index: int, diff: float):
-        if diff > 0.0:
-            match mut_op:
-                case 0:
-                    self.bias = min(1.0, self.bias + 0.001)
-                case 1:
-                    connection = self.input_connections[index]
-                    connection[1] = min(1.0, connection[1] + 0.001)
-                case 2:
-                    connection = self.hidden_connections[index]
-                    connection[1] = min(1.0, connection[1] + 0.001)
-        else:
-            match mut_op:
-                case 0:
-                    self.bias = max(-1.0, self.bias - 0.001)
-                case 1:
-                    connection = self.input_connections[index]
-                    connection[1] = max(-1.0, connection[1] - 0.001)
-                case 2:
-                    connection = self.hidden_connections[index]
-                    connection[1] = max(-1.0, connection[1] - 0.001)
-
-    def clear(self):
-        self.input_connections = []
-        self.hidden_connections = []
-
-    def remove_neuron_connection(self, index: int):
-        for (i1, (i2, _)) in enumerate(self.hidden_connections):
-            if i2 == index:
-                self.hidden_connections.pop(i1)
-                return
+    def randomize_values(self):
+        self.mutate_input_connection()
+        self.mutate_hidden_connection()
 
     def evaluate(self, input_values: list, hidden_layer: list):
         new_value: float = self.bias

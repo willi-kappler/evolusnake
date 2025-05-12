@@ -27,12 +27,6 @@ class IterationNeural(ESIterationCallBack):
     def es_get_iteration_factor(self) -> int:
         return 3
 
-    # @override
-    # def es_before_iteration(self, population: ESPopulation):
-    #     for ind in population.population:
-    #         # Hyperparameter:
-    #         ind.dec_delta_limit(0.05)  # type: ignore
-
 class DataProvider:
     def __init__(self, data_values: list, batch_size: int):
         total_length = len(data_values)

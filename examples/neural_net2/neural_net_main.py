@@ -74,7 +74,6 @@ class NeuralNetIndividual(ESIndividual):
         self.output_size: int = output_size
         self.data_provider: DataProvider = data_provider
         self.hidden_layer_size: int = 0
-        self.neuron_mut_rec: tuple[int, int, int, float] = (-1, -1, -1, 0.0)
 
         self.es_randomize()
 
@@ -145,145 +144,157 @@ class NeuralNetIndividual(ESIndividual):
         self.hidden_layer.append(new_neuron)
         self.hidden_layer_size += 1
 
-    def remove_neuron(self):
+    def mutate_bias(self):
         index: int = rnd.randrange(self.hidden_layer_size)
-        self.hidden_layer[index].clear()
+        neuron = self.hidden_layer[index]
+        delta: float = rnd.uniform(0.0001, 0.1)
 
-        for neuron in self.hidden_layer:
-            neuron.remove_neuron_connection(index)
+        fitness1: float = self.fitness
+        bias1: float = neuron.bias
 
-    def swap_neurons(self):
-        i1 = rnd.randrange(self.hidden_layer_size)
+        neuron.bias = min(1.0, bias1 + delta)
+        self.es_calculate_fitness()
 
-        if self.hidden_layer[i1].is_empty():
-            return
+        fitness2: float = self.fitness
+        bias2: float = neuron.bias
 
-        i2 = rnd.randrange(self.hidden_layer_size)
+        neuron.bias = max(-1.0, bias1 - delta)
+        self.es_calculate_fitness()
 
-        while i1 == i2:
-            i2 = rnd.randrange(self.hidden_layer_size)
+        fitness3: float = self.fitness
+        bias3: float = neuron.bias
 
-        if self.hidden_layer[i2].is_empty():
-            return
+        if fitness2 < fitness1:
+            if fitness3 < fitness2:
+                neuron.bias = bias3
+            else:
+                neuron.bias = bias2
+        elif fitness3 < fitness1:
+            neuron.bias = bias3
+        else:
+            neuron.bias = bias1
 
-        (self.hidden_layer[i1], self.hidden_layer[i2]) = (self.hidden_layer[i2], self.hidden_layer[i1])
+    def mutate_input_connection(self):
+        index: int = rnd.randrange(self.hidden_layer_size)
+        neuron = self.hidden_layer[index]
+        delta: float = rnd.uniform(0.0001, 0.1)
+        connection: list = neuron.get_random_input_connection()
 
-    def mutate_neuron(self, neuron: Neuron) -> tuple[int, int, float]:
-        mut_op: int = rnd.randrange(3)
-
-        match mut_op:
-            case 0:
-                diff: float = neuron.mutate_bias()
-                return (0, -1, diff)
-            case 1:
-                (index, diff) = neuron.mutate_input_connection()
-                return (1, index, diff)
-            case 2:
-                (index, diff) = neuron.mutate_hidden_connection()
-                return (2, index, diff)
-            case _:
-                return (-1, -1, 0.0)
-
-    def search_connection(self, connection: list):
         if connection:
-            best_val: float = connection[1]
-            best_fitness: float = self.fitness
+            fitness1: float = self.fitness
+            weight1: float = connection[1]
 
-            for i in range(11):
-                val: float = (i - 5) / 5.0
-                connection[1] = val
-                self.es_calculate_fitness()
-                if self.fitness < best_fitness:
-                    best_val = val
-                    best_fitness = self.fitness
+            connection[1] = min(1.0, weight1 + delta)
+            self.es_calculate_fitness()
 
-            connection[1] = best_val
+            fitness2: float = self.fitness
+            weight2: float = connection[1]
 
-    def search_mutate(self, neuron: Neuron):
-        mut_op: int = rnd.randrange(3)
+            connection[1] = max(-1.0, weight1 - delta)
+            self.es_calculate_fitness()
 
-        match mut_op:
-            case 0:
-                best_val: float = neuron.bias
-                best_fitness: float = self.fitness
+            fitness3: float = self.fitness
+            weight3: float = connection[1]
 
-                for i in range(11):
-                    val: float = (i - 5) / 5.0
-                    neuron.bias = val
-                    self.es_calculate_fitness()
-                    if self.fitness < best_fitness:
-                        best_val = val
-                        best_fitness = self.fitness
+            if fitness2 < fitness1:
+                if fitness3 < fitness2:
+                    connection[1] = weight3
+                else:
+                    connection[1] = weight2
+            elif fitness3 < fitness1:
+                connection[1] = weight3
+            else:
+                connection[1] = weight1
 
-                neuron.bias = best_val
-            case 1:
-                connection = neuron.get_random_input_connection()
-                self.search_connection(connection)
-            case 2:
-                connection = neuron.get_random_hidden_connection()
-                self.search_connection(connection)
+    def mutate_hidden_connection(self):
+        index: int = rnd.randrange(self.hidden_layer_size)
+        neuron = self.hidden_layer[index]
+        delta: float = rnd.uniform(0.0001, 0.1)
+        connection: list = neuron.get_random_hidden_connection()
+
+        if connection:
+            fitness1: float = self.fitness
+            weight1: float = connection[1]
+
+            connection[1] = min(1.0, weight1 + delta)
+            self.es_calculate_fitness()
+
+            fitness2: float = self.fitness
+            weight2: float = connection[1]
+
+            connection[1] = max(-1.0, weight1 - delta)
+            self.es_calculate_fitness()
+
+            fitness3: float = self.fitness
+            weight3: float = connection[1]
+
+            if fitness2 < fitness1:
+                if fitness3 < fitness2:
+                    connection[1] = weight3
+                else:
+                    connection[1] = weight2
+            elif fitness3 < fitness1:
+                connection[1] = weight3
+            else:
+                connection[1] = weight1
+
+    def add_input_connection(self):
+        index: int = rnd.randrange(self.hidden_layer_size)
+        neuron = self.hidden_layer[index]
+
+        new_index:int = rnd.randrange(self.input_size)
+        neuron.add_input_connection(new_index)
+
+    def add_hidden_connection(self):
+        index: int = rnd.randrange(self.hidden_layer_size)
+        neuron = self.hidden_layer[index]
+
+        new_index:int = rnd.randrange(self.hidden_layer_size)
+        neuron.add_hidden_connection(new_index)
+
+    def randomize_all_neurons(self):
+        index: int = rnd.randrange(self.hidden_layer_size)
+        neuron = self.hidden_layer[index]
+        neuron.randomize_values()
+
+        # for neuron in self.hidden_layer:
+        #     neuron.randomize_values()
 
     @override
     def es_mutate(self, mut_op: int):
-        index1: int = rnd.randrange(self.hidden_layer_size)
-        neuron: Neuron = self.hidden_layer[index1]
-
-        self.neuron_mut_rec = (-1, -1, -1, 0.0)
-
         match mut_op:
             case 0:
-                prob1: int = rnd.randrange(1000)  # -> Hyperparameter
-                if prob1 == 0:
+                self.mutate_bias()
+            case 1:
+                self.mutate_input_connection()
+            case 2:
+                self.mutate_hidden_connection()
+            case 3:
+                prob: int = rnd.randrange(1000)
+                if prob == 0:
                     self.add_neuron()
                 else:
-                    (mut_op, index2, diff) = self.mutate_neuron(neuron)
-                    self.neuron_mut_rec = (index1, mut_op, index2, diff)
-            case 1:
-                prob2: int = rnd.randrange(10000)  # -> Hyperparameter
-                if prob2 == 0:
-                    self.remove_neuron()
-                else:
-                    (mut_op, index2, diff) = self.mutate_neuron(neuron)
-                    self.neuron_mut_rec = (index1, mut_op, index2, diff)
-            case 2:
-                self.swap_neurons()
-            case 3:
-                index3: int = rnd.randrange(self.input_size)
-                neuron.add_input_connection(index3)
+                    self.es_mutate(rnd.randrange(3))
             case 4:
-                index2: int = rnd.randrange(self.hidden_layer_size)
-                neuron.add_hidden_connection(index2)
+                prob: int = rnd.randrange(10)
+                if prob == 0:
+                    self.add_input_connection()
+                else:
+                    self.es_mutate(rnd.randrange(3))
             case 5:
-                (mut_op, index2, diff) = self.mutate_neuron(neuron)
-                self.neuron_mut_rec = (index1, mut_op, index2, diff)
+                prob: int = rnd.randrange(10)
+                if prob == 0:
+                    self.add_hidden_connection()
+                else:
+                    self.es_mutate(rnd.randrange(3))
             case 6:
-                index3: int = rnd.randrange(self.input_size)
-                neuron.replace_input_connection(index3)
-            case 7:
-                index2: int = rnd.randrange(self.hidden_layer_size)
-                neuron.replace_hidden_connection(index2)
-            case 8:
-                prob3: int = rnd.randrange(10000)  # -> Hyperparameter
-                if prob3 == 0:
-                    neuron.remove_input_connection()
+                prob: int = rnd.randrange(100)
+                if prob == 0:
+                    self.randomize_all_neurons()
                 else:
-                    (mut_op, index2, diff) = self.mutate_neuron(neuron)
-                    self.neuron_mut_rec = (index1, mut_op, index2, diff)
-            case 9:
-                prob3: int = rnd.randrange(10000)  # -> Hyperparameter
-                if prob3 == 0:
-                    neuron.remove_hidden_connection()
-                else:
-                    (mut_op, index2, diff) = self.mutate_neuron(neuron)
-                    self.neuron_mut_rec = (index1, mut_op, index2, diff)
-            case 10:
-                prob4: int = rnd.randrange(100)  # -> Hyperparameter
-                if prob4 == 0:
-                    self.search_mutate(neuron)
-                    neuron.remove_hidden_connection()
-                else:
-                    (mut_op, index2, diff) = self.mutate_neuron(neuron)
-                    self.neuron_mut_rec = (index1, mut_op, index2, diff)
+                    self.es_mutate(rnd.randrange(3))
+            case _:
+                raise ValueError(f"Unknown operation: {mut_op}")
 
     @override
     def es_randomize(self):
@@ -310,23 +321,12 @@ class NeuralNetIndividual(ESIndividual):
 
     @override
     def es_calculate_fitness(self):
-        for _ in range(5):
-            current_fitness: float = 0.0
+        current_fitness: float = 0.0
 
-            for (input_values, expected_output) in self.data_provider.training_batch():
-                current_fitness += self.evaluate_with_error(input_values, expected_output)
+        for (input_values, expected_output) in self.data_provider.training_batch():
+            current_fitness += self.evaluate_with_error(input_values, expected_output)
 
-            prev_value: float = self.fitness
-            self.fitness = current_fitness / self.data_provider.batch_size
-
-            if self.neuron_mut_rec[2] >= 0:
-                if self.fitness < prev_value:
-                    (index1, mut_op, index2, diff) = self.neuron_mut_rec
-                    self.hidden_layer[index1].apply_mutation(mut_op, index2, diff)
-                else:
-                    break
-            else:
-                break
+        self.fitness = current_fitness / self.data_provider.batch_size
 
     @override
     def es_calculate_fitness2(self):
@@ -402,7 +402,7 @@ def main():
 
     dp = DataProvider(data_values, 20)
 
-    ind = NeuralNetIndividual(4, 3, dp, 1)  # -> Hyperparameter
+    ind = NeuralNetIndividual(4, 3, dp, 1)  # -> Hyperpar1meter
 
     config.target_fitness = 0.00001
     config.target_fitness2 = 0.05
