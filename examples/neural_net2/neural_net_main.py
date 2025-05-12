@@ -213,25 +213,25 @@ class NeuralNetIndividual(ESIndividual):
                 if prob == 0:
                     self.add_neuron()
                 else:
-                    self.es_mutate(rnd.randrange(3))
+                    self.es_mutate(rnd.randrange(6))
             case 7:
                 prob: int = rnd.randrange(10)
                 if prob == 0:
                     self.add_input_connection()
                 else:
-                    self.es_mutate(rnd.randrange(3))
+                    self.es_mutate(rnd.randrange(6))
             case 8:
                 prob: int = rnd.randrange(10)
                 if prob == 0:
                     self.add_hidden_connection()
                 else:
-                    self.es_mutate(rnd.randrange(3))
+                    self.es_mutate(rnd.randrange(6))
             case 9:
                 prob: int = rnd.randrange(1000)
                 if prob == 0:
                     self.randomize_all_neurons()
                 else:
-                    self.es_mutate(rnd.randrange(3))
+                    self.es_mutate(rnd.randrange(6))
             case _:
                 raise ValueError(f"Unknown operation: {mut_op}")
 
