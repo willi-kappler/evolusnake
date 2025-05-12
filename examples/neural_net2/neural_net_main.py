@@ -253,12 +253,13 @@ class NeuralNetIndividual(ESIndividual):
         neuron.add_hidden_connection(new_index)
 
     def randomize_all_neurons(self):
-        index: int = rnd.randrange(self.hidden_layer_size)
-        neuron = self.hidden_layer[index]
-        neuron.randomize_values()
+        #index: int = rnd.randrange(self.hidden_layer_size)
+        #neuron = self.hidden_layer[index]
+        #neuron.randomize_values()
 
-        # for neuron in self.hidden_layer:
-        #     neuron.randomize_values()
+        for neuron in self.hidden_layer:
+            # neuron.randomize_values()
+            neuron.randomize_all_values()
 
     @override
     def es_mutate(self, mut_op: int):
