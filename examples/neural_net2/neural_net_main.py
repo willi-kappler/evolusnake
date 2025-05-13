@@ -15,6 +15,7 @@ from evolusnake.es_server import ESServer
 from dataprovider import DataProvider, IterationNeural
 from neural_net_1 import NeuralNetIndividual1
 from neural_net_2 import NeuralNetIndividual2
+from neural_net_3 import NeuralNetIndividual3
 
 logger = logging.getLogger(__name__)
 
@@ -110,8 +111,11 @@ def main():
         case 2:
             ind = NeuralNetIndividual2(4, 3, dp, 1)  # -> Hyperparmeter
             config.mutation_operations = [0, 1, 2, 3, 4, 5]
+        case 3:
+            ind = NeuralNetIndividual3(4, 3, dp, 1)  # -> Hyperparmeter
+            config.mutation_operations = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         case _:
-            ind = NeuralNetIndividual1(4, 3, dp, 1)  # -> Hyperparmeter
+            raise ValueError(f"Unknown kind of neural net: {net_kind}")
 
     config.target_fitness = 0.00001
     config.target_fitness2 = 0.05
