@@ -16,6 +16,7 @@ from dataprovider import DataProvider, IterationNeural
 from neural_net_1 import NeuralNetIndividual1
 from neural_net_2 import NeuralNetIndividual2
 from neural_net_3 import NeuralNetIndividual3
+from neural_net_4 import NeuralNetIndividual4
 
 logger = logging.getLogger(__name__)
 
@@ -110,10 +111,13 @@ def main():
             config.mutation_operations = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
         case 2:
             ind = NeuralNetIndividual2(4, 3, dp, 1)  # -> Hyperparmeter
-            config.mutation_operations = [0, 1, 2, 3, 4, 5]
+            config.mutation_operations = [0, 1, 2, 3, 4, 5, 6]
         case 3:
             ind = NeuralNetIndividual3(4, 3, dp, 1)  # -> Hyperparmeter
             config.mutation_operations = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        case 4:
+            ind = NeuralNetIndividual4(4, 3, dp, 1)  # -> Hyperparmeter
+            config.mutation_operations = [0, 1, 2, 3, 4]
         case _:
             raise ValueError(f"Unknown kind of neural net: {net_kind}")
 
