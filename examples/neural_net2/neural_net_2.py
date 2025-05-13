@@ -10,10 +10,8 @@ import random as rnd
 # Local imports:
 from dataprovider import DataProvider
 from neural_net_base import NeuralNetBase
-import sys
 
 logger = logging.getLogger(__name__)
-
 
 
 class NeuralNetIndividual2(NeuralNetBase):
@@ -28,7 +26,7 @@ class NeuralNetIndividual2(NeuralNetBase):
         neuron = self.hidden_layer[index]
         delta: float = rnd.uniform(0.0001, 0.1)
 
-        #self.es_calculate_fitness()
+        self.es_calculate_fitness()
         fitness1: float = self.fitness
         bias1: float = neuron.bias
 
@@ -63,7 +61,7 @@ class NeuralNetIndividual2(NeuralNetBase):
         connection: list = neuron.get_random_input_connection()
 
         if connection:
-            #self.es_calculate_fitness()
+            self.es_calculate_fitness()
             fitness1: float = self.fitness
             weight1: float = connection[1]
 
@@ -98,7 +96,7 @@ class NeuralNetIndividual2(NeuralNetBase):
         connection: list = neuron.get_random_hidden_connection()
 
         if connection:
-            #self.es_calculate_fitness()
+            self.es_calculate_fitness()
             fitness1: float = self.fitness
             weight1: float = connection[1]
 
@@ -132,8 +130,6 @@ class NeuralNetIndividual2(NeuralNetBase):
 
     @override
     def es_mutate(self, mut_op: int):
-        self.new_fitness_needed = True
-
         match mut_op:
             case 0:
                 self.mutate_bias()
@@ -148,20 +144,17 @@ class NeuralNetIndividual2(NeuralNetBase):
                 prob: int = rnd.randrange(1000)
                 if prob == 0:
                     self.add_neuron()
+                    self.new_fitness_needed = True
                 else:
                     self.es_mutate(rnd.randrange(3))
             case 4:
                 self.add_input_connection()
+                self.new_fitness_needed = True
             case 5:
                 self.add_hidden_connection()
+                self.new_fitness_needed = True
             case _:
                 raise ValueError(f"Unknown operation: {mut_op}")
-
-    @override
-    def es_randomize(self):
-        # Invalidate fitness since it has to be re-calculated.
-        self.fitness = sys.float_info.max
-        super().es_randomize()
 
     @override
     def es_calculate_fitness(self):
