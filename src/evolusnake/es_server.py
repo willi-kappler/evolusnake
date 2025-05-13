@@ -46,6 +46,7 @@ class ESServer(PSServer):
         self.share_only_best: bool = config.share_only_best
         self.new_fitness_counter: int = 0
         self.node_stats: Counter = Counter()
+        self.target2_met: bool = False
 
         for _ in range(self.population_size):
             ind: ESIndividual = individual.es_clone()
@@ -73,7 +74,7 @@ class ESServer(PSServer):
     def ps_is_job_done(self) -> bool:
         best_fitness: float = self.population[0].fitness
         best_fitness2: float = self.population[0].fitness2
-        job_done: bool = (best_fitness <= self.target_fitness) or (best_fitness2 <= self.target_fitness2)
+        job_done: bool = (best_fitness <= self.target_fitness) or self.target2_met
 
         if job_done:
             actual_fitness: float = self.population[0].es_actual_fitness()
@@ -103,11 +104,15 @@ class ESServer(PSServer):
     def ps_process_result(self, node_id: PSNodeId, result: ESIndividual):
         # logger.debug(f"Got new individual from node: {node_id}")
 
+        if self.target2_met:
+            return
+
         new_fitness: float = result.fitness
         new_fitness2: float = result.fitness2
 
         if new_fitness2 < self.target_fitness2:
             # Short cut if target 2 is met.
+            self.target2_met = True
             self.population[0] = result
             logger.info(f"Target 2 is met: {new_fitness2=}, {self.target_fitness2=}")
             logger.info(f"From node: {node_id}")
