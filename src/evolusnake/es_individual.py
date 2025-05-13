@@ -59,21 +59,28 @@ class ESIndividual:
         return clone
 
     def es_clone(self) -> Self:
+        # Clont this individual.
+        # Must be implemented by the user.
+        raise NotImplementedError
+
+    def es_from_server(self, other):
+        # New individual from server.
         # Must be implemented by the user.
         raise NotImplementedError
 
     def es_to_json(self) -> dict:
+        # Convert this individual to a JSON object.
         # Must be implemented by the user.
         raise NotImplementedError
 
     def es_from_json(self, data: dict):
+        # Convert a JSON object to an individual.
         # Must be implemented by the user.
         raise NotImplementedError
 
     def es_actual_fitness(self) -> float:
         # This fitness will be printed.
-        # Change it to the actual fitness if
-        # needed.
+        # Change it to the actual fitness if needed.
         return self.fitness
 
     def es_new_best_individual(self):

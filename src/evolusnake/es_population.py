@@ -135,7 +135,7 @@ class ESPopulation:
             self.es_random_population()
         elif self.accept_new_best:
             i: int = rnd.randrange(self.population_size)
-            self.population[i] = best
+            self.population[i].es_from_server(best)
 
     def es_increase_iteration_mutation(self):
         if self.increase_iteration > 0:

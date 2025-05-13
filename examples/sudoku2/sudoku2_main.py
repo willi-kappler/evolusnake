@@ -260,6 +260,10 @@ class SudokuIndividual(ESIndividual):
         return new  # type: ignore
 
     @override
+    def es_from_server(self, other):
+        self.numbers2 = other.numbers2
+
+    @override
     def es_to_json(self) -> dict:
         data = {
             "numbers2": self.numbers2

@@ -105,6 +105,10 @@ class RastriginIndividual(ESIndividual):
         return new  # type: ignore
 
     @override
+    def es_from_server(self, other):
+        self.values = other.values
+
+    @override
     def es_to_json(self) -> dict:
         data = {
             "dimensions": self.dimensions,

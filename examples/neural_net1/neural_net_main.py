@@ -179,6 +179,11 @@ class NeuralNetIndividual(ESIndividual):
         return clone  # type: ignore
 
     @override
+    def es_from_server(self, other):
+        self.hidden_layer = other.hidden_layer
+        self.hidden_layer_size = other.hidden_layer_size
+
+    @override
     def es_to_json(self) -> dict:
         data = {
             "input_size": self.input_size,

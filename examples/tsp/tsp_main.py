@@ -137,6 +137,10 @@ class TSPIndividual(ESIndividual):
         return new  # type: ignore
 
     @override
+    def es_from_server(self, other):
+        self.positions = other.positions
+
+    @override
     def es_to_json(self) -> dict:
         data = {
             "positions": self.positions
