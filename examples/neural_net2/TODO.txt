@@ -19,4 +19,13 @@ https://github.com/cvdfoundation/mnist
     remove hidden connection
     swap neurons
 
+- Use categorical cross-entropy loss:
+  loss_per_sample = -np.sum(y_true * np.log(y_pred_clipped), axis=1)
+  mean_loss = np.mean(loss_per_sample)
+
+  Binary Cross-Entropy (for two classes)
+
+- try softmax for output values
+
+
 
