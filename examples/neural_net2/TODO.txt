@@ -12,28 +12,11 @@ MNIST data set:
 https://github.com/cvdfoundation/mnist
 
 
-- swarm: set delta for each connection and move accordingly.
-  prob 100: randomly change all values.
+- try test network with 100 repeats.
+- add back some operations:
+    remove_neuron
+    remove input connection
+    remove hidden connection
+    swap neurons
 
-
-
-
-
-Best hyper parameters:
-
-Population: 1
-
-batch size: 20
-neuron weights max: 1.0, step: 0.01 * max_val
-probablilties:
-    prob1: 1000
-    prob2: 10000
-    prob3: 10000
-start size: 1
-iteration factor: 3
-
-target1: 0.00001
-target2: 0.05
-
-num of evaluate loops: 2
 
