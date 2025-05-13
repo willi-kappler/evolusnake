@@ -86,5 +86,7 @@ class ESIndividual:
     def es_new_best_individual(self):
         # This method is called whenever there is a new best individual
         # on the server (the best of the best). And this individual is the best one.
+        # It's also called for the best of the population after all the iterations.
+        # Useful to log statistics.
         pass
 

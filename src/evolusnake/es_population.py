@@ -233,6 +233,8 @@ class ESPopulation:
         logger.debug(f"Best individual mutations: {best_individual.mut_op_counter}")
         logger.debug(f"Worst individual mutations: {worst_individual.mut_op_counter}")
 
+        best_individual.es_new_best_individual()
+
     def es_before_iteration(self):
         self.iteration_callback.es_before_iteration(self)
 
