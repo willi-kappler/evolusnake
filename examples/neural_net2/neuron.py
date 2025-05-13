@@ -50,7 +50,7 @@ class Neuron:
 
     def add_input_connection(self, new_index: int):
         if self.has_input_connection(new_index):
-            self.mutate_input_connection1()
+            self.mutate_input_connection2()
             return
 
         weight: float = rnd.uniform(-1.0, 1.0)
@@ -95,7 +95,7 @@ class Neuron:
     def add_hidden_connection(self, new_index: int):
         for (index2, _, _) in self.hidden_connections:
             if new_index == index2:
-                self.mutate_hidden_connection1()
+                self.mutate_hidden_connection2()
                 return
 
         weight: float = rnd.uniform(-1.0, 1.0)
@@ -175,7 +175,7 @@ class Neuron:
         n.input_connections = [[i, w, d] for (i, w, d) in self.input_connections]
         n.input_connections_size = self.input_connections_size
         n.hidden_connections = [[i, w, d] for (i, w, d) in self.hidden_connections]
-        n.input_connections_size = self.input_connections_size
+        n.hidden_connections_size = self.hidden_connections_size
         n.bias = self.bias
         n.bias_delta = self.bias_delta
 
