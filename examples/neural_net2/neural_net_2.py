@@ -10,6 +10,7 @@ import random as rnd
 # Local imports:
 from dataprovider import DataProvider
 from neural_net_base import NeuralNetBase
+import sys
 
 logger = logging.getLogger(__name__)
 
@@ -20,16 +21,152 @@ class NeuralNetIndividual2(NeuralNetBase):
             data_provider: DataProvider, network_size: int = 1):
         super().__init__(input_size, output_size, data_provider, network_size)
 
+        self.new_fitness_needed: bool = True
+
+    def mutate_bias(self):
+        index: int = rnd.randrange(self.hidden_layer_size)
+        neuron = self.hidden_layer[index]
+        delta: float = rnd.uniform(0.0001, 0.1)
+
+        #self.es_calculate_fitness()
+        fitness1: float = self.fitness
+        bias1: float = neuron.bias
+
+        neuron.bias = min(1.0, bias1 + delta)
+        self.es_calculate_fitness()
+        fitness2: float = self.fitness
+        bias2: float = neuron.bias
+
+        neuron.bias = max(-1.0, bias1 - delta)
+        self.es_calculate_fitness()
+        fitness3: float = self.fitness
+        bias3: float = neuron.bias
+
+        if fitness2 < fitness1:
+            if fitness3 < fitness2:
+                neuron.bias = bias3
+                self.fitness = fitness3
+            else:
+                neuron.bias = bias2
+                self.fitness = fitness2
+        elif fitness3 < fitness1:
+            neuron.bias = bias3
+            self.fitness = fitness3
+        else:
+            neuron.bias = bias1
+            self.fitness = fitness1
+
+    def mutate_input_connection(self):
+        index: int = rnd.randrange(self.hidden_layer_size)
+        neuron = self.hidden_layer[index]
+        delta: float = rnd.uniform(0.0001, 0.1)
+        connection: list = neuron.get_random_input_connection()
+
+        if connection:
+            #self.es_calculate_fitness()
+            fitness1: float = self.fitness
+            weight1: float = connection[1]
+
+            connection[1] = min(1.0, weight1 + delta)
+            self.es_calculate_fitness()
+            fitness2: float = self.fitness
+            weight2: float = connection[1]
+
+            connection[1] = max(-1.0, weight1 - delta)
+            self.es_calculate_fitness()
+            fitness3: float = self.fitness
+            weight3: float = connection[1]
+
+            if fitness2 < fitness1:
+                if fitness3 < fitness2:
+                    connection[1] = weight3
+                    self.fitness = fitness3
+                else:
+                    connection[1] = weight2
+                    self.fitness = fitness2
+            elif fitness3 < fitness1:
+                connection[1] = weight3
+                self.fitness = fitness3
+            else:
+                connection[1] = weight1
+                self.fitness = fitness1
+
+    def mutate_hidden_connection(self):
+        index: int = rnd.randrange(self.hidden_layer_size)
+        neuron = self.hidden_layer[index]
+        delta: float = rnd.uniform(0.0001, 0.1)
+        connection: list = neuron.get_random_hidden_connection()
+
+        if connection:
+            #self.es_calculate_fitness()
+            fitness1: float = self.fitness
+            weight1: float = connection[1]
+
+            connection[1] = min(1.0, weight1 + delta)
+            self.es_calculate_fitness()
+            fitness2: float = self.fitness
+            weight2: float = connection[1]
+
+            connection[1] = max(-1.0, weight1 - delta)
+            self.es_calculate_fitness()
+            fitness3: float = self.fitness
+            weight3: float = connection[1]
+
+            if fitness2 < fitness1:
+                if fitness3 < fitness2:
+                    connection[1] = weight3
+                    self.fitness = fitness3
+                else:
+                    connection[1] = weight2
+                    self.fitness = fitness2
+            elif fitness3 < fitness1:
+                connection[1] = weight3
+                self.fitness = fitness3
+            else:
+                connection[1] = weight1
+                self.fitness = fitness1
+
     @override
     def description(self) -> str:
         return "NeuralNet2: Try two different small mutations and compare them to the current fitness. Use the best one."
 
     @override
     def es_mutate(self, mut_op: int):
+        self.new_fitness_needed = True
+
         match mut_op:
             case 0:
-                pass
+                self.mutate_bias()
+                self.new_fitness_needed = False
+            case 1:
+                self.mutate_input_connection()
+                self.new_fitness_needed = False
+            case 2:
+                self.mutate_hidden_connection()
+                self.new_fitness_needed = False
+            case 3:
+                prob: int = rnd.randrange(1000)
+                if prob == 0:
+                    self.add_neuron()
+                else:
+                    self.es_mutate(rnd.randrange(3))
+            case 4:
+                self.add_input_connection()
+            case 5:
+                self.add_hidden_connection()
+            case _:
+                raise ValueError(f"Unknown operation: {mut_op}")
 
+    @override
+    def es_randomize(self):
+        # Invalidate fitness since it has to be re-calculated.
+        self.fitness = sys.float_info.max
+        super().es_randomize()
+
+    @override
+    def es_calculate_fitness(self):
+        if self.new_fitness_needed:
+            super().es_calculate_fitness()
 
     @override
     def es_clone(self) -> Self:

@@ -6,7 +6,6 @@
 import logging
 import pathlib
 from sys import float_info
-import argparse
 
 # Local imports:
 from evolusnake.es_config import ESConfiguration
@@ -65,7 +64,7 @@ def load_data(filename: str) -> list:
 
 
 def main():
-    config = ESConfiguration.from_json("neural_net_config.json")
+    config: ESConfiguration = ESConfiguration.from_json("neural_net_config.json")
     config.from_command_line()
 
     server_mode = config.server_mode
@@ -107,10 +106,12 @@ def main():
     match net_kind:
         case 1:
             ind = NeuralNetIndividual1(4, 3, dp, 1)  # -> Hyperparmeter
+            config.mutation_operations = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
         case 2:
             ind = NeuralNetIndividual2(4, 3, dp, 1)  # -> Hyperparmeter
-
-    logger.info(f"NeuralNet description: {ind.description()}")
+            config.mutation_operations = [0, 1, 2, 3, 4, 5]
+        case _:
+            ind = NeuralNetIndividual1(4, 3, dp, 1)  # -> Hyperparmeter
 
     config.target_fitness = 0.00001
     config.target_fitness2 = 0.05
@@ -121,6 +122,7 @@ def main():
         server.ps_run()
     else:
         print("Create and start node.")
+        logger.info(f"NeuralNet description: {ind.description()}")
         population = es_select_population(config, ind, IterationNeural())
         population.ps_run()
 

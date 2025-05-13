@@ -6,16 +6,5 @@
     "node_population_size": 10,
     "num_of_iterations": 20000,
     "save_new_fitness": true,
-    "mutation_operations": [
-        0,
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9
-    ]
+    "share_only_best": true
 }

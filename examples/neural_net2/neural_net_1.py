@@ -20,6 +20,36 @@ class NeuralNetIndividual1(NeuralNetBase):
             data_provider: DataProvider, network_size: int = 1):
         super().__init__(input_size, output_size, data_provider, network_size)
 
+    def mutate_bias1(self):
+        index: int = rnd.randrange(self.hidden_layer_size)
+        neuron = self.hidden_layer[index]
+        neuron.mutate_bias1()
+
+    def mutate_bias2(self):
+        index: int = rnd.randrange(self.hidden_layer_size)
+        neuron = self.hidden_layer[index]
+        neuron.mutate_bias2()
+
+    def mutate_input_connection1(self):
+        index: int = rnd.randrange(self.hidden_layer_size)
+        neuron = self.hidden_layer[index]
+        neuron.mutate_input_connection1()
+
+    def mutate_input_connection2(self):
+        index: int = rnd.randrange(self.hidden_layer_size)
+        neuron = self.hidden_layer[index]
+        neuron.mutate_input_connection2()
+
+    def mutate_hidden_connection1(self):
+        index: int = rnd.randrange(self.hidden_layer_size)
+        neuron = self.hidden_layer[index]
+        neuron.mutate_hidden_connection1()
+
+    def mutate_hidden_connection2(self):
+        index: int = rnd.randrange(self.hidden_layer_size)
+        neuron = self.hidden_layer[index]
+        neuron.mutate_hidden_connection2()
+
     @override
     def description(self) -> str:
         return "NeuralNet1: Just randomly change values."

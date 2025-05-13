@@ -99,36 +99,6 @@ class NeuralNetBase(ESIndividual):
         self.hidden_layer.append(new_neuron)
         self.hidden_layer_size += 1
 
-    def mutate_bias1(self):
-        index: int = rnd.randrange(self.hidden_layer_size)
-        neuron = self.hidden_layer[index]
-        neuron.mutate_bias1()
-
-    def mutate_bias2(self):
-        index: int = rnd.randrange(self.hidden_layer_size)
-        neuron = self.hidden_layer[index]
-        neuron.mutate_bias2()
-
-    def mutate_input_connection1(self):
-        index: int = rnd.randrange(self.hidden_layer_size)
-        neuron = self.hidden_layer[index]
-        neuron.mutate_input_connection1()
-
-    def mutate_input_connection2(self):
-        index: int = rnd.randrange(self.hidden_layer_size)
-        neuron = self.hidden_layer[index]
-        neuron.mutate_input_connection2()
-
-    def mutate_hidden_connection1(self):
-        index: int = rnd.randrange(self.hidden_layer_size)
-        neuron = self.hidden_layer[index]
-        neuron.mutate_hidden_connection1()
-
-    def mutate_hidden_connection2(self):
-        index: int = rnd.randrange(self.hidden_layer_size)
-        neuron = self.hidden_layer[index]
-        neuron.mutate_hidden_connection2()
-
     def add_input_connection(self):
         index: int = rnd.randrange(self.hidden_layer_size)
         neuron = self.hidden_layer[index]
