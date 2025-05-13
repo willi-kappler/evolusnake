@@ -27,6 +27,14 @@ class NeuralNetIndividual4(NeuralNetBase):
         for neuron in self.hidden_layer:
             neuron.change_all_deltas()
 
+    def change_some_deltas(self):
+        index: int = rnd.randrange(self.hidden_layer_size)
+        neuron = self.hidden_layer[index]
+
+        neuron.mutate_bias3()
+        neuron.mutate_input_connection3()
+        neuron.mutate_hidden_connection3()
+
     @override
     def description(self) -> str:
         return "NeuralNet4: Use swarm."
@@ -71,5 +79,5 @@ class NeuralNetIndividual4(NeuralNetBase):
 
         if prev_fitness < self.fitness:
             # Fitness has gotten worse, change direction:
-            self.change_all_deltas()
+            self.change_some_deltas()
 
