@@ -25,7 +25,6 @@ class NeuralNetBase(ESIndividual):
         self.output_size: int = output_size
         self.data_provider: DataProvider = data_provider
         self.hidden_layer_size: int = 0
-        self.new_fitness_needed: bool = True
 
         self.es_randomize()
 
@@ -153,6 +152,11 @@ class NeuralNetBase(ESIndividual):
         self.fitness2 = self.test_network()
 
     @override
+    def es_from_server(self, other):
+        self.hidden_layer = other.hidden_layer
+        self.hidden_layer_size = other.hidden_layer_size
+
+    @override
     def es_to_json(self) -> dict:
         data = {
             "input_size": self.input_size,
@@ -178,9 +182,6 @@ class NeuralNetBase(ESIndividual):
 
     @override
     def es_new_best_individual(self):
-        logger.info(f"Fitness1: {self.fitness}")
-        logger.info(f"Fitness2: {self.fitness2}")
-        logger.info(f"Size: {self.hidden_layer_size}")
-        logger.info(f"Absolute weight sum: {self.ab_weight_sum()}")
-        logger.info(f"Connections per neuron: {self.connections_per_neuron()}")
+        logger.info(f"Fitness1: {self.fitness}, fitness2: {self.fitness2}")
+        logger.info(f"Size: {self.hidden_layer_size}, absolute weight sum: {self.ab_weight_sum()}, connections per neuron: {self.connections_per_neuron()}")
 
