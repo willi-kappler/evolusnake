@@ -153,6 +153,13 @@ class NeuralNetIndividual2(NeuralNetBase):
             case 5:
                 self.add_hidden_connection()
                 self.new_fitness_needed = True
+            case 6:
+                prob: int = rnd.randrange(1000)
+                if prob == 0:
+                    self.randomize_all_neurons()
+                    self.new_fitness_needed = True
+                else:
+                    self.es_mutate(rnd.randrange(3))
             case _:
                 logger.error(f"Unknown operation: {mut_op} in net 2")
                 raise ValueError(f"Unknown operation: {mut_op} in net 2")
