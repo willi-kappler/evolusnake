@@ -14,7 +14,6 @@ from neural_net_base import NeuralNetBase
 logger = logging.getLogger(__name__)
 
 
-
 class NeuralNetIndividual1(NeuralNetBase):
     def __init__(self, input_size: int, output_size: int,
             data_provider: DataProvider, network_size: int = 1):
