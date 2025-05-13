@@ -17,7 +17,7 @@ class Neuron:
         self.hidden_connections_size: int = 0
         self.current_value: float = 0.0
         self.bias: float = rnd.uniform(-1.0, 1.0)
-        self.bias_delta: float = rnd.uniform(-0.01, 0.01)
+        self.bias_delta: float = 0.0
 
     def is_empty(self) -> bool:
         return (self.input_connections_size == 0) and (self.hidden_connections_size == 0)
@@ -31,7 +31,12 @@ class Neuron:
 
     def mutate_bias3(self):
         self.bias += self.bias_delta
-        self.bias = min(1.0, max(-1.0, self.bias))
+        if self.bias < -1.0:
+            self.bias = -1.0
+            self.bias_delta = -self.bias_delta
+        elif self.bias > 1.0:
+            self.bias = 1.0
+            self.bias_delta = -self.bias_delta
 
     def change_bias_delta(self):
         self.bias_delta: float = rnd.uniform(-0.01, 0.01)
@@ -49,7 +54,7 @@ class Neuron:
             return
 
         weight: float = rnd.uniform(-1.0, 1.0)
-        delta: float = rnd.uniform(-0.01, 0.01)
+        delta: float = 0.0
         self.input_connections.append([new_index, weight, delta])
         self.input_connections_size += 1
 
@@ -71,7 +76,14 @@ class Neuron:
             index: int = rnd.randrange(self.input_connections_size)
             connection: list = self.input_connections[index]
             connection[1] += connection[2]  # Add delta
-            connection[1] = min(1.0, max(-1.0, connection[1]))
+            v: float = connection[1]
+            d: float = connection[2]
+            if v < -1.0:
+                connection[1] = -1.0
+                connection[2] = -d
+            elif v > 1.0:
+                connection[1] = 1.0
+                connection[2] = -d
 
     def get_random_input_connection(self) -> list:
         if self.input_connections_size > 0:
@@ -87,7 +99,7 @@ class Neuron:
                 return
 
         weight: float = rnd.uniform(-1.0, 1.0)
-        delta: float = rnd.uniform(-0.01, 0.01)
+        delta: float = 0.0
         self.hidden_connections.append([new_index, weight, delta])
         self.hidden_connections_size += 1
 
@@ -109,7 +121,14 @@ class Neuron:
             index: int = rnd.randrange(self.hidden_connections_size)
             connection: list = self.hidden_connections[index]
             connection[1] += connection[2]  # Add delta
-            connection[1] = min(1.0, max(-1.0, connection[1]))
+            v: float = connection[1]
+            d: float = connection[2]
+            if v < -1.0:
+                connection[1] = -1.0
+                connection[2] = -d
+            elif v > 1.0:
+                connection[1] = 1.0
+                connection[2] = -d
 
     def get_random_hidden_connection(self) -> list:
         if self.hidden_connections_size > 0:
@@ -136,6 +155,7 @@ class Neuron:
 
         for connection in itertools.chain(self.input_connections, self.hidden_connections):
             connection[1] = rnd.uniform(-1.0, 1.0)
+            connection[2] = 0.0
 
     def evaluate(self, input_values: list, hidden_layer: list):
         new_value: float = self.bias
