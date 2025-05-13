@@ -89,7 +89,8 @@ class NeuralNetIndividual3(NeuralNetBase):
                 else:
                     self.es_mutate(rnd.randrange(6))
             case _:
-                raise ValueError(f"Unknown operation: {mut_op}")
+                logger.error(f"Unknown operation: {mut_op} in net 3")
+                raise ValueError(f"Unknown operation: {mut_op} in net 3")
 
     @override
     def es_clone(self) -> Self:
@@ -100,3 +101,12 @@ class NeuralNetIndividual3(NeuralNetBase):
 
         return clone  # type: ignore
 
+    @override
+    def es_from_server(self, other):
+        super().es_from_server(other)
+        self.current_neuron = rnd.randrange(self.hidden_layer_size)
+
+    @override
+    def es_from_json(self, data: dict):
+        super().es_from_json(data)
+        self.current_neuron = rnd.randrange(self.hidden_layer_size)
