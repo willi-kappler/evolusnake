@@ -17,6 +17,7 @@ from neural_net_1 import NeuralNetIndividual1
 from neural_net_2 import NeuralNetIndividual2
 from neural_net_3 import NeuralNetIndividual3
 from neural_net_4 import NeuralNetIndividual4
+from neural_net_5 import NeuralNetIndividual5
 
 logger = logging.getLogger(__name__)
 
@@ -118,6 +119,9 @@ def main():
         case 4:
             ind = NeuralNetIndividual4(4, 3, dp, 1)  # -> Hyperparmeter
             config.mutation_operations = [0, 1, 2, 3, 4]
+        case 5:
+            ind = NeuralNetIndividual5(4, 3, dp, 1)  # -> Hyperparmeter
+            config.mutation_operations = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
         case _:
             raise ValueError(f"Unknown kind of neural net: {net_kind}")
 
