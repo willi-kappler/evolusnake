@@ -155,6 +155,7 @@ class NeuralNetBase(ESIndividual):
     def es_from_server(self, other):
         self.hidden_layer = other.hidden_layer
         self.hidden_layer_size = other.hidden_layer_size
+        self.fitness = other.fitness
 
     @override
     def es_to_json(self) -> dict:
