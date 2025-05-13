@@ -85,7 +85,8 @@ class NeuralNetIndividual1(NeuralNetBase):
                 else:
                     self.es_mutate(rnd.randrange(6))
             case _:
-                raise ValueError(f"Unknown operation: {mut_op}")
+                logger.error(f"Unknown operation: {mut_op} in net 1")
+                raise ValueError(f"Unknown operation: {mut_op} in net 1")
 
     @override
     def es_clone(self) -> Self:

@@ -154,7 +154,8 @@ class NeuralNetIndividual2(NeuralNetBase):
                 self.add_hidden_connection()
                 self.new_fitness_needed = True
             case _:
-                raise ValueError(f"Unknown operation: {mut_op}")
+                logger.error(f"Unknown operation: {mut_op} in net 2")
+                raise ValueError(f"Unknown operation: {mut_op} in net 2")
 
     @override
     def es_calculate_fitness(self):
