@@ -37,13 +37,15 @@ run_kind() {
 
     python3 $main_file -k $1 -m $num_of_mutations -i $iterations1 --user_options net=1 &
     sleep 2
+    python3 $main_file -k $1 -m $num_of_mutations -i $iterations5 --user_options net=1 &
+    sleep 2
     python3 $main_file -k $1 -m $num_of_mutations -i $iterations1 --user_options net=2 &
     sleep 2
-    python3 $main_file -k $1 -m $num_of_mutations -i $iterations2 --user_options net=3 &
+    python3 $main_file -k $1 -m $num_of_mutations -i $iterations1 --user_options net=3 &
     sleep 2
-    python3 $main_file -k $1 -m $num_of_mutations -i $iterations1 --user_options net=4 &
+    python3 $main_file -k $1 -m $num_of_mutations -i $iterations1 --user_options net=5 &
     sleep 2
-    python3 $main_file -k $1 -m $num_of_mutations -i $iterations1 --user_options net=1 &
+    python3 $main_file -k $1 -m $num_of_mutations -i $iterations5 $randomize --user_options net=1 &
     sleep 2
     python3 $main_file -k $1 -m $num_of_mutations -i $iterations5 $randomize --user_options net=1 &
     sleep 2
@@ -51,9 +53,7 @@ run_kind() {
     sleep 2
     python3 $main_file -k $1 -m $num_of_mutations -i $iterations5 $randomize --user_options net=3 &
     sleep 2
-    python3 $main_file -k $1 -m $num_of_mutations -i $iterations5 $randomize --user_options net=4 &
-    sleep 2
-    python3 $main_file -k $1 -m $num_of_mutations -i $iterations5 $randomize --user_options net=1 &
+    python3 $main_file -k $1 -m $num_of_mutations -i $iterations5 $randomize --user_options net=5 &
     sleep 2
 }
 
