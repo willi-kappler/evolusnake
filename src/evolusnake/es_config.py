@@ -48,6 +48,9 @@ class ESConfiguration:
         self.increase_mutation: int = 0
         self.mutation_operations: list = []
 
+        # User defined options:
+        self.user_options: str = ""
+
     @staticmethod
     def from_json(file_name) -> Any:
         """
@@ -101,6 +104,8 @@ class ESConfiguration:
                     config.increase_mutation = value
                 case "mutation_operations":
                     config.mutation_operations = value
+                case "user_options":
+                    config.user_options = value
                 case _:
                     logger.debug(f"Unknown evolusnake configuration option: {key=}, {value=}")
 
@@ -119,6 +124,7 @@ class ESConfiguration:
         parser.add_argument("--increase_iteration", type=int)
         parser.add_argument("--increase_mutation", type=int)
         parser.add_argument("-o", "--mutation_operations")
+        parser.add_argument("--user_options")
 
         args = parser.parse_args()
 
@@ -152,6 +158,9 @@ class ESConfiguration:
 
         if args.mutation_operations is not None:
             self.mutation_operations = [int(n) for n in args.mutation_operations.split(",")]
+
+        if args.user_options is not None:
+            self.user_options = args.user_options
 
         # print(f"{self.server_mode}")
         # print(f"{self.target_fitness}")
