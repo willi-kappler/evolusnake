@@ -6,6 +6,7 @@
 import logging
 from typing import override
 import random as rnd
+import math
 
 # Local imports:
 from evolusnake.es_individual import ESIndividual
@@ -25,6 +26,7 @@ class NeuralNetBase(ESIndividual):
         self.output_size: int = output_size
         self.data_provider: DataProvider = data_provider
         self.hidden_layer_size: int = 0
+        self.use_softmax: bool = True
 
         self.es_randomize()
 
@@ -59,8 +61,14 @@ class NeuralNetBase(ESIndividual):
         error: float = 0.0
 
         # The first neurons are output neurons
-        for i in range(self.output_size):
-            error += abs(expected_output[i] - self.hidden_layer[i].current_value)
+        if self.use_softmax:
+            res: list = [math.exp(self.hidden_layer[i].current_value) for i in range(self.output_size)]
+            sum_res: float = sum(res)
+            for i in range(self.output_size):
+                error += abs(expected_output[i] - (res[i] / sum_res))
+        else:
+            for i in range(self.output_size):
+                error += abs(expected_output[i] - self.hidden_layer[i].current_value)
 
         return error
 
@@ -115,6 +123,13 @@ class NeuralNetBase(ESIndividual):
     def randomize_all_neurons(self):
         for neuron in self.hidden_layer:
             neuron.randomize_all_values()
+
+    def clone_base(self, other):
+        other.hidden_layer = [n.clone() for n in self.hidden_layer]
+        other.hidden_layer_size = self.hidden_layer_size
+        other.use_softmax = self.use_softmax
+
+        return other
 
     @override
     def es_randomize(self):

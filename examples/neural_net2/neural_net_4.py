@@ -67,10 +67,7 @@ class NeuralNetIndividual4(NeuralNetBase):
     @override
     def es_clone(self) -> Self:
         clone = NeuralNetIndividual4(self.input_size, self.output_size, self.data_provider)
-        clone.hidden_layer = [n.clone() for n in self.hidden_layer]
-        clone.hidden_layer_size = self.hidden_layer_size
-
-        return clone  # type: ignore
+        return self.clone_base(clone)  # type: ignore
 
     @override
     def es_calculate_fitness(self):
