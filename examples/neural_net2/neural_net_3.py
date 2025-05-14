@@ -16,8 +16,8 @@ logger = logging.getLogger(__name__)
 
 class NeuralNetIndividual3(NeuralNetBase):
     def __init__(self, input_size: int, output_size: int,
-            data_provider: DataProvider, network_size: int = 1):
-        super().__init__(input_size, output_size, data_provider, network_size)
+                 data_provider: DataProvider, network_size: int = 0, use_softmax: bool = False):
+        super().__init__(input_size, output_size, data_provider, network_size, use_softmax)
 
         self.current_neuron: int = 0
 
@@ -94,7 +94,7 @@ class NeuralNetIndividual3(NeuralNetBase):
 
     @override
     def es_clone(self) -> Self:
-        clone = NeuralNetIndividual3(self.input_size, self.output_size, self.data_provider)
+        clone = NeuralNetIndividual3(self.input_size, self.output_size, self.data_provider, use_softmax=self.use_softmax)
         clone.current_neuron = self.current_neuron
         return self.clone_base(clone)  # type: ignore
 
