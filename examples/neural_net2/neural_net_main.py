@@ -106,27 +106,33 @@ def main():
         else:
             raise ValueError(f"Unknown user option: {opt}")
 
+    input_size: int = 4
+    output_size: int = 3
+    initial_size: int = 5  # -> Hyperparmeter
+    # For classifyers alwasy use softmax!
+    use_softmax: bool = True
+
     match net_kind:
         case 1:
-            ind = NeuralNetIndividual1(4, 3, dp, 1)  # -> Hyperparmeter
+            ind = NeuralNetIndividual1(input_size, output_size, dp, initial_size, use_softmax)
             config.mutation_operations = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
         case 2:
-            ind = NeuralNetIndividual2(4, 3, dp, 1)  # -> Hyperparmeter
+            ind = NeuralNetIndividual2(input_size, output_size, dp, initial_size, use_softmax)
             config.mutation_operations = [0, 1, 2, 3, 4, 5, 6]
         case 3:
-            ind = NeuralNetIndividual3(4, 3, dp, 1)  # -> Hyperparmeter
+            ind = NeuralNetIndividual3(input_size, output_size, dp, initial_size, use_softmax)
             config.mutation_operations = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         case 4:
-            ind = NeuralNetIndividual4(4, 3, dp, 1)  # -> Hyperparmeter
+            ind = NeuralNetIndividual4(input_size, output_size, dp, initial_size, use_softmax)
             config.mutation_operations = [0, 1, 2, 3, 4]
         case 5:
-            ind = NeuralNetIndividual5(4, 3, dp, 1)  # -> Hyperparmeter
+            ind = NeuralNetIndividual5(input_size, output_size, dp, initial_size, use_softmax)
             config.mutation_operations = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
         case _:
             raise ValueError(f"Unknown kind of neural net: {net_kind}")
 
-    config.target_fitness = 0.00001
-    config.target_fitness2 = 0.05
+    config.target_fitness = 0.0
+    config.target_fitness2 = 0.01
 
     if server_mode:
         print("Create and start server.")

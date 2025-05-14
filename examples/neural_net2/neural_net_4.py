@@ -16,8 +16,8 @@ logger = logging.getLogger(__name__)
 
 class NeuralNetIndividual4(NeuralNetBase):
     def __init__(self, input_size: int, output_size: int,
-            data_provider: DataProvider, network_size: int = 1):
-        super().__init__(input_size, output_size, data_provider, network_size)
+                 data_provider: DataProvider, network_size: int = 0, use_softmax: bool = False):
+        super().__init__(input_size, output_size, data_provider, network_size, use_softmax)
 
     def mutate_all_neurons(self):
         for neuron in self.hidden_layer:
@@ -66,11 +66,8 @@ class NeuralNetIndividual4(NeuralNetBase):
 
     @override
     def es_clone(self) -> Self:
-        clone = NeuralNetIndividual4(self.input_size, self.output_size, self.data_provider)
-        clone.hidden_layer = [n.clone() for n in self.hidden_layer]
-        clone.hidden_layer_size = self.hidden_layer_size
-
-        return clone  # type: ignore
+        clone = NeuralNetIndividual4(self.input_size, self.output_size, self.data_provider, use_softmax=self.use_softmax)
+        return self.clone_base(clone)  # type: ignore
 
     @override
     def es_calculate_fitness(self):

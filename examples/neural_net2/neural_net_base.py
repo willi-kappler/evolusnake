@@ -6,6 +6,7 @@
 import logging
 from typing import override
 import random as rnd
+import math
 
 # Local imports:
 from evolusnake.es_individual import ESIndividual
@@ -17,14 +18,15 @@ logger = logging.getLogger(__name__)
 
 
 class NeuralNetBase(ESIndividual):
-    def __init__(self, input_size: int, output_size: int,
-            data_provider: DataProvider, network_size: int = 1):
+    def __init__(self, input_size: int, output_size: int, data_provider: DataProvider,
+                 network_size: int = 0, use_softmax: bool = False):
         super().__init__()
 
         self.input_size: int = input_size
         self.output_size: int = output_size
         self.data_provider: DataProvider = data_provider
         self.hidden_layer_size: int = 0
+        self.use_softmax: bool = use_softmax
 
         self.es_randomize()
 
@@ -56,11 +58,31 @@ class NeuralNetBase(ESIndividual):
                 neuron.evaluate(input_values, self.hidden_layer)
 
     def calc_error(self, expected_output: list) -> float:
+        if self.use_softmax:
+            return self.calc_error2(expected_output)
+        else:
+            return self.calc_error1(expected_output)
+
+    def calc_error1(self, expected_output: list) -> float:
         error: float = 0.0
 
         # The first neurons are output neurons
         for i in range(self.output_size):
             error += abs(expected_output[i] - self.hidden_layer[i].current_value)
+
+        return error
+
+    def calc_error2(self, expected_output: list) -> float:
+        error: float = 0.0
+
+        # Use softmax when training for classification.
+        # The first neurons are output neurons
+        res: list = [math.exp(self.hidden_layer[i].current_value) for i in range(self.output_size)]
+        sum_res: float = sum(res)
+        for i in range(self.output_size):
+            error += abs(expected_output[i] - (res[i] / sum_res))
+
+        #raise ValueError("Does this work (calc_error2) ?")
 
         return error
 
@@ -116,6 +138,12 @@ class NeuralNetBase(ESIndividual):
         for neuron in self.hidden_layer:
             neuron.randomize_all_values()
 
+    def clone_base(self, other):
+        other.hidden_layer = [n.clone() for n in self.hidden_layer]
+        other.hidden_layer_size = self.hidden_layer_size
+
+        return other
+
     @override
     def es_randomize(self):
         self.hidden_layer: list[Neuron] = []
@@ -156,6 +184,7 @@ class NeuralNetBase(ESIndividual):
         self.hidden_layer = other.hidden_layer
         self.hidden_layer_size = other.hidden_layer_size
         self.fitness = other.fitness
+        self.use_softmax = other.use_softmax
 
     @override
     def es_to_json(self) -> dict:
