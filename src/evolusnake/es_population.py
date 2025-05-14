@@ -210,13 +210,7 @@ class ESPopulation:
             time.sleep(5)
 
     def es_calculate_fitness2(self):
-        for (i, ind) in enumerate(self.population):
-            ind.es_calculate_fitness2()
-
-            if ind.fitness2 < self.target_fitness2:
-                logger.debug(f"Target 2 is met: {ind.fitness2} at index: {i}")
-                self.best_index = i
-                return
+        self.population[self.best_index].es_calculate_fitness2()
 
     def es_log_statistics(self):
         best_individual: ESIndividual = self.population[self.best_index]
