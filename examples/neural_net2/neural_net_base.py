@@ -177,7 +177,8 @@ class NeuralNetBase(ESIndividual):
 
     @override
     def es_calculate_fitness2(self):
-        self.fitness2 = self.test_network()
+        if self.fitness < 0.01:
+            self.fitness2 = self.test_network()
 
     @override
     def es_from_server(self, other):
