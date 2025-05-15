@@ -18,6 +18,8 @@ https://github.com/cvdfoundation/mnist
     remove input connection
     remove hidden connection
     swap neurons
+    remove connections where the weights are < 0.01 (autpo-pruning)
+
 
 - Use categorical cross-entropy loss:
   loss_per_sample = -np.sum(y_true * np.log(y_pred_clipped), axis=1)
