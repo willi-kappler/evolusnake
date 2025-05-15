@@ -189,10 +189,10 @@ class Neuron:
         self.hidden_connections_size = 0
 
     def prune_connections(self):
-        self.input_connections = [connection for connection in self.input_connections if connection[1] > 0.01]
+        self.input_connections = [connection for connection in self.input_connections if abs(connection[1]) > 0.01]
         self.input_connections_size = len(self.input_connections)
 
-        self.hidden_connections = [connection for connection in self.hidden_connections if connection[1] > 0.01]
+        self.hidden_connections = [connection for connection in self.hidden_connections if abs(connection[1]) > 0.01]
         self.hidden_connections_size = len(self.hidden_connections)
 
     def evaluate(self, input_values: list, hidden_layer: list):
