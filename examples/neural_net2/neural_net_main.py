@@ -115,7 +115,7 @@ def main():
     match net_kind:
         case 1:
             ind = NeuralNetIndividual1(input_size, output_size, dp, initial_size, use_softmax)
-            config.mutation_operations = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+            config.mutation_operations = [0, 1, 2, 3, 4, 5, 6]
         case 2:
             ind = NeuralNetIndividual2(input_size, output_size, dp, initial_size, use_softmax)
             config.mutation_operations = [0, 1, 2, 3, 4, 5, 6]

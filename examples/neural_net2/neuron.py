@@ -155,7 +155,45 @@ class Neuron:
 
         for connection in itertools.chain(self.input_connections, self.hidden_connections):
             connection[1] = rnd.uniform(-1.0, 1.0)
-            connection[2] = 0.0
+            connection[2] = rnd.uniform(-0.01, 0.01)
+
+    def remove_input_connection(self):
+        if self.input_connections_size > 0:
+            index: int = rnd.randrange(self.input_connections_size)
+            self.input_connections.pop(index)
+            self.input_connections_size -= 1
+
+    def remove_hidden_connection(self):
+        if self.hidden_connections_size > 0:
+            index: int = rnd.randrange(self.hidden_connections_size)
+            self.hidden_connections.pop(index)
+            self.hidden_connections_size -= 1
+
+    def remove_connection_to(self, index):
+        for i in range(self.input_connections_size):
+            if self.input_connections[i][0] == index:
+                self.input_connections.pop(i)
+                self.input_connections_size -= 1
+                break
+
+        for i in range(self.hidden_connections_size):
+            if self.hidden_connections[i][0] == index:
+                self.hidden_connections.pop(i)
+                self.hidden_connections_size -= 1
+                break
+
+    def remove_all_connections(self):
+        self.input_connections = []
+        self.input_connections_size = 0
+        self.hidden_connections = []
+        self.hidden_connections_size = 0
+
+    def prune_connections(self):
+        self.input_connections = [connection for connection in self.input_connections if connection[1] > 0.01]
+        self.input_connections_size = len(self.input_connections)
+
+        self.hidden_connections = [connection for connection in self.hidden_connections if connection[1] > 0.01]
+        self.hidden_connections_size = len(self.hidden_connections)
 
     def evaluate(self, input_values: list, hidden_layer: list):
         new_value: float = self.bias

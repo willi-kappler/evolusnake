@@ -69,20 +69,7 @@ class NeuralNetIndividual1(NeuralNetBase):
             case 5:
                 self.mutate_hidden_connection2()
             case 6:
-                prob: int = rnd.randrange(1000)
-                if prob == 0:
-                    self.add_neuron()
-                else:
-                    self.es_mutate(rnd.randrange(6))
-            case 7:
-                self.add_input_connection()
-            case 8:
-                self.add_hidden_connection()
-            case 9:
-                prob: int = rnd.randrange(1000)
-                if prob == 0:
-                    self.randomize_all_neurons()
-                else:
+                if self.common_mutations():
                     self.es_mutate(rnd.randrange(6))
             case _:
                 logger.error(f"Unknown operation: {mut_op} in net 1")

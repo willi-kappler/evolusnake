@@ -82,8 +82,6 @@ class NeuralNetBase(ESIndividual):
         for i in range(self.output_size):
             error += abs(expected_output[i] - (res[i] / sum_res))
 
-        #raise ValueError("Does this work (calc_error2) ?")
-
         return error
 
     def evaluate_with_error(self, input_values: list, expected_output: list) -> float:
@@ -124,19 +122,90 @@ class NeuralNetBase(ESIndividual):
         index: int = rnd.randrange(self.hidden_layer_size)
         neuron = self.hidden_layer[index]
 
-        new_index:int = rnd.randrange(self.input_size)
+        new_index: int = rnd.randrange(self.input_size)
         neuron.add_input_connection(new_index)
 
     def add_hidden_connection(self):
         index: int = rnd.randrange(self.hidden_layer_size)
         neuron = self.hidden_layer[index]
 
-        new_index:int = rnd.randrange(self.hidden_layer_size)
+        new_index: int = rnd.randrange(self.hidden_layer_size)
         neuron.add_hidden_connection(new_index)
 
     def randomize_all_neurons(self):
         for neuron in self.hidden_layer:
             neuron.randomize_all_values()
+
+    def get_random_neuron(self) -> tuple[Neuron, int]:
+        index = rnd.randrange(self.hidden_layer_size)
+        return (self.hidden_layer[index], index)
+
+    def remove_neuron(self):
+        (neuron1, index) = self.get_random_neuron()
+        neuron1.remove_all_connections()
+
+        for neuron2 in self.hidden_layer:
+            neuron2.remove_connection_to(index)
+
+    def remove_input_connection(self):
+        neuron: Neuron = self.get_random_neuron()[0]
+        neuron.remove_input_connection()
+
+    def remove_hidden_connection(self):
+        neuron: Neuron = self.get_random_neuron()[0]
+        neuron.remove_hidden_connection()
+
+    def swap_neurons(self):
+        index1: int = rnd.randrange(self.hidden_layer_size)
+        if self.hidden_layer[index1].is_empty():
+            return
+
+        index2: int = rnd.randrange(self.hidden_layer_size)
+        if self.hidden_layer[index2].is_empty():
+            return
+
+        while index1 == index2:
+            index2: int = rnd.randrange(self.hidden_layer_size)
+
+        (self.hidden_layer[index1], self.hidden_layer[index2]) = (self.hidden_layer[index2], self.hidden_layer[index1])
+
+    def prune_connections(self):
+        for neuron in self.hidden_layer:
+            neuron.prune_connections()
+
+    def change_activation_function(self):
+        raise NotImplementedError()
+
+    def common_mutations(self) -> bool:
+        mut_op: int = rnd.randrange(9)
+
+        match mut_op:
+            case 0:
+                self.add_input_connection()
+            case 1:
+                self.add_hidden_connection()
+            case 2:
+                prob: int = rnd.randrange(1000)
+                if prob == 0:
+                    self.add_neuron()
+                else:
+                    return True
+            case 3:
+                self.randomize_all_neurons()
+            case 4:
+                self.remove_neuron()
+            case 5:
+                self.remove_input_connection()
+            case 6:
+                self.remove_hidden_connection()
+            case 7:
+                self.swap_neurons()
+            case 8:
+                self.prune_connections()
+            case 9:
+                self.change_activation_function()
+
+        return False
 
     def clone_base(self, other):
         other.hidden_layer = [n.clone() for n in self.hidden_layer]

@@ -14,11 +14,12 @@ https://github.com/cvdfoundation/mnist
 
 - try test network with 100 repeats.
 - add back some operations:
-    remove_neuron
-    remove input connection
-    remove hidden connection
+    # remove_neuron
+    # remove input connection
+    # remove hidden connection
+    # remove connections where the weights are < 0.01 (autpo-pruning)
     swap neurons
-    remove connections where the weights are < 0.01 (autpo-pruning)
+    change activation function
 
 
 - Use categorical cross-entropy loss:
