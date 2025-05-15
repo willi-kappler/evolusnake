@@ -209,8 +209,26 @@ class ESPopulation:
             # Wait some seconds to avoid spamming the server.
             time.sleep(5)
 
+    def es_calculate_fitness2_2(self):
+        fitness2_list: list = []
+
+        for i in range(self.population_size):
+            ind: ESIndividual = self.population[i]
+            if ind.fitness < 0.01:
+                ind.es_calculate_fitness2()
+                fitness2_list.append((ind.fitness2, i))
+
+        if fitness2_list:
+            fitness2_list.sort(key=lambda x: x[0])
+            index: int = fitness2_list[0][1]
+
+            self.population[self.best_index] = self.population[index]
+
     def es_calculate_fitness2(self):
-        self.population[self.best_index].es_calculate_fitness2()
+        ind = self.population[self.best_index]
+
+        if ind.fitness < 0.01:
+            ind.es_calculate_fitness2()
 
     def es_log_statistics(self):
         best_individual: ESIndividual = self.population[self.best_index]
