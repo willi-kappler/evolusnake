@@ -45,20 +45,7 @@ class NeuralNetIndividual4(NeuralNetBase):
             case 0:
                 self.mutate_all_neurons()
             case 1:
-                prob: int = rnd.randrange(1000)
-                if prob == 0:
-                    self.add_neuron()
-                else:
-                    self.es_mutate(0)
-            case 2:
-                self.add_input_connection()
-            case 3:
-                self.add_hidden_connection()
-            case 4:
-                prob: int = rnd.randrange(1000)
-                if prob == 0:
-                    self.randomize_all_neurons()
-                else:
+                if self.common_mutations():
                     self.es_mutate(0)
             case _:
                 logger.error(f"Unknown operation: {mut_op} in net 4")

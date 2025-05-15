@@ -22,13 +22,11 @@ class NeuralNetIndividual3(NeuralNetBase):
         self.current_neuron: int = 0
 
     def mutate_bias1(self):
-        index: int = rnd.randrange(self.hidden_layer_size)
-        neuron = self.hidden_layer[index]
+        neuron = self.hidden_layer[self.current_neuron]
         neuron.mutate_bias1()
 
     def mutate_bias2(self):
-        index: int = rnd.randrange(self.hidden_layer_size)
-        neuron = self.hidden_layer[index]
+        neuron = self.hidden_layer[self.current_neuron]
         neuron.mutate_bias2()
 
     def mutate_input_connection1(self):
@@ -67,26 +65,13 @@ class NeuralNetIndividual3(NeuralNetBase):
             case 5:
                 self.mutate_hidden_connection2()
             case 6:
-                prob: int = rnd.randrange(1000)
-                if prob == 0:
-                    self.add_neuron()
-                else:
-                    self.es_mutate(rnd.randrange(6))
-            case 7:
-                self.add_input_connection()
-            case 8:
-                self.add_hidden_connection()
-            case 9:
-                prob: int = rnd.randrange(1000)
-                if prob == 0:
-                    self.randomize_all_neurons()
-                else:
-                    self.es_mutate(rnd.randrange(6))
-            case 10:
                 prob: int = rnd.randrange(100)
                 if prob == 0:
                     self.current_neuron = rnd.randrange(self.hidden_layer_size)
                 else:
+                    self.es_mutate(rnd.randrange(6))
+            case 7:
+                if self.common_mutations():
                     self.es_mutate(rnd.randrange(6))
             case _:
                 logger.error(f"Unknown operation: {mut_op} in net 3")

@@ -130,6 +130,37 @@ class NeuralNetIndividual5(NeuralNetBase):
                 raise ValueError(f"Unknown operation: {mut_op} in net 5")
 
     @override
+    def es_mutate(self, mut_op: int):
+        match mut_op:
+            case 0:
+                self.mutate_bias2()
+            case 1:
+                self.mutate_input_connection2()
+            case 2:
+                self.mutate_hidden_connection2()
+            case 3:
+                prob: int = rnd.randrange(100)
+                if prob == 0:
+                    self.search_bias()
+                else:
+                    self.es_mutate(rnd.randrange(3))
+            case 4:
+                prob: int = rnd.randrange(100)
+                if prob == 0:
+                    self.search_input_connection()
+                else:
+                    self.es_mutate(rnd.randrange(3))
+            case 5:
+                prob: int = rnd.randrange(100)
+                if prob == 0:
+                    self.search_hidden_connection()
+                else:
+                    self.es_mutate(rnd.randrange(3))
+            case 6:
+                if self.common_mutations():
+                    self.es_mutate(rnd.randrange(3))
+
+    @override
     def es_clone(self) -> Self:
         clone = NeuralNetIndividual5(self.input_size, self.output_size, self.data_provider, use_softmax=self.use_softmax)
         return self.clone_base(clone)  # type: ignore

@@ -118,16 +118,16 @@ def main():
             config.mutation_operations = [0, 1, 2, 3, 4, 5, 6]
         case 2:
             ind = NeuralNetIndividual2(input_size, output_size, dp, initial_size, use_softmax)
-            config.mutation_operations = [0, 1, 2, 3, 4, 5, 6]
+            config.mutation_operations = [0, 1, 2, 3]
         case 3:
             ind = NeuralNetIndividual3(input_size, output_size, dp, initial_size, use_softmax)
-            config.mutation_operations = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+            config.mutation_operations = [0, 1, 2, 3, 4, 5, 6, 7]
         case 4:
             ind = NeuralNetIndividual4(input_size, output_size, dp, initial_size, use_softmax)
-            config.mutation_operations = [0, 1, 2, 3, 4]
+            config.mutation_operations = [0, 1]
         case 5:
             ind = NeuralNetIndividual5(input_size, output_size, dp, initial_size, use_softmax)
-            config.mutation_operations = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+            config.mutation_operations = [0, 1, 2, 3, 4, 5, 6]
         case _:
             raise ValueError(f"Unknown kind of neural net: {net_kind}")
 
