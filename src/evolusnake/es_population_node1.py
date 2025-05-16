@@ -34,8 +34,6 @@ class ESPopulationNode1(PSNode):
 
         self.population = ESPopulation(config, individual, iteration_callback)
         self.population.es_sort_population()
-        self.population.best_index = 0
-        self.population.worst_index = self.population.population_size - 1
 
         self.offset: int = int(self.population.population_size / 2)
 
@@ -48,6 +46,8 @@ class ESPopulationNode1(PSNode):
         self.population.es_increase_iteration_mutation()
         self.population.es_set_num_iterations()
         self.population.es_set_num_mutations()
+        self.population.best_index = 0
+        self.population.worst_index = self.population.population_size - 1
 
         self.population.es_before_iteration()
 

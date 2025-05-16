@@ -35,8 +35,6 @@ class ESPopulationNode7(PSNode):
         logger.debug(f"Node ID: {self.node_id}")
 
         self.population = ESPopulation(config, individual, iteration_callback)
-        self.population.best_index = 0
-        self.population.worst_index = self.population.population_size - 1
 
     @override
     def ps_process_data(self, data: ESIndividual) -> ESIndividual:
@@ -46,6 +44,8 @@ class ESPopulationNode7(PSNode):
         self.population.es_random_population()
         self.population.es_sort_population()
         self.population.es_set_num_iterations()
+        self.population.best_index = 0
+        self.population.worst_index = self.population.population_size - 1
 
         offset: int = int(self.population.population_size / 2)
         previous_best_fitness: float = self.population.es_get_best_fitness()

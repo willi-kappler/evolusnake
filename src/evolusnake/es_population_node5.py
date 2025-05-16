@@ -34,8 +34,6 @@ class ESPopulationNode5(PSNode):
 
         self.population: ESPopulation = ESPopulation(config, individual, iteration_callback)
         self.population.es_sort_population()
-        self.population.best_index = 0
-        self.population.worst_index = self.population.population_size - 1
         self.es_calc_average_fitness()
 
     def es_calc_average_fitness(self):
@@ -53,6 +51,8 @@ class ESPopulationNode5(PSNode):
         self.population.es_set_num_iterations()
         self.population.es_set_num_mutations()
         self.population.minimum_found = False
+        self.population.best_index = 0
+        self.population.worst_index = self.population.population_size - 1
         second_worst: ESIndividual = self.population.population[-2].es_clone_internal()
 
         self.population.es_before_iteration()
