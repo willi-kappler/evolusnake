@@ -14,16 +14,16 @@ https://github.com/cvdfoundation/mnist
 
 - try test network with 100 repeats.
 - change activation function
-- allow max network size (max number of neurons)
-
-
 - Use categorical cross-entropy loss:
   loss_per_sample = -np.sum(y_true * np.log(y_pred_clipped), axis=1)
   mean_loss = np.mean(loss_per_sample)
 
   Binary Cross-Entropy (for two classes)
 
+
+
 # try softmax for output values
+# allow max network size (max number of neurons)
 
 
 

@@ -108,25 +108,26 @@ def main():
 
     input_size: int = 4
     output_size: int = 3
-    initial_size: int = 5  # -> Hyperparmeter
+    initial_size: int = 8  # -> Hyperparmeter
     # For classifyers alwasy use softmax!
     use_softmax: bool = True
+    max_size: int = 12
 
     match net_kind:
         case 1:
-            ind = NeuralNetIndividual1(input_size, output_size, dp, initial_size, use_softmax)
+            ind = NeuralNetIndividual1(input_size, output_size, dp, initial_size, use_softmax, max_size)
             config.mutation_operations = [0, 1, 2, 3, 4, 5, 6]
         case 2:
-            ind = NeuralNetIndividual2(input_size, output_size, dp, initial_size, use_softmax)
+            ind = NeuralNetIndividual2(input_size, output_size, dp, initial_size, use_softmax, max_size)
             config.mutation_operations = [0, 1, 2, 3]
         case 3:
-            ind = NeuralNetIndividual3(input_size, output_size, dp, initial_size, use_softmax)
+            ind = NeuralNetIndividual3(input_size, output_size, dp, initial_size, use_softmax, max_size)
             config.mutation_operations = [0, 1, 2, 3, 4, 5, 6, 7]
         case 4:
-            ind = NeuralNetIndividual4(input_size, output_size, dp, initial_size, use_softmax)
+            ind = NeuralNetIndividual4(input_size, output_size, dp, initial_size, use_softmax, max_size)
             config.mutation_operations = [0, 1]
         case 5:
-            ind = NeuralNetIndividual5(input_size, output_size, dp, initial_size, use_softmax)
+            ind = NeuralNetIndividual5(input_size, output_size, dp, initial_size, use_softmax, max_size)
             config.mutation_operations = [0, 1, 2, 3, 4, 5, 6]
         case _:
             raise ValueError(f"Unknown kind of neural net: {net_kind}")

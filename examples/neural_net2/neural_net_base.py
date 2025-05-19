@@ -19,11 +19,19 @@ logger = logging.getLogger(__name__)
 
 class NeuralNetBase(ESIndividual):
     def __init__(self, input_size: int, output_size: int, data_provider: DataProvider,
-                 network_size: int = 0, use_softmax: bool = False):
+                 network_size: int = 0, use_softmax: bool = False, max_size: int = 0):
         super().__init__()
+
+        if max_size > 0:
+            if output_size + network_size > max_size:
+                logger.error("output_size + network_size > max_size")
+                logger.error(f"{output_size=} + {network_size=} > {max_size=}")
+                raise ValueError(f"output_size ({output_size}) + network_size ({network_size}) > max_size ({max_size})!")
 
         self.input_size: int = input_size
         self.output_size: int = output_size
+        self.network_size: int = network_size
+        self.max_size: int = max_size
         self.data_provider: DataProvider = data_provider
         self.hidden_layer_size: int = 0
         self.use_softmax: bool = use_softmax
@@ -105,18 +113,19 @@ class NeuralNetBase(ESIndividual):
         return result / self.hidden_layer_size
 
     def add_neuron(self):
-        new_neuron: Neuron = Neuron()
-
-        # Add a random connection to the neuron:
-        index: int = rnd.randrange(self.hidden_layer_size)
-        new_neuron.add_hidden_connection(index)
-
-        # Add a connection from a random existing neuron to this new neuron:
-        index: int = rnd.randrange(self.hidden_layer_size)
-        self.hidden_layer[index].add_hidden_connection(self.hidden_layer_size)
-
-        self.hidden_layer.append(new_neuron)
-        self.hidden_layer_size += 1
+        if self.hidden_layer_size < self.max_size:
+            new_neuron: Neuron = Neuron()
+    
+            # Add a random connection to the neuron:
+            index: int = rnd.randrange(self.hidden_layer_size)
+            new_neuron.add_hidden_connection(index)
+    
+            # Add a connection from a random existing neuron to this new neuron:
+            index: int = rnd.randrange(self.hidden_layer_size)
+            self.hidden_layer[index].add_hidden_connection(self.hidden_layer_size)
+    
+            self.hidden_layer.append(new_neuron)
+            self.hidden_layer_size += 1
 
     def add_input_connection(self):
         index: int = rnd.randrange(self.hidden_layer_size)
@@ -187,7 +196,13 @@ class NeuralNetBase(ESIndividual):
             case 2:
                 prob: int = rnd.randrange(1000)
                 if prob == 0:
-                    self.add_neuron()
+                    if self.max_size > 0:
+                        if self.hidden_layer_size < self.max_size:
+                            self.add_neuron()
+                        else:
+                            return True
+                    else:
+                        self.add_neuron()
                 else:
                     return True
             case 3:
@@ -210,6 +225,7 @@ class NeuralNetBase(ESIndividual):
     def clone_base(self, other):
         other.hidden_layer = [n.clone() for n in self.hidden_layer]
         other.hidden_layer_size = self.hidden_layer_size
+        other.max_size = self.max_size
 
         return other
 
@@ -253,6 +269,7 @@ class NeuralNetBase(ESIndividual):
     def es_from_server(self, other):
         self.hidden_layer = other.hidden_layer
         self.hidden_layer_size = other.hidden_layer_size
+        self.max_size = other.max_size
         self.fitness = other.fitness
         self.use_softmax = other.use_softmax
 
@@ -261,6 +278,7 @@ class NeuralNetBase(ESIndividual):
         data = {
             "input_size": self.input_size,
             "output_size": self.output_size,
+            "max_size": self.max_size,
             "hidden_layer_size": self.hidden_layer_size,
             "hidden_layer": [n.to_json() for n in self.hidden_layer]
         }
@@ -272,6 +290,7 @@ class NeuralNetBase(ESIndividual):
         self.fitness = data["fitness"]
         self.input_size = data["input_size"]
         self.output_size = data["output_size"]
+        self.max_size = data["max_size"]
 
         for n in data["hidden_layer"]:
             neuron = Neuron()

@@ -16,8 +16,10 @@ logger = logging.getLogger(__name__)
 
 class NeuralNetIndividual5(NeuralNetBase):
     def __init__(self, input_size: int, output_size: int,
-                 data_provider: DataProvider, network_size: int = 0, use_softmax: bool = False):
-        super().__init__(input_size, output_size, data_provider, network_size, use_softmax)
+                 data_provider: DataProvider, network_size: int = 0,
+                 use_softmax: bool = False, max_size: int = 0):
+        super().__init__(input_size, output_size, data_provider, network_size,
+                         use_softmax, max_size)
 
     def mutate_bias2(self):
         index: int = rnd.randrange(self.hidden_layer_size)
@@ -92,53 +94,6 @@ class NeuralNetIndividual5(NeuralNetBase):
             case 2:
                 self.mutate_hidden_connection2()
             case 3:
-                prob: int = rnd.randrange(1000)
-                if prob == 0:
-                    self.add_neuron()
-                else:
-                    self.es_mutate(rnd.randrange(3))
-            case 4:
-                self.add_input_connection()
-            case 5:
-                self.add_hidden_connection()
-            case 6:
-                prob: int = rnd.randrange(1000)
-                if prob == 0:
-                    self.randomize_all_neurons()
-                else:
-                    self.es_mutate(rnd.randrange(3))
-            case 7:
-                prob: int = rnd.randrange(100)
-                if prob == 0:
-                    self.search_bias()
-                else:
-                    self.es_mutate(rnd.randrange(3))
-            case 8:
-                prob: int = rnd.randrange(100)
-                if prob == 0:
-                    self.search_input_connection()
-                else:
-                    self.es_mutate(rnd.randrange(3))
-            case 9:
-                prob: int = rnd.randrange(100)
-                if prob == 0:
-                    self.search_hidden_connection()
-                else:
-                    self.es_mutate(rnd.randrange(3))
-            case _:
-                logger.error(f"Unknown operation: {mut_op} in net 5")
-                raise ValueError(f"Unknown operation: {mut_op} in net 5")
-
-    @override
-    def es_mutate(self, mut_op: int):
-        match mut_op:
-            case 0:
-                self.mutate_bias2()
-            case 1:
-                self.mutate_input_connection2()
-            case 2:
-                self.mutate_hidden_connection2()
-            case 3:
                 prob: int = rnd.randrange(100)
                 if prob == 0:
                     self.search_bias()
@@ -162,6 +117,6 @@ class NeuralNetIndividual5(NeuralNetBase):
 
     @override
     def es_clone(self) -> Self:
-        clone = NeuralNetIndividual5(self.input_size, self.output_size, self.data_provider, use_softmax=self.use_softmax)
+        clone = NeuralNetIndividual5(self.input_size, self.output_size, self.data_provider, 
+                    self.network_size, self.use_softmax, self.max_size)
         return self.clone_base(clone)  # type: ignore
-
