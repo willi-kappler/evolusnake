@@ -7,6 +7,32 @@
 import random as rnd
 from typing import Self
 import itertools
+import math
+
+
+def activation_relu(x: float) -> float:
+    """Computes the ReLU function."""
+    return max(0, x)
+
+
+def activation_sigmoid(x: float) -> float:
+    """Computes the sigmoid function."""
+    return 1 / (1 + math.exp(-x))
+
+
+def activation_tanh(x: float) -> float:
+    """Computes the hyperbolic tangent function."""
+    return (math.exp(x) - math.exp(-x)) / (math.exp(x) + math.exp(-x))
+
+
+def activation_leaky_relu(x: float, alpha: float = 0.01) -> float:
+    """Computes the Leaky ReLU function."""
+    return x if x >= 0 else alpha * x
+
+
+def activation_elu(x: float, alpha: float = 1.0) -> float:
+    """Computes the Exponential Linear Unit (ELU) function."""
+    return x if x >= 0 else alpha * (math.exp(x) - 1)
 
 
 class Neuron:
@@ -18,6 +44,7 @@ class Neuron:
         self.current_value: float = 0.0
         self.bias: float = rnd.uniform(-1.0, 1.0)
         self.bias_delta: float = 0.0
+        self.activation = activation_relu
 
     def is_empty(self) -> bool:
         return (self.input_connections_size == 0) and (self.hidden_connections_size == 0)
@@ -150,6 +177,19 @@ class Neuron:
             connection[1] += connection[2]
             connection[1] = min(1.0, max(-1.0, connection[1]))
 
+    def mutate_activation(self, activation: int):
+        match activation:
+            case 0:
+                self.activation = activation_relu
+            case 1:
+                self.activation = activation_sigmoid
+            case 2:
+                self.activation = activation_tanh
+            case 3:
+                self.activation = activation_leaky_relu
+            case 4:
+                self.activation = activation_elu
+
     def randomize_all_values(self):
         self.mutate_bias1()
 
@@ -205,7 +245,8 @@ class Neuron:
             new_value += weight * hidden_layer[index].current_value
 
         # ReLU
-        self.current_value = max(0.0, new_value)
+        #self.current_value = max(0.0, new_value)
+        self.current_value = self.activation(new_value)
 
     def clone(self) -> Self:
         n = Neuron()
@@ -216,6 +257,7 @@ class Neuron:
         n.hidden_connections_size = self.hidden_connections_size
         n.bias = self.bias
         n.bias_delta = self.bias_delta
+        n.activation = self.activation
 
         return n  # type: ignore
 
