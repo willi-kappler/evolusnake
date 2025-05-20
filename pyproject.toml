@@ -2,7 +2,8 @@
 version = "0.1"
 name = "Evolusnake"
 dependencies = [
-    "parasnake >= 0.1"
+    "parasnake >= 0.1",
+    "fastrand >= 3.0.6"
 ]
 requires-python = ">= 3.12"
 readme = "README.md"
