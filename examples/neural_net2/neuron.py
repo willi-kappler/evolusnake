@@ -245,7 +245,7 @@ class Neuron:
             new_value += weight * hidden_layer[index].current_value
 
         # ReLU
-        #self.current_value = max(0.0, new_value)
+        # self.current_value = max(0.0, new_value)
         self.current_value = self.activation(new_value)
 
     def clone(self) -> Self:

@@ -79,6 +79,6 @@ class NeuralNetIndividual1(NeuralNetBase):
 
     @override
     def es_clone(self) -> Self:
-        clone = NeuralNetIndividual1(self.input_size, self.output_size, self.data_provider, 
+        clone = NeuralNetIndividual1(self.input_size, self.output_size, self.data_provider,
                     self.network_size, self.use_softmax, self.max_size)
         return self.clone_base(clone)  # type: ignore

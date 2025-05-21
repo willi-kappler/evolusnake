@@ -115,15 +115,15 @@ class NeuralNetBase(ESIndividual):
     def add_neuron(self):
         if self.hidden_layer_size < self.max_size:
             new_neuron: Neuron = Neuron()
-    
+
             # Add a random connection to the neuron:
             index: int = rnd.randrange(self.hidden_layer_size)
             new_neuron.add_hidden_connection(index)
-    
+
             # Add a connection from a random existing neuron to this new neuron:
             index: int = rnd.randrange(self.hidden_layer_size)
             self.hidden_layer[index].add_hidden_connection(self.hidden_layer_size)
-    
+
             self.hidden_layer.append(new_neuron)
             self.hidden_layer_size += 1
 
