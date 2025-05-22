@@ -9,8 +9,10 @@ This module defines the base data class for a population.
 
 # Python std lib:
 import logging
-import random as rnd
 import time
+
+# External libraries:
+import fastrand
 
 # Local imports
 from evolusnake.es_individual import ESIndividual
@@ -80,7 +82,6 @@ class ESPopulation:
         self.worst_index: int = 0
 
         self.mutation_operations: list = config.mutation_operations
-        self.mutation_operations_len: int = len(config.mutation_operations)
         self.mut_op_index: int = 0
         self.minimum_found: bool = False
 
@@ -90,13 +91,17 @@ class ESPopulation:
         self.fraction_iterations: int = int(self.num_of_iterations / self.fraction_value)
 
         # Init random number generator:
-        rnd.seed()
+        fastrand.pcg32_seed(int(time.time()))
 
         logger.debug(f"{self.population_size=}, {self.target_fitness=}, {self.target_fitness2=}")
         logger.debug(f"{self.num_of_iterations=}, {self.num_of_mutations=}")
         logger.debug(f"{self.accept_new_best=}, {self.randomize_population=}")
         logger.debug(f"{self.increase_iteration=}, {self.increase_mutation=}")
         logger.debug(f"{self.mutation_operations=}")
+
+        self.mutation_operations = self.mutation_operations * 10
+        self.mutation_operations_len: int = len(self.mutation_operations)
+        self.es_shuffle_mutation_operations()
 
     def es_find_worst_individual(self):
         self.worst_index = 0
@@ -136,8 +141,7 @@ class ESPopulation:
         if self.randomize_population:
             self.es_random_population()
         elif self.accept_new_best:
-            i: int = rnd.randrange(self.population_size)
-            self.population[i].es_from_server(best)
+            self.population[0].es_from_server(best)
 
     def es_increase_iteration_mutation(self):
         if self.increase_iteration > 0:
@@ -149,7 +153,14 @@ class ESPopulation:
             logger.debug(f"{self.num_of_mutations=}")
 
     def es_shuffle_mutation_operations(self):
-        rnd.shuffle(self.mutation_operations)
+        i: int = fastrand.pcg32bounded(self.mutation_operations_len)
+        j: int = fastrand.pcg32bounded(self.mutation_operations_len)
+
+        for _ in range(self.mutation_operations_len):
+            (self.mutation_operations[i], self.mutation_operations[j]) = (self.mutation_operations[j],
+                 self.mutation_operations[i])
+            i = fastrand.pcg32bounded(self.mutation_operations_len)
+            j = fastrand.pcg32bounded(self.mutation_operations_len)
 
     def es_randomize_worst(self):
         worst = self.population[self.worst_index]
