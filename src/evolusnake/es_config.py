@@ -46,7 +46,7 @@ class ESConfiguration:
         self.population_kind: int = 1
         self.increase_iteration: int = 0
         self.increase_mutation: int = 0
-        self.mutation_operations: list = []
+        self.mutation_operations: list = [0]
 
         # User defined options:
         self.user_options: str = ""
