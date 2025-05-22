@@ -54,6 +54,9 @@ class ESPopulation:
         if config.num_of_mutations < 1:
             raise ValueError(f"Number of mutations must be at least 1, {config.num_of_mutations}")
 
+        if not config.mutation_operations:
+            raise ValueError(f"There should at least be one mutation operation, {config.mutation_operations}")
+
         self.population_size: int = config.node_population_size
         self.population: list[ESIndividual] = []
 
@@ -64,10 +67,8 @@ class ESPopulation:
             self.population.append(ind)
 
         self.num_of_iterations: int = config.num_of_iterations
-        self.max_iterations: int = config.num_of_iterations
-        self.half_iterations: int = int(self.max_iterations / 2)
+        self.half_iterations: int = int(self.num_of_iterations / 2)
         self.num_of_mutations: int = config.num_of_mutations
-        self.max_mutations: int = config.num_of_mutations
         self.accept_new_best: bool = config.accept_new_best
         self.randomize_population: bool = config.randomize_population
         self.target_fitness: float = config.target_fitness
@@ -80,6 +81,7 @@ class ESPopulation:
 
         self.mutation_operations: list = config.mutation_operations
         self.mutation_operations_len: int = len(config.mutation_operations)
+        self.mut_op_index: int = 0
         self.minimum_found: bool = False
 
         self.iteration_callback = iteration_callback
@@ -139,24 +141,15 @@ class ESPopulation:
 
     def es_increase_iteration_mutation(self):
         if self.increase_iteration > 0:
-            self.max_iterations += self.increase_iteration
-            logger.debug(f"{self.max_iterations=}")
+            self.num_of_iterations += self.increase_iteration
+            logger.debug(f"{self.num_of_iterations=}")
 
         if self.increase_mutation > 0:
-            self.max_mutations += self.increase_mutation
-            logger.debug(f"{self.max_mutations=}")
+            self.num_of_mutations += self.increase_mutation
+            logger.debug(f"{self.num_of_mutations=}")
 
-    def es_set_num_mutations(self):
-        if self.max_mutations > 1:
-            self.num_of_mutations = rnd.randrange(self.max_mutations) + 1
-        else:
-            self.num_of_mutations = 1
-
-    def es_set_num_iterations(self):
-        self.num_of_iterations = rnd.randrange(self.half_iterations, self.max_iterations + 1)
-        self.iteration_counter = 0
-        self.fraction_iterations = int(self.num_of_iterations / self.fraction_value)
-        logger.debug(f"Iterations: {self.num_of_iterations}")
+    def es_shuffle_mutation_operations(self):
+        rnd.shuffle(self.mutation_operations)
 
     def es_randomize_worst(self):
         worst = self.population[self.worst_index]
@@ -188,14 +181,12 @@ class ESPopulation:
         return self.population[self.worst_index].fitness
 
     def es_get_mut_op(self) -> int:
-        match self.mutation_operations_len:
-            case 0:
-                return 0
-            case 1:
-                return self.mutation_operations[0]
-            case _:
-                i = rnd.randrange(self.mutation_operations_len)
-                return self.mutation_operations[i]
+        self.mut_op_index += 1
+
+        if self.mut_op_index >= self.mutation_operations_len:
+            self.mut_op_index = 0
+
+        return self.mutation_operations[self.mut_op_index]
 
     def es_check_limit(self, ind: ESIndividual, limit: float, i: int):
         if (ind.fitness < limit) or (ind.fitness < self.population[i].fitness):

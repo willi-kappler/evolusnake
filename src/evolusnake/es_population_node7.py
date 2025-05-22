@@ -43,7 +43,7 @@ class ESPopulationNode7(PSNode):
 
         self.population.es_random_population()
         self.population.es_sort_population()
-        self.population.es_set_num_iterations()
+        self.population.es_shuffle_mutation_operations()
         self.population.best_index = 0
         self.population.worst_index = self.population.population_size - 1
 

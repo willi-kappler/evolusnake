@@ -44,8 +44,7 @@ class ESPopulationNode11(PSNode):
 
         self.population.es_randomize_or_accept_best(data)
         self.population.es_increase_iteration_mutation()
-        self.population.es_set_num_iterations()
-        self.population.es_set_num_mutations()
+        self.population.es_shuffle_mutation_operations()
         self.population.minimum_found = False
 
         sine_freq: float = math.tau / float(self.population.num_of_iterations)
