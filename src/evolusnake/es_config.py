@@ -48,6 +48,9 @@ class ESConfiguration:
         self.increase_mutation: int = 0
         self.mutation_operations: list = [0]
         self.min_num_ind: int = 2
+        self.sine_base: float = 100.0
+        self.sine_amplitude: float = 50.0
+        self.sine_frequency: float = 0.01
 
         # User defined options:
         self.user_options: str = ""
@@ -107,6 +110,12 @@ class ESConfiguration:
                     config.mutation_operations = value
                 case "min_num_ind":
                     config.min_num_ind = value
+                case "sine_base":
+                    config.sine_base = value
+                case "sine_amplitude":
+                    config.sine_amplitude = value
+                case "sine_frequency":
+                    config.sine_frequency = value
                 case "user_options":
                     config.user_options = value
                 case _:
@@ -128,6 +137,9 @@ class ESConfiguration:
         parser.add_argument("--increase_mutation", type=int)
         parser.add_argument("-o", "--mutation_operations")
         parser.add_argument("--min_num_ind", type=int)
+        parser.add_argument("--sine_base", type=float)
+        parser.add_argument("--sine_amplitude", type=float)
+        parser.add_argument("--sine_frequency", type=float)
         parser.add_argument("--user_options")
 
         args = parser.parse_args()
@@ -165,6 +177,15 @@ class ESConfiguration:
 
         if args.min_num_ind is not None:
             self.min_num_ind = args.min_num_ind
+
+        if args.sine_base is not None:
+            self.sine_base = args.sine_base
+
+        if args.sine_amplitude is not None:
+            self.sine_amplitude = args.sine_amplitude
+
+        if args.sine_frequency is not None:
+            self.sine_frequency = args.sine_frequency
 
         if args.user_options is not None:
             self.user_options = args.user_options

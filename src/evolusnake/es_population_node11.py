@@ -15,8 +15,6 @@ import math
 # External imports:
 from parasnake.ps_node import PSNode
 
-import fastrand
-
 # Local imports:
 from evolusnake.es_config import ESConfiguration
 from evolusnake.es_individual import ESIndividual
@@ -35,8 +33,9 @@ class ESPopulationNode11(PSNode):
         logger.debug(f"Node ID: {self.node_id}")
 
         self.population = ESPopulation(config, individual, iteration_callback)
-        self.sine_base: float = 0.0
-        self.sine_amplitude: float = 0.0
+        self.sine_base: float = config.sine_base
+        self.sine_amplitude: float = config.sine_amplitude
+        self.sine_frequency: float = config.sine_frequency
 
     @override
     def ps_process_data(self, data: ESIndividual) -> ESIndividual:
@@ -48,8 +47,6 @@ class ESPopulationNode11(PSNode):
         self.population.es_shuffle_mutation_operations()
         self.population.minimum_found = False
 
-        sine_freq: float = math.tau / float(self.population.num_of_iterations)
-        logger.debug(f"{sine_freq=}")
         current_limit: float = 0.0
 
         self.population.es_before_iteration()
@@ -57,7 +54,7 @@ class ESPopulationNode11(PSNode):
         for i in range(self.population.num_of_iterations):
             self.population.es_fraction_iteration()
 
-            current_limit = self.sine_base + (self.sine_amplitude * math.sin(sine_freq * i))
+            current_limit = self.sine_base + (self.sine_amplitude * math.sin(self.sine_frequency * i))
 
             for j in range(self.population.population_size):
                 ind: ESIndividual = self.population.population[j].es_clone_internal()
@@ -76,18 +73,6 @@ class ESPopulationNode11(PSNode):
                 break
 
         self.population.es_find_best_and_worst_individual()
-        best_fitness: float = self.population.es_get_best_fitness()
-
-        self.sine_base = best_fitness
-
-        # Make this a fixed configurable value:
-        if best_fitness < 30.0:
-            self.sine_amplitude = float(fastrand.pcg32bounded(4) + 1)
-        else:
-            self.sine_amplitude = best_fitness * (fastrand.pcg32_uniform() * 0.1) + 0.1
-
-        logger.debug(f"{self.sine_base=}, {self.sine_amplitude=}")
-
         self.population.es_after_iteration()
         self.population.es_calculate_fitness2()
         self.population.es_log_statistics()
