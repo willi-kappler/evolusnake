@@ -47,6 +47,7 @@ class ESConfiguration:
         self.increase_iteration: int = 0
         self.increase_mutation: int = 0
         self.mutation_operations: list = [0]
+        self.min_num_ind: int = 2
 
         # User defined options:
         self.user_options: str = ""
@@ -104,6 +105,8 @@ class ESConfiguration:
                     config.increase_mutation = value
                 case "mutation_operations":
                     config.mutation_operations = value
+                case "min_num_ind":
+                    config.min_num_ind = value
                 case "user_options":
                     config.user_options = value
                 case _:
@@ -124,6 +127,7 @@ class ESConfiguration:
         parser.add_argument("--increase_iteration", type=int)
         parser.add_argument("--increase_mutation", type=int)
         parser.add_argument("-o", "--mutation_operations")
+        parser.add_argument("--min_num_ind", type=int)
         parser.add_argument("--user_options")
 
         args = parser.parse_args()
@@ -159,14 +163,8 @@ class ESConfiguration:
         if args.mutation_operations is not None:
             self.mutation_operations = [int(n) for n in args.mutation_operations.split(",")]
 
+        if args.min_num_ind is not None:
+            self.min_num_ind = args.min_num_ind
+
         if args.user_options is not None:
             self.user_options = args.user_options
-
-        # print(f"{self.server_mode}")
-        # print(f"{self.target_fitness}")
-        # print(f"{self.node_population_size}")
-        # print(f"{self.num_of_mutations}")
-        # print(f"{self.num_of_iterations}")
-        # print(f"{self.population_kind}")
-
-

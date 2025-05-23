@@ -14,8 +14,6 @@ from typing import override
 # External imports:
 from parasnake.ps_node import PSNode
 
-import fastrand
-
 # Local imports:
 from evolusnake.es_config import ESConfiguration
 from evolusnake.es_individual import ESIndividual
@@ -40,6 +38,7 @@ class ESPopulationNode4(PSNode):
         self.population.es_find_worst_individual()
 
         self.global_fitness = self.population.es_get_worst_fitness()
+        self.min_num_ind: int = config.min_num_ind
 
     @override
     def ps_process_data(self, data: ESIndividual) -> ESIndividual:
@@ -52,9 +51,6 @@ class ESPopulationNode4(PSNode):
         self.population.minimum_found = False
         ind_below_global: int = 0
         all_above_global: int = 0
-        # Make this a fixed configurable value:
-        min_num_ind: int = fastrand.pcg32bounded(int(self.population.population_size / 2)) + 2
-        logger.debug(f"{min_num_ind=}")
 
         self.population.es_before_iteration()
 
@@ -82,7 +78,7 @@ class ESPopulationNode4(PSNode):
                 if ind.fitness < self.global_fitness:
                     ind_below_global += 1
 
-            if ind_below_global >= min_num_ind:
+            if ind_below_global >= self.min_num_ind:
                 self.global_fitness = self.global_fitness * 0.9
             else:
                 self.global_fitness = self.global_fitness * 1.01
