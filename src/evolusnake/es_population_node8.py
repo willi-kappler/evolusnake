@@ -10,10 +10,11 @@ This module defines the class for population type 8.
 # Python std lib:
 import logging
 from typing import override
-import random as rnd
 
 # External imports:
 from parasnake.ps_node import PSNode
+
+import fastrand
 
 # Local imports:
 from evolusnake.es_config import ESConfiguration
@@ -47,7 +48,8 @@ class ESPopulationNode8(PSNode):
         self.population.best_index = 0
         self.population.worst_index = self.population.population_size - 1
 
-        limit_range: float = rnd.uniform(2.0, 10.0)
+        # Make this a fixed configurable value:
+        limit_range: float = float(fastrand.pcg32bounded(8) + 2)
         limit_factor = limit_range**(1.0 / self.population.population_size)
         logger.debug(f"{limit_range=}, {limit_factor=}")
 

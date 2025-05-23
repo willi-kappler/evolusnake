@@ -10,10 +10,11 @@ This module defines the class for population type 4.
 # Python std lib:
 import logging
 from typing import override
-import random as rnd
 
 # External imports:
 from parasnake.ps_node import PSNode
+
+import fastrand
 
 # Local imports:
 from evolusnake.es_config import ESConfiguration
@@ -51,8 +52,8 @@ class ESPopulationNode4(PSNode):
         self.population.minimum_found = False
         ind_below_global: int = 0
         all_above_global: int = 0
-        min_num_ind: int = rnd.randrange(1, int(self.population.population_size / 2))
-
+        # Make this a fixed configurable value:
+        min_num_ind: int = fastrand.pcg32bounded(int(self.population.population_size / 2)) + 2
         logger.debug(f"{min_num_ind=}")
 
         self.population.es_before_iteration()

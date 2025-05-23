@@ -11,13 +11,14 @@ This module defines the Parasnake server class.
 import logging
 import json
 import time
-import random as rnd
 from typing import override, Optional
 from collections import Counter
 
 # External imports:
 from parasnake.ps_server import PSServer
 from parasnake.ps_nodeid import PSNodeId
+
+import fastrand
 
 # Local imports:
 from evolusnake.es_config import ESConfiguration
@@ -60,7 +61,11 @@ class ESServer(PSServer):
         logger.debug(f"{self.result_filename=}, {self.save_new_fitness=}")
         logger.debug(f"{self.allow_same_fitness=}, {self.share_only_best=}")
 
-        self.start_time = time.time()
+        # Initialize random number generator:
+        current_time: float = time.time()
+        fastrand.pcg32_seed(int(current_time))
+
+        self.start_time = current_time
 
     def es_save_data(self, filename: str):
         with open(filename, "w") as f:
@@ -96,7 +101,7 @@ class ESServer(PSServer):
             # Pick a random individual from the current population of best
             # individuals and return it to the node.
             # (avoid to get stuck in a local minimum)
-            i = rnd.randrange(self.population_size)
+            i = fastrand.pcg32bounded(self.population_size)
 
         return self.population[i]
 

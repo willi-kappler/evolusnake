@@ -9,11 +9,12 @@ This module defines the class for population type 3.
 
 # Python std lib:
 import logging
-import random as rnd
 from typing import override
 
 # External imports:
 from parasnake.ps_node import PSNode
+
+import fastrand
 
 # Local imports:
 from evolusnake.es_config import ESConfiguration
@@ -53,7 +54,7 @@ class ESPopulationNode3(PSNode):
         for i in range(max_iter):
             self.population.es_fraction_iteration()
 
-            j = rnd.randrange(self.population.population_size)
+            j = fastrand.pcg32bounded(self.population.population_size)
             tmp_ind: ESIndividual = self.population.population[j].es_clone_internal()
 
             for _ in range(self.population.num_of_mutations):

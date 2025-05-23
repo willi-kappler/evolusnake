@@ -11,10 +11,11 @@ This module defines the class for population type 9.
 import logging
 from typing import override
 import math
-import random as rnd
 
 # External imports:
 from parasnake.ps_node import PSNode
+
+import fastrand
 
 # Local imports:
 from evolusnake.es_config import ESConfiguration
@@ -79,10 +80,11 @@ class ESPopulationNode11(PSNode):
 
         self.sine_base = best_fitness
 
+        # Make this a fixed configurable value:
         if best_fitness < 30.0:
-            self.sine_amplitude = rnd.uniform(1.0, 5.0)
+            self.sine_amplitude = float(fastrand.pcg32bounded(4) + 1)
         else:
-            self.sine_amplitude = best_fitness * rnd.uniform(0.1, 0.2)
+            self.sine_amplitude = best_fitness * (fastrand.pcg32_uniform() * 0.1) + 0.1
 
         logger.debug(f"{self.sine_base=}, {self.sine_amplitude=}")
 
