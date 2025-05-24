@@ -57,7 +57,7 @@ class ESPopulation:
             raise ValueError(f"Number of mutations must be at least 1, {config.num_of_mutations}")
 
         if not config.mutation_operations:
-            raise ValueError(f"There should at least be one mutation operation, {config.mutation_operations}")
+            raise ValueError("There should at least be one mutation operation")
 
         self.population_size: int = config.node_population_size
         self.population: list[ESIndividual] = []
