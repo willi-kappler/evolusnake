@@ -14,8 +14,6 @@ from typing import override
 # External imports:
 from parasnake.ps_node import PSNode
 
-import fastrand
-
 # Local imports:
 from evolusnake.es_config import ESConfiguration
 from evolusnake.es_individual import ESIndividual
@@ -35,6 +33,7 @@ class ESPopulationNode8(PSNode):
         logger.debug(f"Node ID: {self.node_id}")
 
         self.population = ESPopulation(config, individual, iteration_callback)
+        self.limit_factor: float = config.limit_range**(1.0 / self.population.population_size)
 
     @override
     def ps_process_data(self, data: ESIndividual) -> ESIndividual:
@@ -47,11 +46,6 @@ class ESPopulationNode8(PSNode):
         self.population.minimum_found = False
         self.population.best_index = 0
         self.population.worst_index = self.population.population_size - 1
-
-        # Make this a fixed configurable value:
-        limit_range: float = float(fastrand.pcg32bounded(8) + 2)
-        limit_factor = limit_range**(1.0 / self.population.population_size)
-        logger.debug(f"{limit_range=}, {limit_factor=}")
 
         self.population.es_before_iteration()
 
@@ -74,7 +68,7 @@ class ESPopulationNode8(PSNode):
                         break
                 else:
                     if j > 0:
-                        fitness_limit: float = current_best_fitness * (limit_factor**j)
+                        fitness_limit: float = current_best_fitness * (self.limit_factor**j)
 
                         self.population.es_check_limit(ind, fitness_limit, j)
 
@@ -86,4 +80,3 @@ class ESPopulationNode8(PSNode):
         self.population.es_calculate_fitness2()
         self.population.es_log_statistics()
         return self.population.es_get_best()
-

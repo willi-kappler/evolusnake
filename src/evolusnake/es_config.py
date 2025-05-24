@@ -51,6 +51,7 @@ class ESConfiguration:
         self.sine_base: float = 100.0
         self.sine_amplitude: float = 50.0
         self.sine_frequency: float = 0.01
+        self.limit_range: float = 5.0
 
         # User defined options:
         self.user_options: str = ""
@@ -116,6 +117,8 @@ class ESConfiguration:
                     config.sine_amplitude = value
                 case "sine_frequency":
                     config.sine_frequency = value
+                case "limit_range":
+                    config.limit_range = value
                 case "user_options":
                     config.user_options = value
                 case _:
@@ -140,6 +143,7 @@ class ESConfiguration:
         parser.add_argument("--sine_base", type=float)
         parser.add_argument("--sine_amplitude", type=float)
         parser.add_argument("--sine_frequency", type=float)
+        parser.add_argument("--limit_range", type=float)
         parser.add_argument("--user_options")
 
         args = parser.parse_args()
@@ -186,6 +190,9 @@ class ESConfiguration:
 
         if args.sine_frequency is not None:
             self.sine_frequency = args.sine_frequency
+
+        if args.limit_range is not None:
+            self.limit_range = args.limit_range
 
         if args.user_options is not None:
             self.user_options = args.user_options
