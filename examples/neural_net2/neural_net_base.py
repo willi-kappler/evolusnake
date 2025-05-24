@@ -5,8 +5,10 @@
 
 import logging
 from typing import override
-import random as rnd
 import math
+
+# External libraries:
+import fastrand
 
 # Local imports:
 from evolusnake.es_individual import ESIndividual
@@ -19,14 +21,13 @@ logger = logging.getLogger(__name__)
 
 class NeuralNetBase(ESIndividual):
     def __init__(self, input_size: int, output_size: int, data_provider: DataProvider,
-                 network_size: int = 0, use_softmax: bool = False, max_size: int = 0):
+                 network_size: int = 0, use_softmax: bool = False, max_size: int = 100):
         super().__init__()
 
-        if max_size > 0:
-            if output_size + network_size > max_size:
-                logger.error("output_size + network_size > max_size")
-                logger.error(f"{output_size=} + {network_size=} > {max_size=}")
-                raise ValueError(f"output_size ({output_size}) + network_size ({network_size}) > max_size ({max_size})!")
+        if output_size + network_size > max_size:
+            logger.error("output_size + network_size > max_size")
+            logger.error(f"{output_size=} + {network_size=} > {max_size=}")
+            raise ValueError(f"output_size ({output_size}) + network_size ({network_size}) > max_size ({max_size})!")
 
         self.input_size: int = input_size
         self.output_size: int = output_size
@@ -96,7 +97,7 @@ class NeuralNetBase(ESIndividual):
         self.evaluate(input_values)
         return self.calc_error(expected_output)
 
-    def ab_weight_sum(self) -> float:
+    def abs_weight_sum(self) -> float:
         ws = 0.0
 
         for neuron in self.hidden_layer:
@@ -117,28 +118,28 @@ class NeuralNetBase(ESIndividual):
             new_neuron: Neuron = Neuron()
 
             # Add a random connection to the neuron:
-            index: int = rnd.randrange(self.hidden_layer_size)
+            index: int = fastrand.pcg32bounded(self.hidden_layer_size)
             new_neuron.add_hidden_connection(index)
 
             # Add a connection from a random existing neuron to this new neuron:
-            index: int = rnd.randrange(self.hidden_layer_size)
+            index: int = fastrand.pcg32bounded(self.hidden_layer_size)
             self.hidden_layer[index].add_hidden_connection(self.hidden_layer_size)
 
             self.hidden_layer.append(new_neuron)
             self.hidden_layer_size += 1
 
     def add_input_connection(self):
-        index: int = rnd.randrange(self.hidden_layer_size)
+        index: int = fastrand.pcg32bounded(self.hidden_layer_size)
         neuron = self.hidden_layer[index]
 
-        new_index: int = rnd.randrange(self.input_size)
+        new_index: int = fastrand.pcg32bounded(self.input_size)
         neuron.add_input_connection(new_index)
 
     def add_hidden_connection(self):
-        index: int = rnd.randrange(self.hidden_layer_size)
+        index: int = fastrand.pcg32bounded(self.hidden_layer_size)
         neuron = self.hidden_layer[index]
 
-        new_index: int = rnd.randrange(self.hidden_layer_size)
+        new_index: int = fastrand.pcg32bounded(self.hidden_layer_size)
         neuron.add_hidden_connection(new_index)
 
     def randomize_all_neurons(self):
@@ -146,7 +147,7 @@ class NeuralNetBase(ESIndividual):
             neuron.randomize_all_values()
 
     def get_random_neuron(self) -> tuple[Neuron, int]:
-        index = rnd.randrange(self.hidden_layer_size)
+        index: int = fastrand.pcg32bounded(self.hidden_layer_size)
         return (self.hidden_layer[index], index)
 
     def remove_neuron(self):
@@ -165,16 +166,16 @@ class NeuralNetBase(ESIndividual):
         neuron.remove_hidden_connection()
 
     def swap_neurons(self):
-        index1: int = rnd.randrange(self.hidden_layer_size)
+        index1: int = fastrand.pcg32bounded(self.hidden_layer_size)
         if self.hidden_layer[index1].is_empty():
             return
 
-        index2: int = rnd.randrange(self.hidden_layer_size)
+        index2: int = fastrand.pcg32bounded(self.hidden_layer_size)
         if self.hidden_layer[index2].is_empty():
             return
 
         while index1 == index2:
-            index2: int = rnd.randrange(self.hidden_layer_size)
+            index2: int = fastrand.pcg32bounded(self.hidden_layer_size)
 
         (self.hidden_layer[index1], self.hidden_layer[index2]) = (self.hidden_layer[index2], self.hidden_layer[index1])
 
@@ -186,7 +187,7 @@ class NeuralNetBase(ESIndividual):
         raise NotImplementedError()
 
     def common_mutations(self) -> bool:
-        mut_op: int = rnd.randrange(9)
+        mut_op: int = fastrand.pcg32bounded(9)
 
         match mut_op:
             case 0:
@@ -194,15 +195,9 @@ class NeuralNetBase(ESIndividual):
             case 1:
                 self.add_hidden_connection()
             case 2:
-                prob: int = rnd.randrange(1000)
+                prob: int = fastrand.pcg32bounded(1000)
                 if prob == 0:
-                    if self.max_size > 0:
-                        if self.hidden_layer_size < self.max_size:
-                            self.add_neuron()
-                        else:
-                            return True
-                    else:
-                        self.add_neuron()
+                    self.add_neuron()
                 else:
                     return True
             case 3:
@@ -302,5 +297,5 @@ class NeuralNetBase(ESIndividual):
     @override
     def es_new_best_individual(self):
         logger.info(f"Fitness1: {self.fitness}, fitness2: {self.fitness2}")
-        logger.info(f"Size: {self.hidden_layer_size}, absolute weight sum: {self.ab_weight_sum()}, connections per neuron: {self.connections_per_neuron()}")
-
+        logger.info(f"Size: {self.hidden_layer_size}, absolute weight sum: {self.abs_weight_sum()}, "
+             f"connections per neuron: {self.connections_per_neuron()}")

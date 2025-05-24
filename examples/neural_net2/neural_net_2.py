@@ -5,13 +5,19 @@
 
 import logging
 from typing import override, Self
-import random as rnd
+
+# External libraries:
+import fastrand
 
 # Local imports:
 from dataprovider import DataProvider
 from neural_net_base import NeuralNetBase
 
 logger = logging.getLogger(__name__)
+
+
+def uniform1() -> float:
+    return (fastrand.pcg32_uniform() * 0.1) + 0.0001
 
 
 class NeuralNetIndividual2(NeuralNetBase):
@@ -24,9 +30,9 @@ class NeuralNetIndividual2(NeuralNetBase):
         self.new_fitness_needed: bool = True
 
     def mutate_bias(self):
-        index: int = rnd.randrange(self.hidden_layer_size)
+        index: int = fastrand.pcg32bounded(self.hidden_layer_size)
         neuron = self.hidden_layer[index]
-        delta: float = rnd.uniform(0.0001, 0.1)
+        delta: float = uniform1()
 
         self.es_calculate_fitness()
         fitness1: float = self.fitness
@@ -57,9 +63,9 @@ class NeuralNetIndividual2(NeuralNetBase):
             self.fitness = fitness1
 
     def mutate_input_connection(self):
-        index: int = rnd.randrange(self.hidden_layer_size)
+        index: int = fastrand.pcg32bounded(self.hidden_layer_size)
         neuron = self.hidden_layer[index]
-        delta: float = rnd.uniform(0.0001, 0.1)
+        delta: float = uniform1()
         connection: list = neuron.get_random_input_connection()
 
         if connection:
@@ -92,9 +98,9 @@ class NeuralNetIndividual2(NeuralNetBase):
                 self.fitness = fitness1
 
     def mutate_hidden_connection(self):
-        index: int = rnd.randrange(self.hidden_layer_size)
+        index: int = fastrand.pcg32bounded(self.hidden_layer_size)
         neuron = self.hidden_layer[index]
-        delta: float = rnd.uniform(0.0001, 0.1)
+        delta: float = uniform1()
         connection: list = neuron.get_random_hidden_connection()
 
         if connection:
@@ -128,7 +134,8 @@ class NeuralNetIndividual2(NeuralNetBase):
 
     @override
     def description(self) -> str:
-        return "NeuralNet2: Try two different small mutations and compare them to the current fitness. Use the best one."
+        return ("NeuralNet2: Try two different small mutations and compare them to the current fitness."
+            "Use the best one.")
 
     @override
     def es_mutate(self, mut_op: int):
@@ -144,7 +151,7 @@ class NeuralNetIndividual2(NeuralNetBase):
                 self.new_fitness_needed = False
             case 3:
                 if self.common_mutations():
-                    self.es_mutate(rnd.randrange(3))
+                    self.es_mutate(fastrand.pcg32bounded(3))
                 else:
                     self.new_fitness_needed = True
             case _:
@@ -158,6 +165,6 @@ class NeuralNetIndividual2(NeuralNetBase):
 
     @override
     def es_clone(self) -> Self:
-        clone = NeuralNetIndividual2(self.input_size, self.output_size, self.data_provider, 
+        clone = NeuralNetIndividual2(self.input_size, self.output_size, self.data_provider,
                     self.network_size, self.use_softmax, self.max_size)
         return self.clone_base(clone)  # type: ignore

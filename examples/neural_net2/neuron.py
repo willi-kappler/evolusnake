@@ -3,11 +3,13 @@
 #
 # See: https://github.com/willi-kappler/evolusnake
 
-
-import random as rnd
+# Python std lib:
 from typing import Self
 import itertools
 import math
+
+# External libraries:
+import fastrand
 
 
 def activation_relu(x: float) -> float:
@@ -35,6 +37,14 @@ def activation_elu(x: float, alpha: float = 1.0) -> float:
     return x if x >= 0 else alpha * (math.exp(x) - 1)
 
 
+def uniform1() -> float:
+    return (fastrand.pcg32_uniform() * 2.0) - 1.0
+
+
+def uniform2() -> float:
+    return (fastrand.pcg32_uniform() * 0.02) - 0.01
+
+
 class Neuron:
     def __init__(self):
         self.input_connections: list = []
@@ -42,7 +52,7 @@ class Neuron:
         self.hidden_connections: list = []
         self.hidden_connections_size: int = 0
         self.current_value: float = 0.0
-        self.bias: float = rnd.uniform(-1.0, 1.0)
+        self.bias: float = uniform1()
         self.bias_delta: float = 0.0
         self.activation = activation_relu
 
@@ -50,10 +60,10 @@ class Neuron:
         return (self.input_connections_size == 0) and (self.hidden_connections_size == 0)
 
     def mutate_bias1(self):
-        self.bias = rnd.uniform(-1.0, 1.0)
+        self.bias = uniform1()
 
     def mutate_bias2(self):
-        self.bias += rnd.uniform(-0.01, 0.01)
+        self.bias += uniform2()
         self.bias = min(1.0, max(-1.0, self.bias))
 
     def mutate_bias3(self):
@@ -66,7 +76,7 @@ class Neuron:
             self.bias_delta = -self.bias_delta
 
     def change_bias_delta(self):
-        self.bias_delta: float = rnd.uniform(-0.01, 0.01)
+        self.bias_delta: float = uniform2()
 
     def has_input_connection(self, new_index):
         for (index2, _, _) in self.input_connections:
@@ -80,27 +90,27 @@ class Neuron:
             self.mutate_input_connection2()
             return
 
-        weight: float = rnd.uniform(-1.0, 1.0)
+        weight: float = uniform1()
         delta: float = 0.0
         self.input_connections.append([new_index, weight, delta])
         self.input_connections_size += 1
 
     def mutate_input_connection1(self):
         if self.input_connections_size > 0:
-            index: int = rnd.randrange(self.input_connections_size)
+            index: int = fastrand.pcg32bounded(self.input_connections_size)
             connection: list = self.input_connections[index]
-            connection[1] = rnd.uniform(-1.0, 1.0)
+            connection[1] = uniform1()
 
     def mutate_input_connection2(self):
         if self.input_connections_size > 0:
-            index: int = rnd.randrange(self.input_connections_size)
+            index: int = fastrand.pcg32bounded(self.input_connections_size)
             connection: list = self.input_connections[index]
-            connection[1] += rnd.uniform(-0.01, 0.01)
+            connection[1] += uniform2()
             connection[1] = min(1.0, max(-1.0, connection[1]))
 
     def mutate_input_connection3(self):
         if self.input_connections_size > 0:
-            index: int = rnd.randrange(self.input_connections_size)
+            index: int = fastrand.pcg32bounded(self.input_connections_size)
             connection: list = self.input_connections[index]
             connection[1] += connection[2]  # Add delta
             v: float = connection[1]
@@ -114,38 +124,44 @@ class Neuron:
 
     def get_random_input_connection(self) -> list:
         if self.input_connections_size > 0:
-            index: int = rnd.randrange(self.input_connections_size)
+            index: int = fastrand.pcg32bounded(self.input_connections_size)
             return self.input_connections[index]
         else:
             return []
 
-    def add_hidden_connection(self, new_index: int):
+    def has_hidden_connection(self, new_index: int):
         for (index2, _, _) in self.hidden_connections:
             if new_index == index2:
-                self.mutate_hidden_connection2()
-                return
+                return True
 
-        weight: float = rnd.uniform(-1.0, 1.0)
+        return False
+
+    def add_hidden_connection(self, new_index: int):
+        if self.has_hidden_connection(new_index):
+            self.mutate_hidden_connection2()
+            return
+
+        weight: float = uniform1()
         delta: float = 0.0
         self.hidden_connections.append([new_index, weight, delta])
         self.hidden_connections_size += 1
 
     def mutate_hidden_connection1(self):
         if self.hidden_connections_size > 0:
-            index: int = rnd.randrange(self.hidden_connections_size)
+            index: int = fastrand.pcg32bounded(self.hidden_connections_size)
             connection: list = self.hidden_connections[index]
-            connection[1] = rnd.uniform(-1.0, 1.0)
+            connection[1] = uniform1()
 
     def mutate_hidden_connection2(self):
         if self.hidden_connections_size > 0:
-            index: int = rnd.randrange(self.hidden_connections_size)
+            index: int = fastrand.pcg32bounded(self.hidden_connections_size)
             connection: list = self.hidden_connections[index]
-            connection[1] += rnd.uniform(-0.01, 0.01)
+            connection[1] += uniform2()
             connection[1] = min(1.0, max(-1.0, connection[1]))
 
     def mutate_hidden_connection3(self):
         if self.hidden_connections_size > 0:
-            index: int = rnd.randrange(self.hidden_connections_size)
+            index: int = fastrand.pcg32bounded(self.hidden_connections_size)
             connection: list = self.hidden_connections[index]
             connection[1] += connection[2]  # Add delta
             v: float = connection[1]
@@ -159,7 +175,7 @@ class Neuron:
 
     def get_random_hidden_connection(self) -> list:
         if self.hidden_connections_size > 0:
-            index: int = rnd.randrange(self.hidden_connections_size)
+            index: int = fastrand.pcg32bounded(self.hidden_connections_size)
             return self.hidden_connections[index]
         else:
             return []
@@ -168,7 +184,7 @@ class Neuron:
         self.change_bias_delta()
 
         for connection in itertools.chain(self.input_connections, self.hidden_connections):
-            connection[2] = rnd.uniform(-0.01, 0.01)
+            connection[2] = uniform2()
 
     def mutate_all_values(self):
         self.mutate_bias3()
@@ -194,28 +210,22 @@ class Neuron:
         self.mutate_bias1()
 
         for connection in itertools.chain(self.input_connections, self.hidden_connections):
-            connection[1] = rnd.uniform(-1.0, 1.0)
-            connection[2] = rnd.uniform(-0.01, 0.01)
+            connection[1] = uniform1()
+            connection[2] = uniform2()
 
     def remove_input_connection(self):
         if self.input_connections_size > 0:
-            index: int = rnd.randrange(self.input_connections_size)
+            index: int = fastrand.pcg32bounded(self.input_connections_size)
             self.input_connections.pop(index)
             self.input_connections_size -= 1
 
     def remove_hidden_connection(self):
         if self.hidden_connections_size > 0:
-            index: int = rnd.randrange(self.hidden_connections_size)
+            index: int = fastrand.pcg32bounded(self.hidden_connections_size)
             self.hidden_connections.pop(index)
             self.hidden_connections_size -= 1
 
     def remove_connection_to(self, index):
-        for i in range(self.input_connections_size):
-            if self.input_connections[i][0] == index:
-                self.input_connections.pop(i)
-                self.input_connections_size -= 1
-                break
-
         for i in range(self.hidden_connections_size):
             if self.hidden_connections[i][0] == index:
                 self.hidden_connections.pop(i)

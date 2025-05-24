@@ -5,7 +5,9 @@
 
 import logging
 from typing import override, Self
-import random as rnd
+
+# External libraries:
+import fastrand
 
 # Local imports:
 from dataprovider import DataProvider
@@ -67,21 +69,21 @@ class NeuralNetIndividual3(NeuralNetBase):
             case 5:
                 self.mutate_hidden_connection2()
             case 6:
-                prob: int = rnd.randrange(100)
+                prob: int = fastrand.pcg32bounded(100)
                 if prob == 0:
-                    self.current_neuron = rnd.randrange(self.hidden_layer_size)
+                    self.current_neuron = fastrand.pcg32bounded(self.hidden_layer_size)
                 else:
-                    self.es_mutate(rnd.randrange(6))
+                    self.es_mutate(fastrand.pcg32bounded(6))
             case 7:
                 if self.common_mutations():
-                    self.es_mutate(rnd.randrange(6))
+                    self.es_mutate(fastrand.pcg32bounded(6))
             case _:
                 logger.error(f"Unknown operation: {mut_op} in net 3")
                 raise ValueError(f"Unknown operation: {mut_op} in net 3")
 
     @override
     def es_clone(self) -> Self:
-        clone = NeuralNetIndividual3(self.input_size, self.output_size, self.data_provider, 
+        clone = NeuralNetIndividual3(self.input_size, self.output_size, self.data_provider,
                     self.network_size, self.use_softmax, self.max_size)
         clone.current_neuron = self.current_neuron
         return self.clone_base(clone)  # type: ignore
@@ -89,9 +91,9 @@ class NeuralNetIndividual3(NeuralNetBase):
     @override
     def es_from_server(self, other):
         super().es_from_server(other)
-        self.current_neuron = rnd.randrange(self.hidden_layer_size)
+        self.current_neuron = fastrand.pcg32bounded(self.hidden_layer_size)
 
     @override
     def es_from_json(self, data: dict):
         super().es_from_json(data)
-        self.current_neuron = rnd.randrange(self.hidden_layer_size)
+        self.current_neuron = fastrand.pcg32bounded(self.hidden_layer_size)

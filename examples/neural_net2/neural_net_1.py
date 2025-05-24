@@ -3,9 +3,12 @@
 #
 # See: https://github.com/willi-kappler/evolusnake
 
+# Python std lib:
 import logging
 from typing import override, Self
-import random as rnd
+
+# External libraries:
+import fastrand
 
 # Local imports:
 from dataprovider import DataProvider
@@ -17,37 +20,37 @@ logger = logging.getLogger(__name__)
 class NeuralNetIndividual1(NeuralNetBase):
     def __init__(self, input_size: int, output_size: int,
                  data_provider: DataProvider, network_size: int = 0,
-                 use_softmax: bool = False, max_size: int = 0):
+                 use_softmax: bool = False, max_size: int = 100):
         super().__init__(input_size, output_size, data_provider, network_size,
                  use_softmax, max_size)
 
     def mutate_bias1(self):
-        index: int = rnd.randrange(self.hidden_layer_size)
+        index: int = fastrand.pcg32bounded(self.hidden_layer_size)
         neuron = self.hidden_layer[index]
         neuron.mutate_bias1()
 
     def mutate_bias2(self):
-        index: int = rnd.randrange(self.hidden_layer_size)
+        index: int = fastrand.pcg32bounded(self.hidden_layer_size)
         neuron = self.hidden_layer[index]
         neuron.mutate_bias2()
 
     def mutate_input_connection1(self):
-        index: int = rnd.randrange(self.hidden_layer_size)
+        index: int = fastrand.pcg32bounded(self.hidden_layer_size)
         neuron = self.hidden_layer[index]
         neuron.mutate_input_connection1()
 
     def mutate_input_connection2(self):
-        index: int = rnd.randrange(self.hidden_layer_size)
+        index: int = fastrand.pcg32bounded(self.hidden_layer_size)
         neuron = self.hidden_layer[index]
         neuron.mutate_input_connection2()
 
     def mutate_hidden_connection1(self):
-        index: int = rnd.randrange(self.hidden_layer_size)
+        index: int = fastrand.pcg32bounded(self.hidden_layer_size)
         neuron = self.hidden_layer[index]
         neuron.mutate_hidden_connection1()
 
     def mutate_hidden_connection2(self):
-        index: int = rnd.randrange(self.hidden_layer_size)
+        index: int = fastrand.pcg32bounded(self.hidden_layer_size)
         neuron = self.hidden_layer[index]
         neuron.mutate_hidden_connection2()
 
@@ -72,7 +75,7 @@ class NeuralNetIndividual1(NeuralNetBase):
                 self.mutate_hidden_connection2()
             case 6:
                 if self.common_mutations():
-                    self.es_mutate(rnd.randrange(6))
+                    self.es_mutate(fastrand.pcg32bounded(6))
             case _:
                 logger.error(f"Unknown operation: {mut_op} in net 1")
                 raise ValueError(f"Unknown operation: {mut_op} in net 1")

@@ -4,13 +4,29 @@
 # See: https://github.com/willi-kappler/evolusnake
 
 
-import random as rnd
+# Python std lib:
 from typing import Generator, override
 import logging
+import time
 
+# External libraries:
+import fastrand
+
+# Local imports
 from evolusnake.es_population import ESPopulation, ESIterationCallBack
 
 logger = logging.getLogger(__name__)
+
+
+def shuffle_data(data: list):
+    num_elems: int = len(data)
+
+    for _ in range(num_elems):
+        i: int = fastrand.pcg32bounded(num_elems)
+        j: int = fastrand.pcg32bounded(num_elems)
+
+        (data[i], data[j]) = (data[j], data[i])
+
 
 class IterationNeural(ESIterationCallBack):
     def __init__(self):
@@ -27,6 +43,7 @@ class IterationNeural(ESIterationCallBack):
     def es_get_iteration_factor(self) -> int:
         return 3
 
+
 class DataProvider:
     def __init__(self, data_values: list, batch_size: int):
         total_length = len(data_values)
@@ -35,8 +52,9 @@ class DataProvider:
         self.training_data: list = []
         self.test_data: list = []
 
-        rnd.seed()
-        rnd.shuffle(data_values)
+        # Init random number generator:
+        fastrand.pcg32_seed(int(time.time()))
+        shuffle_data(data_values)
 
         # Use 80% for training and 20% for testing (20% is 1/5):
         test_limit: int = int(total_length / 5)
@@ -60,7 +78,7 @@ class DataProvider:
         self.batch_indices: list = []
 
         for _ in range(self.batch_size):
-            n = rnd.randrange(self.training_size)
+            n = fastrand.pcg32bounded(self.training_size)
             self.batch_indices.append(n)
 
     def training_batch(self) -> Generator[tuple[list, list], None, None]:
@@ -69,6 +87,5 @@ class DataProvider:
 
     def test_batch(self) -> Generator[tuple[list, list], None, None]:
         for _ in range(self.batch_size):
-            n = rnd.randrange(self.test_size)
+            n = fastrand.pcg32bounded(self.test_size)
             yield self.test_data[n]
-

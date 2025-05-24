@@ -5,7 +5,9 @@
 
 import logging
 from typing import override, Self
-import random as rnd
+
+# External libraries:
+import fastrand
 
 # Local imports:
 from dataprovider import DataProvider
@@ -30,7 +32,7 @@ class NeuralNetIndividual4(NeuralNetBase):
             neuron.change_all_deltas()
 
     def change_some_deltas(self):
-        index: int = rnd.randrange(self.hidden_layer_size)
+        index: int = fastrand.pcg32bounded(self.hidden_layer_size)
         neuron = self.hidden_layer[index]
 
         neuron.mutate_bias3()
@@ -55,7 +57,7 @@ class NeuralNetIndividual4(NeuralNetBase):
 
     @override
     def es_clone(self) -> Self:
-        clone = NeuralNetIndividual4(self.input_size, self.output_size, self.data_provider, 
+        clone = NeuralNetIndividual4(self.input_size, self.output_size, self.data_provider,
                     self.network_size, self.use_softmax, self.max_size)
         return self.clone_base(clone)  # type: ignore
 
