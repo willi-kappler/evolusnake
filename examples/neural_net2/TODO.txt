@@ -1,5 +1,9 @@
 
-- Topology Change - Split Node: You could split an existing node into two, with the incoming connections of the original node being randomly distributed (or duplicated with slight weight variations) to the two new nodes. The new nodes would then have their own outgoing connections (potentially inherited from the original node). This can allow for more complex feature extraction.
+- Topology Change
+  - Split Node: You could split an existing node into two, with the incoming connections of the
+    original node being randomly distributed (or duplicated with slight weight variations) to the
+    two new nodes. The new nodes would then have their own outgoing connections (potentially
+    inherited from the original node). This can allow for more complex feature extraction.
 
 
 MNIST data set:
@@ -12,16 +16,3 @@ https://github.com/cvdfoundation/mnist
   mean_loss = np.mean(loss_per_sample)
 
   Binary Cross-Entropy (for two classes)
-
-
-
-# try softmax for output values
-# allow max network size (max number of neurons)
-# change activation function, Transfer Function Mutation: If your nodes use different activation functions (e.g., sigmoid, ReLU, tanh), you could introduce a mutation that changes the activation function of a randomly selected node. This can introduce new non-linearities and potentially improve the network's representational power.
-# reduce use of random (es_population)
-# use fastrand: https://github.com/lemire/fastrand
-
-
-#Softmax:
-#https://www.geeksforgeeks.org/how-to-implement-softmax-and-cross-entropy-in-python-and-pytorch/
-
