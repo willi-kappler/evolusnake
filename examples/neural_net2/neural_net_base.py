@@ -186,7 +186,7 @@ class NeuralNetBase(ESIndividual):
         neuron.mutate_activation()
 
     def common_mutations(self) -> bool:
-        mut_op: int = fastrand.pcg32bounded(9)
+        mut_op: int = fastrand.pcg32bounded(10)
 
         match mut_op:
             case 0:
@@ -194,6 +194,7 @@ class NeuralNetBase(ESIndividual):
             case 1:
                 self.add_hidden_connection()
             case 2:
+                # Hyperparameter
                 prob: int = fastrand.pcg32bounded(1000)
                 if prob == 0:
                     self.add_neuron()
@@ -212,7 +213,12 @@ class NeuralNetBase(ESIndividual):
             case 8:
                 self.prune_connections()
             case 9:
-                self.change_activation_function()
+                # Hyperparameter
+                prob: int = fastrand.pcg32bounded(100)
+                if prob == 0:
+                    self.change_activation_function()
+                else:
+                    return True
 
         return False
 
