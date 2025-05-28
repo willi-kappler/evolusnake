@@ -238,12 +238,6 @@ class ESPopulation:
 
                 self.best_index = index
 
-    def es_calculate_fitness2_1(self):
-        ind = self.population[self.best_index]
-
-        if ind.fitness < 0.01:
-            ind.es_calculate_fitness2()
-
     def es_log_statistics(self):
         best_individual: ESIndividual = self.population[self.best_index]
         best_fitness: float = best_individual.fitness
