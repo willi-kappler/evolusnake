@@ -14,6 +14,8 @@ run_kind() {
         ;;
     esac
 
+    # python3 -m cProfile $main_file -k $1 -m $num_of_mutations -i $iterations1 --user_options net=1 > profile_out.txt &
+    # sleep 2
     python3 $main_file -k $1 -m $num_of_mutations -i $iterations1 --user_options net=1 &
     sleep 2
     python3 $main_file -k $1 -m $num_of_mutations -i $iterations1 --user_options net=2 &
