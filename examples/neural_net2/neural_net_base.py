@@ -128,27 +128,25 @@ class NeuralNetBase(ESIndividual):
             self.hidden_layer.append(new_neuron)
             self.hidden_layer_size += 1
 
-    def add_input_connection(self):
+    def get_random_neuron(self) -> tuple[Neuron, int]:
         index: int = fastrand.pcg32bounded(self.hidden_layer_size)
-        neuron = self.hidden_layer[index]
+        return (self.hidden_layer[index], index)
+
+    def add_input_connection(self):
+        neuron: Neuron = self.get_random_neuron()[0]
 
         new_index: int = fastrand.pcg32bounded(self.input_size)
         neuron.add_input_connection(new_index)
 
     def add_hidden_connection(self):
-        index: int = fastrand.pcg32bounded(self.hidden_layer_size)
-        neuron = self.hidden_layer[index]
+        neuron: Neuron = self.get_random_neuron()[0]
 
-        new_index: int = fastrand.pcg32bounded(self.hidden_layer_size)
+        new_index: int = self.get_random_neuron()[1]
         neuron.add_hidden_connection(new_index)
 
     def randomize_all_neurons(self):
         for neuron in self.hidden_layer:
             neuron.randomize_all_values()
-
-    def get_random_neuron(self) -> tuple[Neuron, int]:
-        index: int = fastrand.pcg32bounded(self.hidden_layer_size)
-        return (self.hidden_layer[index], index)
 
     def remove_neuron(self):
         (neuron1, index) = self.get_random_neuron()
@@ -166,16 +164,16 @@ class NeuralNetBase(ESIndividual):
         neuron.remove_hidden_connection()
 
     def swap_neurons(self):
-        index1: int = fastrand.pcg32bounded(self.hidden_layer_size)
-        if self.hidden_layer[index1].is_empty():
+        (neuron1, index1) = self.get_random_neuron()
+        if neuron1.is_empty():
             return
 
-        index2: int = fastrand.pcg32bounded(self.hidden_layer_size)
-        if self.hidden_layer[index2].is_empty():
+        (neuron2, index2) = self.get_random_neuron()
+        if neuron2.is_empty():
             return
 
         while index1 == index2:
-            index2: int = fastrand.pcg32bounded(self.hidden_layer_size)
+            index2 = self.get_random_neuron()[1]
 
         (self.hidden_layer[index1], self.hidden_layer[index2]) = (self.hidden_layer[index2], self.hidden_layer[index1])
 
@@ -184,7 +182,8 @@ class NeuralNetBase(ESIndividual):
             neuron.prune_connections()
 
     def change_activation_function(self):
-        raise NotImplementedError()
+        neuron = self.get_random_neuron()[0]
+        neuron.mutate_activation()
 
     def common_mutations(self) -> bool:
         mut_op: int = fastrand.pcg32bounded(9)

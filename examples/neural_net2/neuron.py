@@ -54,7 +54,7 @@ class Neuron:
         self.current_value: float = 0.0
         self.bias: float = uniform1()
         self.bias_delta: float = 0.0
-        self.activation = activation_relu
+        self.activation_kind: int = 0
 
     def is_empty(self) -> bool:
         return (self.input_connections_size == 0) and (self.hidden_connections_size == 0)
@@ -193,18 +193,8 @@ class Neuron:
             connection[1] += connection[2]
             connection[1] = min(1.0, max(-1.0, connection[1]))
 
-    def mutate_activation(self, activation: int):
-        match activation:
-            case 0:
-                self.activation = activation_relu
-            case 1:
-                self.activation = activation_sigmoid
-            case 2:
-                self.activation = activation_tanh
-            case 3:
-                self.activation = activation_leaky_relu
-            case 4:
-                self.activation = activation_elu
+    def mutate_activation(self):
+        self.activation_kind = fastrand.pcg32bounded(5)
 
     def randomize_all_values(self):
         self.mutate_bias1()
@@ -254,9 +244,25 @@ class Neuron:
         for (index, weight, _) in self.hidden_connections:
             new_value += weight * hidden_layer[index].current_value
 
-        # ReLU
-        # self.current_value = max(0.0, new_value)
-        self.current_value = self.activation(new_value)
+        match self.activation_kind:
+            case 0:
+                # ReLU
+                self.current_value = max(0, new_value)
+            case 1:
+                # Sigmoid
+                self.current_value = 1 / (1 + math.exp(-new_value))
+            case 2:
+                # Hyperbolic tangent
+                self.current_value = ((math.exp(new_value) - math.exp(-new_value)) /
+                    (math.exp(new_value) + math.exp(-new_value)))
+            case 3:
+                # Leaky ReLU
+                self.current_value = new_value if new_value >= 0 else 0.01 * new_value
+            case 4:
+                # Exponential linear unit (ELU)
+                self.current_value = new_value if new_value >= 0 else 1.0 * (math.exp(new_value) - 1)
+            case _:
+                raise ValueError(f"Unknown activation function: {self.activation_kind}")
 
     def clone(self) -> Self:
         n = Neuron()
@@ -267,7 +273,7 @@ class Neuron:
         n.hidden_connections_size = self.hidden_connections_size
         n.bias = self.bias
         n.bias_delta = self.bias_delta
-        n.activation = self.activation
+        n.activation_kind = self.activation_kind
 
         return n  # type: ignore
 
@@ -276,6 +282,7 @@ class Neuron:
             "input_connections": self.input_connections,
             "hidden_connections": self.hidden_connections,
             "bias": self.bias,
+            "activation_kind": self.activation_kind
         }
 
         return data
@@ -286,6 +293,7 @@ class Neuron:
         self.hidden_connections = data["hidden_connections"]
         self.hidden_connections_size = len(self.hidden_connections)
         self.bias = data["bias"]
+        self.activation_kind = data["activation_kind"]
 
     def abs_weight_sum(self) -> float:
         ws: float = 0.0
@@ -297,4 +305,3 @@ class Neuron:
 
     def num_of_connections(self) -> int:
         return self.input_connections_size + self.hidden_connections_size
-
