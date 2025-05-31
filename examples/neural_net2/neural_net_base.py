@@ -194,12 +194,13 @@ class NeuralNetBase(ESIndividual):
             case 1:
                 self.add_hidden_connection()
             case 2:
+                self.add_neuron()
                 # Hyperparameter
-                prob: int = fastrand.pcg32bounded(1000)
-                if prob == 0:
-                    self.add_neuron()
-                else:
-                    return True
+                # prob: int = fastrand.pcg32bounded(1000)
+                # if prob == 0:
+                #     self.add_neuron()
+                # else:
+                #     return True
             case 3:
                 self.randomize_all_neurons()
             case 4:
@@ -213,12 +214,13 @@ class NeuralNetBase(ESIndividual):
             case 8:
                 self.prune_connections()
             case 9:
+                self.change_activation_function()
                 # Hyperparameter
-                prob: int = fastrand.pcg32bounded(100)
-                if prob == 0:
-                    self.change_activation_function()
-                else:
-                    return True
+                # prob: int = fastrand.pcg32bounded(100)
+                # if prob == 0:
+                #     self.change_activation_function()
+                # else:
+                #     return True
 
         return False
 
