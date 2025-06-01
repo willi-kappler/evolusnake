@@ -12,31 +12,6 @@ import math
 import fastrand
 
 
-def activation_relu(x: float) -> float:
-    """Computes the ReLU function."""
-    return max(0, x)
-
-
-def activation_sigmoid(x: float) -> float:
-    """Computes the sigmoid function."""
-    return 1 / (1 + math.exp(-x))
-
-
-def activation_tanh(x: float) -> float:
-    """Computes the hyperbolic tangent function."""
-    return (math.exp(x) - math.exp(-x)) / (math.exp(x) + math.exp(-x))
-
-
-def activation_leaky_relu(x: float, alpha: float = 0.01) -> float:
-    """Computes the Leaky ReLU function."""
-    return x if x >= 0 else alpha * x
-
-
-def activation_elu(x: float, alpha: float = 1.0) -> float:
-    """Computes the Exponential Linear Unit (ELU) function."""
-    return x if x >= 0 else alpha * (math.exp(x) - 1)
-
-
 def uniform1() -> float:
     return (fastrand.pcg32_uniform() * 2.0) - 1.0
 
