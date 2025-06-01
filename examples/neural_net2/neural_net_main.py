@@ -125,7 +125,7 @@ def main():
             config.mutation_operations = [0, 1, 2, 3, 4, 5, 6, 7]
         case 4:
             ind = NeuralNetIndividual4(input_size, output_size, dp, initial_size, use_softmax, max_size)
-            config.mutation_operations = [0, 1]
+            config.mutation_operations = [0, 1, 2, 3]
         case 5:
             ind = NeuralNetIndividual5(input_size, output_size, dp, initial_size, use_softmax, max_size)
             config.mutation_operations = [0, 1, 2, 3, 4, 5, 6]
