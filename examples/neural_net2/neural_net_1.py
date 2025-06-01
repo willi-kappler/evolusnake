@@ -13,6 +13,7 @@ import fastrand
 # Local imports:
 from dataprovider import DataProvider
 from neural_net_base import NeuralNetBase
+from neuron import Neuron
 
 logger = logging.getLogger(__name__)
 
@@ -25,33 +26,27 @@ class NeuralNetIndividual1(NeuralNetBase):
                  use_softmax, max_size)
 
     def mutate_bias1(self):
-        index: int = fastrand.pcg32bounded(self.hidden_layer_size)
-        neuron = self.hidden_layer[index]
+        neuron: Neuron = self.get_random_neuron()[0]
         neuron.mutate_bias1()
 
     def mutate_bias2(self):
-        index: int = fastrand.pcg32bounded(self.hidden_layer_size)
-        neuron = self.hidden_layer[index]
+        neuron: Neuron = self.get_random_neuron()[0]
         neuron.mutate_bias2()
 
     def mutate_input_connection1(self):
-        index: int = fastrand.pcg32bounded(self.hidden_layer_size)
-        neuron = self.hidden_layer[index]
+        neuron: Neuron = self.get_random_neuron()[0]
         neuron.mutate_input_connection1()
 
     def mutate_input_connection2(self):
-        index: int = fastrand.pcg32bounded(self.hidden_layer_size)
-        neuron = self.hidden_layer[index]
+        neuron: Neuron = self.get_random_neuron()[0]
         neuron.mutate_input_connection2()
 
     def mutate_hidden_connection1(self):
-        index: int = fastrand.pcg32bounded(self.hidden_layer_size)
-        neuron = self.hidden_layer[index]
+        neuron: Neuron = self.get_random_neuron()[0]
         neuron.mutate_hidden_connection1()
 
     def mutate_hidden_connection2(self):
-        index: int = fastrand.pcg32bounded(self.hidden_layer_size)
-        neuron = self.hidden_layer[index]
+        neuron: Neuron = self.get_random_neuron()[0]
         neuron.mutate_hidden_connection2()
 
     @override

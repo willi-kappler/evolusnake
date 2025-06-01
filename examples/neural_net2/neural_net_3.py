@@ -69,6 +69,7 @@ class NeuralNetIndividual3(NeuralNetBase):
             case 5:
                 self.mutate_hidden_connection2()
             case 6:
+                # Hyperparameter: 100
                 prob: int = fastrand.pcg32bounded(100)
                 if prob == 0:
                     self.current_neuron = fastrand.pcg32bounded(self.hidden_layer_size)

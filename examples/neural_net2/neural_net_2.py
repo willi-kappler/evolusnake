@@ -12,6 +12,7 @@ import fastrand
 # Local imports:
 from dataprovider import DataProvider
 from neural_net_base import NeuralNetBase
+from neuron import Neuron
 
 logger = logging.getLogger(__name__)
 
@@ -30,8 +31,7 @@ class NeuralNetIndividual2(NeuralNetBase):
         self.new_fitness_needed: bool = True
 
     def mutate_bias(self):
-        index: int = fastrand.pcg32bounded(self.hidden_layer_size)
-        neuron = self.hidden_layer[index]
+        neuron: Neuron = self.get_random_neuron()[0]
         delta: float = uniform1()
 
         self.es_calculate_fitness()
@@ -63,8 +63,7 @@ class NeuralNetIndividual2(NeuralNetBase):
             self.fitness = fitness1
 
     def mutate_input_connection(self):
-        index: int = fastrand.pcg32bounded(self.hidden_layer_size)
-        neuron = self.hidden_layer[index]
+        neuron: Neuron = self.get_random_neuron()[0]
         delta: float = uniform1()
         connection: list = neuron.get_random_input_connection()
 
@@ -98,8 +97,7 @@ class NeuralNetIndividual2(NeuralNetBase):
                 self.fitness = fitness1
 
     def mutate_hidden_connection(self):
-        index: int = fastrand.pcg32bounded(self.hidden_layer_size)
-        neuron = self.hidden_layer[index]
+        neuron: Neuron = self.get_random_neuron()[0]
         delta: float = uniform1()
         connection: list = neuron.get_random_hidden_connection()
 

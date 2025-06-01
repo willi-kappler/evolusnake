@@ -12,6 +12,7 @@ import fastrand
 # Local imports:
 from dataprovider import DataProvider
 from neural_net_base import NeuralNetBase
+from neuron import Neuron
 
 logger = logging.getLogger(__name__)
 
@@ -24,23 +25,19 @@ class NeuralNetIndividual5(NeuralNetBase):
                          use_softmax, max_size)
 
     def mutate_bias2(self):
-        index: int = fastrand.pcg32bounded(self.hidden_layer_size)
-        neuron = self.hidden_layer[index]
+        neuron: Neuron = self.get_random_neuron()[0]
         neuron.mutate_bias2()
 
     def mutate_input_connection2(self):
-        index: int = fastrand.pcg32bounded(self.hidden_layer_size)
-        neuron = self.hidden_layer[index]
+        neuron: Neuron = self.get_random_neuron()[0]
         neuron.mutate_input_connection2()
 
     def mutate_hidden_connection2(self):
-        index: int = fastrand.pcg32bounded(self.hidden_layer_size)
-        neuron = self.hidden_layer[index]
+        neuron: Neuron = self.get_random_neuron()[0]
         neuron.mutate_hidden_connection2()
 
     def search_bias(self):
-        index = fastrand.pcg32bounded(self.hidden_layer_size)
-        neuron = self.hidden_layer[index]
+        neuron: Neuron = self.get_random_neuron()[0]
 
         best_bias: float = neuron.bias
         best_fitness: float = self.fitness
@@ -71,14 +68,14 @@ class NeuralNetIndividual5(NeuralNetBase):
             connection[1] = best_weight
 
     def search_input_connection(self):
-        index = fastrand.pcg32bounded(self.hidden_layer_size)
-        connection = self.hidden_layer[index].get_random_input_connection()
+        neuron: Neuron = self.get_random_neuron()[0]
+        connection = neuron.get_random_input_connection()
 
         self.search_connection(connection)
 
     def search_hidden_connection(self):
-        index = fastrand.pcg32bounded(self.hidden_layer_size)
-        connection = self.hidden_layer[index].get_random_hidden_connection()
+        neuron: Neuron = self.get_random_neuron()[0]
+        connection = neuron.get_random_hidden_connection()
 
         self.search_connection(connection)
 
@@ -96,18 +93,21 @@ class NeuralNetIndividual5(NeuralNetBase):
             case 2:
                 self.mutate_hidden_connection2()
             case 3:
+                # Hyperparameter: 100
                 prob: int = fastrand.pcg32bounded(100)
                 if prob == 0:
                     self.search_bias()
                 else:
                     self.es_mutate(fastrand.pcg32bounded(3))
             case 4:
+                # Hyperparameter: 100
                 prob: int = fastrand.pcg32bounded(100)
                 if prob == 0:
                     self.search_input_connection()
                 else:
                     self.es_mutate(fastrand.pcg32bounded(3))
             case 5:
+                # Hyperparameter: 100
                 prob: int = fastrand.pcg32bounded(100)
                 if prob == 0:
                     self.search_hidden_connection()

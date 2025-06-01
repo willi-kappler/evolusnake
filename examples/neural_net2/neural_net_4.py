@@ -7,11 +7,12 @@ import logging
 from typing import override, Self
 
 # External libraries:
-import fastrand
+# import fastrand
 
 # Local imports:
 from dataprovider import DataProvider
 from neural_net_base import NeuralNetBase
+from neuron import Neuron
 
 logger = logging.getLogger(__name__)
 
@@ -32,8 +33,7 @@ class NeuralNetIndividual4(NeuralNetBase):
             neuron.change_all_deltas()
 
     def change_some_deltas(self):
-        index: int = fastrand.pcg32bounded(self.hidden_layer_size)
-        neuron = self.hidden_layer[index]
+        neuron: Neuron = self.get_random_neuron()[0]
 
         neuron.mutate_bias3()
         neuron.mutate_input_connection3()
@@ -49,6 +49,12 @@ class NeuralNetIndividual4(NeuralNetBase):
             case 0:
                 self.mutate_all_neurons()
             case 1:
+                self.change_all_deltas()
+                self.mutate_all_neurons()
+            case 2:
+                self.change_some_deltas()
+                self.mutate_all_neurons()
+            case 3:
                 if self.common_mutations():
                     self.es_mutate(0)
             case _:
