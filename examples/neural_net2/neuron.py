@@ -204,11 +204,23 @@ class Neuron:
         self.hidden_connections_size = 0
 
     def prune_connections(self):
+        # Hyperparameter: 0.01
         self.input_connections = [connection for connection in self.input_connections if abs(connection[1]) > 0.01]
         self.input_connections_size = len(self.input_connections)
 
+        # Hyperparameter: 0.01
         self.hidden_connections = [connection for connection in self.hidden_connections if abs(connection[1]) > 0.01]
         self.hidden_connections_size = len(self.hidden_connections)
+
+    def split_neuron(self) -> "Neuron":
+        new_neuron: Neuron = Neuron()
+
+        new_neuron.bias = self.bias
+        new_input_connections = []
+        old_input_connections = []
+
+
+        return new_neuron
 
     def evaluate(self, input_values: list, hidden_layer: list):
         new_value: float = self.bias
