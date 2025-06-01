@@ -22,6 +22,8 @@ run_kind() {
     sleep 2
     python3 $main_file -k $1 -m $num_of_mutations -i $iterations1 --user_options net=3 &
     sleep 2
+    python3 $main_file -k $1 -m $num_of_mutations -i $iterations1 --user_options net=4 &
+    sleep 2
     python3 $main_file -k $1 -m $num_of_mutations -i $iterations1 --user_options net=5 &
     sleep 2
 }
