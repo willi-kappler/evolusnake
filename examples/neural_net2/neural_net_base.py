@@ -3,6 +3,7 @@
 #
 # See: https://github.com/willi-kappler/evolusnake
 
+# Python std lib:
 import logging
 from typing import override
 import math
@@ -122,8 +123,8 @@ class NeuralNetBase(ESIndividual):
             new_neuron.add_hidden_connection(index)
 
             # Add a connection from a random existing neuron to this new neuron:
-            index: int = fastrand.pcg32bounded(self.hidden_layer_size)
-            self.hidden_layer[index].add_hidden_connection(self.hidden_layer_size)
+            neuron: Neuron = self.get_random_neuron()[0]
+            neuron.add_hidden_connection(self.hidden_layer_size)
 
             self.hidden_layer.append(new_neuron)
             self.hidden_layer_size += 1
@@ -185,8 +186,19 @@ class NeuralNetBase(ESIndividual):
         neuron = self.get_random_neuron()[0]
         neuron.mutate_activation()
 
+    def split_neuron(self):
+        if self.hidden_layer_size < self.max_size:
+            neuron: Neuron = self.get_random_neuron()[0]
+            new_neuron: Neuron = neuron.split_neuron()
+
+            neuron = self.get_random_neuron()[0]
+            neuron.add_hidden_connection(self.hidden_layer_size)
+
+            self.hidden_layer.append(new_neuron)
+            self.hidden_layer_size += 1
+
     def common_mutations(self) -> bool:
-        mut_op: int = fastrand.pcg32bounded(10)
+        mut_op: int = fastrand.pcg32bounded(11)
 
         match mut_op:
             case 0:
@@ -209,6 +221,8 @@ class NeuralNetBase(ESIndividual):
                 self.prune_connections()
             case 9:
                 self.change_activation_function()
+            case 10:
+                self.split_neuron()
 
         return False
 

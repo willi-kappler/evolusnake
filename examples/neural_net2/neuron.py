@@ -216,9 +216,41 @@ class Neuron:
         new_neuron: Neuron = Neuron()
 
         new_neuron.bias = self.bias
+        new_neuron.activation_kind = self.activation_kind
+
         new_input_connections = []
         old_input_connections = []
 
+        half_size: int = self.input_connections_size // 2
+
+        for i in range(half_size):
+            old_input_connections.append(self.input_connections[i])
+
+        for i in range(half_size, self.input_connections_size):
+            new_input_connections.append(self.input_connections[i])
+
+        self.input_connections = old_input_connections
+        self.input_connections_size = len(old_input_connections)
+
+        new_neuron.input_connections = new_input_connections
+        new_neuron.input_connections_size = len(new_input_connections)
+
+        new_hidden_connections = []
+        old_hidden_connections = []
+
+        half_size: int = self.hidden_connections_size // 2
+
+        for i in range(half_size):
+            old_hidden_connections.append(self.hidden_connections[i])
+
+        for i in range(half_size, self.hidden_connections_size):
+            new_hidden_connections.append(self.hidden_connections[i])
+
+        self.hidden_connections = old_hidden_connections
+        self.hidden_connections_size = len(old_hidden_connections)
+
+        new_neuron.hidden_connections = new_hidden_connections
+        new_neuron.hidden_connections_size = len(new_hidden_connections)
 
         return new_neuron
 
@@ -230,6 +262,9 @@ class Neuron:
 
         for (index, weight, _) in self.hidden_connections:
             new_value += weight * hidden_layer[index].current_value
+
+        # Limit value to avoid overflow in exp() function below:
+        new_value = max(-20.0, min(20.0, new_value))
 
         match self.activation_kind:
             case 0:
