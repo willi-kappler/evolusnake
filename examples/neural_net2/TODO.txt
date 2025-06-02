@@ -1,10 +1,4 @@
 
-- Topology Change
-  - Split Node: You could split an existing node into two, with the incoming connections of the
-    original node being randomly distributed (or duplicated with slight weight variations) to the
-    two new nodes. The new nodes would then have their own outgoing connections (potentially
-    inherited from the original node). This can allow for more complex feature extraction.
-
 
 MNIST data set:
 https://github.com/cvdfoundation/mnist
