@@ -73,6 +73,12 @@ class TestIndividual(ESIndividual):
         return new  # type: ignore
 
     @override
+    def es_from_server(self, other):
+        self.data = other.data[:]
+        self.data_size = other.data_size
+        self.fitness = other.fitness
+
+    @override
     def es_to_json(self) -> dict:
         return {"data": self.data, "fitness": self.fitness}
 
