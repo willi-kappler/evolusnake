@@ -106,7 +106,7 @@ class TestPopulation(unittest.TestCase):
         population1: ESPopulation = ESPopulation(config1, ind1, ESIterationCallBack())
 
         population1.es_find_worst_individual()
-        worst_fitness: float = population1.population[population1.worst_index].fitness
+        worst_fitness: float = population1.es_get_worst_fitness()
 
         for i in range(population1.population_size):
             self.assertGreaterEqual(worst_fitness, population1.population[i].fitness)
@@ -122,8 +122,8 @@ class TestPopulation(unittest.TestCase):
         population1: ESPopulation = ESPopulation(config1, ind1, ESIterationCallBack())
 
         population1.es_find_best_and_worst_individual()
-        best_fitness: float = population1.population[population1.best_index].fitness
-        worst_fitness: float = population1.population[population1.worst_index].fitness
+        best_fitness: float = population1.es_get_best_fitness()
+        worst_fitness: float = population1.es_get_worst_fitness()
 
         for i in range(population1.population_size):
             self.assertGreaterEqual(worst_fitness, population1.population[i].fitness)
@@ -279,14 +279,14 @@ class TestPopulation(unittest.TestCase):
         population1: ESPopulation = ESPopulation(config1, ind1, ESIterationCallBack())
 
         population1.es_find_worst_individual()
-        current_worst_fitness: float = population1.population[population1.worst_index].fitness
+        current_worst_fitness: float = population1.es_get_worst_fitness()
         current_worst_index: int = population1.worst_index
 
         equal_counter: int = 0
 
         for _ in range(10):
             population1.es_randomize_worst()
-            if current_worst_fitness == population1.population[population1.worst_index].fitness:
+            if current_worst_fitness == population1.es_get_worst_fitness():
                 equal_counter += 1
             self.assertEqual(current_worst_index, population1.worst_index)
 
@@ -306,10 +306,10 @@ class TestPopulation(unittest.TestCase):
 
         population1.es_find_best_and_worst_individual()
         current_best_index: int = population1.best_index
-        current_best_fitness: float = population1.population[current_best_index].fitness
+        current_best_fitness: float = population1.es_get_best_fitness()
         population1.population[current_best_index].fitness = 1.0
         population1.es_replace_best(ind2)
-        self.assertGreaterEqual(current_best_fitness, population1.population[current_best_index].fitness)
+        self.assertGreaterEqual(current_best_fitness, population1.es_get_best_fitness())
         self.assertEqual(current_best_index, population1.best_index)
 
     def test_replace_worst(self):
@@ -325,10 +325,10 @@ class TestPopulation(unittest.TestCase):
         population1: ESPopulation = ESPopulation(config1, ind1, ESIterationCallBack())
 
         population1.es_find_best_and_worst_individual()
-        current_worst_fitness: float = population1.population[population1.worst_index].fitness
+        current_worst_fitness: float = population1.es_get_worst_fitness()
         current_worst_index: int = population1.worst_index
         population1.es_replace_worst(ind2)
-        self.assertGreater(current_worst_fitness, population1.population[population1.worst_index].fitness)
+        self.assertGreater(current_worst_fitness, population1.es_get_worst_fitness())
         self.assertEqual(current_worst_index, population1.worst_index)
 
     def test_clone_best_to_worst(self):
@@ -342,8 +342,7 @@ class TestPopulation(unittest.TestCase):
 
         population1.es_find_best_and_worst_individual()
         population1.es_clone_best_to_worst()
-        self.assertEqual(population1.population[population1.best_index].fitness,
-            population1.population[population1.worst_index].fitness)
+        self.assertEqual(population1.es_get_best_fitness(), population1.es_get_worst_fitness())
 
     def test_get_best(self):
         """
@@ -356,7 +355,7 @@ class TestPopulation(unittest.TestCase):
 
         population1.es_find_best_and_worst_individual()
         ind2: ESIndividual = population1.es_get_best()
-        self.assertEqual(population1.population[population1.best_index].fitness, ind2.fitness)
+        self.assertEqual(population1.es_get_best_fitness(), ind2.fitness)
 
     def test_get_mut_op1(self):
         """
@@ -430,6 +429,9 @@ class TestPopulation(unittest.TestCase):
         raise NotImplementedError("Test case not written yet.")
 
     def test_after_iteration(self):
+        raise NotImplementedError("Test case not written yet.")
+
+    def test_calculate_fitness2(self):
         raise NotImplementedError("Test case not written yet.")
 
 

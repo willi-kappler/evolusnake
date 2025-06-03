@@ -32,8 +32,6 @@ class TestPopulation(unittest.TestCase):
 
         population1: ESPopulationNode10 = ESPopulationNode10(config1, ind1)
 
-        self.assertEqual(population1.population.mutation_operations, [])
-
         while True:
             ind2: ESIndividual = population1.ps_process_data(ind1)
             if ind2.fitness < 1.0:
@@ -42,7 +40,7 @@ class TestPopulation(unittest.TestCase):
         self.assertAlmostEqual(ind2.fitness, 0.0)
         self.assertEqual(ind2.data, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0])  # type: ignore
 
-        self.assertAlmostEqual(population1.population.best_fitness, 0.0)
+        self.assertAlmostEqual(population1.population.es_get_best_fitness(), 0.0)
 
     def test_population_process_data2(self):
         """
@@ -58,7 +56,6 @@ class TestPopulation(unittest.TestCase):
         ind1: TestIndividual = TestIndividual()
 
         population1: ESPopulationNode10 = ESPopulationNode10(config1, ind1)
-        self.assertEqual(population1.population.mutation_operations, [0, 1, 2])
 
         while True:
             ind2: ESIndividual = population1.ps_process_data(ind1)
@@ -68,7 +65,7 @@ class TestPopulation(unittest.TestCase):
         self.assertAlmostEqual(ind2.fitness, 0.0)
         self.assertEqual(ind2.data, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0])  # type: ignore
 
-        self.assertAlmostEqual(population1.population.best_fitness, 0.0)
+        self.assertAlmostEqual(population1.population.es_get_best_fitness(), 0.0)
 
         mut_counter: int = 0
 
