@@ -23,18 +23,6 @@ class NeuralNetIndividual5(NeuralNetBase):
         super().__init__(input_size, output_size, data_provider, network_size,
                          use_softmax, max_size)
 
-    def mutate_bias2(self):
-        neuron: Neuron = self.get_random_neuron()[0]
-        neuron.mutate_bias2()
-
-    def mutate_input_connection2(self):
-        neuron: Neuron = self.get_random_neuron()[0]
-        neuron.mutate_input_connection2()
-
-    def mutate_hidden_connection2(self):
-        neuron: Neuron = self.get_random_neuron()[0]
-        neuron.mutate_hidden_connection2()
-
     def search_bias(self):
         neuron: Neuron = self.get_random_neuron()[0]
 

@@ -112,6 +112,30 @@ class NeuralNetBase(ESIndividual):
 
         return result / self.hidden_layer_size
 
+    def mutate_bias1(self):
+        neuron: Neuron = self.get_random_neuron()[0]
+        neuron.mutate_bias1()
+
+    def mutate_bias2(self):
+        neuron: Neuron = self.get_random_neuron()[0]
+        neuron.mutate_bias2()
+
+    def mutate_input_connection1(self):
+        neuron: Neuron = self.get_random_neuron()[0]
+        neuron.mutate_input_connection1()
+
+    def mutate_input_connection2(self):
+        neuron: Neuron = self.get_random_neuron()[0]
+        neuron.mutate_input_connection2()
+
+    def mutate_hidden_connection1(self):
+        neuron: Neuron = self.get_random_neuron()[0]
+        neuron.mutate_hidden_connection1()
+
+    def mutate_hidden_connection2(self):
+        neuron: Neuron = self.get_random_neuron()[0]
+        neuron.mutate_hidden_connection2()
+
     def add_neuron(self):
         if self.hidden_layer_size < self.max_size:
             new_neuron: Neuron = Neuron()
@@ -126,6 +150,8 @@ class NeuralNetBase(ESIndividual):
 
             self.hidden_layer.append(new_neuron)
             self.hidden_layer_size += 1
+        else:
+            self.mutate_hidden_connection2()
 
     def get_random_neuron(self) -> tuple[Neuron, int]:
         index: int = utils.es_rand_int(self.hidden_layer_size)
@@ -165,10 +191,12 @@ class NeuralNetBase(ESIndividual):
     def swap_neurons(self):
         (neuron1, index1) = self.get_random_neuron()
         if neuron1.is_empty():
+            self.mutate_hidden_connection2()
             return
 
         (neuron2, index2) = self.get_random_neuron()
         if neuron2.is_empty():
+            self.mutate_hidden_connection2()
             return
 
         while index1 == index2:
@@ -194,6 +222,8 @@ class NeuralNetBase(ESIndividual):
 
             self.hidden_layer.append(new_neuron)
             self.hidden_layer_size += 1
+        else:
+            self.mutate_hidden_connection2()
 
     def shuffle_input_connections(self):
         neuron = self.get_random_neuron()[0]

@@ -24,27 +24,27 @@ class NeuralNetIndividual3(NeuralNetBase):
 
         self.current_neuron: int = 0
 
-    def mutate_bias1(self):
+    def mutate_current_bias1(self):
         neuron = self.hidden_layer[self.current_neuron]
         neuron.mutate_bias1()
 
-    def mutate_bias2(self):
+    def mutate_current_bias2(self):
         neuron = self.hidden_layer[self.current_neuron]
         neuron.mutate_bias2()
 
-    def mutate_input_connection1(self):
+    def mutate_current_input_connection1(self):
         neuron = self.hidden_layer[self.current_neuron]
         neuron.mutate_input_connection1()
 
-    def mutate_input_connection2(self):
+    def mutate_current_input_connection2(self):
         neuron = self.hidden_layer[self.current_neuron]
         neuron.mutate_input_connection2()
 
-    def mutate_hidden_connection1(self):
+    def mutate_current_hidden_connection1(self):
         neuron = self.hidden_layer[self.current_neuron]
         neuron.mutate_hidden_connection1()
 
-    def mutate_hidden_connection2(self):
+    def mutate_current_hidden_connection2(self):
         neuron = self.hidden_layer[self.current_neuron]
         neuron.mutate_hidden_connection2()
 
@@ -56,17 +56,17 @@ class NeuralNetIndividual3(NeuralNetBase):
     def es_mutate(self, mut_op: int):
         match mut_op:
             case 0:
-                self.mutate_bias1()
+                self.mutate_current_bias1()
             case 1:
-                self.mutate_bias2()
+                self.mutate_current_bias2()
             case 2:
-                self.mutate_input_connection1()
+                self.mutate_current_input_connection1()
             case 3:
-                self.mutate_input_connection2()
+                self.mutate_current_input_connection2()
             case 4:
-                self.mutate_hidden_connection1()
+                self.mutate_current_hidden_connection1()
             case 5:
-                self.mutate_hidden_connection2()
+                self.mutate_current_hidden_connection2()
             case 6:
                 # Hyperparameter: 100
                 prob: int = utils.es_rand_int(100)

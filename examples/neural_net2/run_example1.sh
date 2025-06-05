@@ -7,6 +7,7 @@ run_kind() {
 
     num_of_mutations="1"
     iterations1="10000"
+    #iterations2="5000"
 
     case $1 in
     6)
@@ -25,6 +26,8 @@ run_kind() {
     python3 $main_file -k $1 -m $num_of_mutations -i $iterations1 --user_options net=4 &
     sleep 2
     python3 $main_file -k $1 -m $num_of_mutations -i $iterations1 --user_options net=5 &
+    sleep 2
+    python3 $main_file -k $1 -m $num_of_mutations -i $iterations1 --user_options net=6 &
     sleep 2
 }
 
