@@ -246,6 +246,14 @@ class Neuron:
 
         return new_neuron
 
+    def shuffle_input_connections(self):
+        if self.input_connections_size > 1:
+            utils.es_shuffle_list(self.input_connections)
+
+    def shuffle_hidden_connections(self):
+        if self.hidden_connections_size > 1:
+            utils.es_shuffle_list(self.hidden_connections)
+
     def evaluate(self, input_values: list, hidden_layer: list):
         new_value: float = self.bias
 

@@ -195,8 +195,16 @@ class NeuralNetBase(ESIndividual):
             self.hidden_layer.append(new_neuron)
             self.hidden_layer_size += 1
 
+    def shuffle_input_connections(self):
+        neuron = self.get_random_neuron()[0]
+        neuron.shuffle_input_connections()
+
+    def shuffle_hidden_connections(self):
+        neuron = self.get_random_neuron()[0]
+        neuron.shuffle_hidden_connections()
+
     def common_mutations(self) -> bool:
-        mut_op: int = utils.es_rand_int(11)
+        mut_op: int = utils.es_rand_int(13)
 
         match mut_op:
             case 0:
@@ -221,6 +229,10 @@ class NeuralNetBase(ESIndividual):
                 self.change_activation_function()
             case 10:
                 self.split_neuron()
+            case 11:
+                self.shuffle_input_connections()
+            case 12:
+                self.shuffle_hidden_connections()
 
         return False
 
