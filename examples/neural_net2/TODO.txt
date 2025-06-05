@@ -10,3 +10,5 @@ https://github.com/cvdfoundation/mnist
   mean_loss = np.mean(loss_per_sample)
 
   Binary Cross-Entropy (for two classes)
+
+- neural_net_base: always check if mutation was successful. If not choose another one.
