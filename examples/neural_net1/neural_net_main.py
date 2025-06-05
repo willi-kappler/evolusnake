@@ -3,16 +3,17 @@
 #
 # See: https://github.com/willi-kappler/evolusnake
 
+# Python std lib:
 import logging
 import pathlib
 from typing import override, Self
-import random as rnd
 
 # Local imports:
 from evolusnake.es_config import ESConfiguration
 from evolusnake.es_individual import ESIndividual
 from evolusnake.es_select_population import es_select_population
 from evolusnake.es_server import ESServer
+import evolusnake.es_utils as utils
 
 from neuron import Neuron
 
@@ -71,19 +72,19 @@ class NeuralNetIndividual(ESIndividual):
         new_neuron: Neuron = Neuron()
 
         # Add a random connection to the neuron:
-        index: int = rnd.randrange(self.hidden_layer_size)
+        index: int = utils.es_rand_int(self.hidden_layer_size)
         new_neuron.add_hidden_connection(index)
 
         # Add a connection from this new neuron to a random existing neuron:
-        index: int = rnd.randrange(self.hidden_layer_size)
+        index: int = utils.es_rand_int(self.hidden_layer_size)
         self.hidden_layer[index].add_hidden_connection(self.hidden_layer_size)
 
         self.hidden_layer.append(new_neuron)
         self.hidden_layer_size += 1
 
     def swap_neurons(self):
-        i1 = rnd.randrange(self.hidden_layer_size)
-        i2 = rnd.randrange(self.hidden_layer_size)
+        i1 = utils.es_rand_int(self.hidden_layer_size)
+        i2 = utils.es_rand_int(self.hidden_layer_size)
 
         if self.hidden_layer[i1].is_empty():
             self.mutate_neuron()
@@ -96,41 +97,41 @@ class NeuralNetIndividual(ESIndividual):
         (self.hidden_layer[i1], self.hidden_layer[i2]) = (self.hidden_layer[i2], self.hidden_layer[i1])
 
     def mutate_neuron(self):
-        index1: int = rnd.randrange(self.hidden_layer_size)
-        mut_op: int = rnd.randrange(5)
+        index1: int = utils.es_rand_int(self.hidden_layer_size)
+        mut_op: int = utils.es_rand_int(5)
         neuron: Neuron = self.hidden_layer[index1]
 
         match mut_op:
             case 0:
                 neuron.mutate_bias()
             case 1:
-                n = rnd.randrange(self.new_connection_prob)
+                n = utils.es_rand_int(self.new_connection_prob)
 
                 if n == 0:
-                    index2 = rnd.randrange(self.input_size)
+                    index2 = utils.es_rand_int(self.input_size)
                     neuron.add_input_connection(index2)
                 else:
                     neuron.mutate_input_connection()
             case 2:
-                n = rnd.randrange(self.new_connection_prob)
+                n = utils.es_rand_int(self.new_connection_prob)
 
                 if n == 0:
-                    index2: int = rnd.randrange(self.hidden_layer_size)
+                    index2: int = utils.es_rand_int(self.hidden_layer_size)
                     neuron.add_hidden_connection(index2)
                 else:
                     neuron.mutate_hidden_connection()
             case 3:
-                index2 = rnd.randrange(self.input_size)
+                index2 = utils.es_rand_int(self.input_size)
                 neuron.replace_input_connection(index2)
             case 4:
-                index2: int = rnd.randrange(self.hidden_layer_size)
+                index2: int = utils.es_rand_int(self.hidden_layer_size)
                 neuron.replace_hidden_connection(index2)
 
     @override
     def es_mutate(self, mut_op: int):
         match mut_op:
             case 0:
-                n = rnd.randrange(self.new_node_prob)
+                n = utils.es_rand_int(self.new_node_prob)
 
                 if n == 0:
                     self.add_neuron()

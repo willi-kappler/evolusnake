@@ -6,10 +6,9 @@
 import logging
 from typing import override, Self
 
-# External libraries:
-import fastrand
-
 # Local imports:
+import evolusnake.es_utils as utils
+
 from dataprovider import DataProvider
 from neural_net_base import NeuralNetBase
 from neuron import Neuron
@@ -94,28 +93,28 @@ class NeuralNetIndividual5(NeuralNetBase):
                 self.mutate_hidden_connection2()
             case 3:
                 # Hyperparameter: 100
-                prob: int = fastrand.pcg32bounded(100)
+                prob: int = utils.es_rand_int(100)
                 if prob == 0:
                     self.search_bias()
                 else:
-                    self.es_mutate(fastrand.pcg32bounded(3))
+                    self.es_mutate(utils.es_rand_int(3))
             case 4:
                 # Hyperparameter: 100
-                prob: int = fastrand.pcg32bounded(100)
+                prob: int = utils.es_rand_int(100)
                 if prob == 0:
                     self.search_input_connection()
                 else:
-                    self.es_mutate(fastrand.pcg32bounded(3))
+                    self.es_mutate(utils.es_rand_int(3))
             case 5:
                 # Hyperparameter: 100
-                prob: int = fastrand.pcg32bounded(100)
+                prob: int = utils.es_rand_int(100)
                 if prob == 0:
                     self.search_hidden_connection()
                 else:
-                    self.es_mutate(fastrand.pcg32bounded(3))
+                    self.es_mutate(utils.es_rand_int(3))
             case 6:
                 if self.common_mutations():
-                    self.es_mutate(fastrand.pcg32bounded(3))
+                    self.es_mutate(utils.es_rand_int(3))
 
     @override
     def es_clone(self) -> Self:

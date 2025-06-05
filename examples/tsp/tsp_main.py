@@ -3,10 +3,10 @@
 #
 # See: https://github.com/willi-kappler/evolusnake
 
+# Python std lib:
 import logging
 import pathlib
 from typing import override, Self
-import random as rnd
 import math
 
 # Local imports:
@@ -14,6 +14,7 @@ from evolusnake.es_config import ESConfiguration
 from evolusnake.es_individual import ESIndividual
 from evolusnake.es_select_population import es_select_population
 from evolusnake.es_server import ESServer
+import evolusnake.es_utils as utils
 
 
 logger = logging.getLogger(__name__)
@@ -42,14 +43,14 @@ class TSPIndividual(ESIndividual):
         self.num_elems = num_elems
 
     def get_one_index(self) -> int:
-        return rnd.randrange(self.num_elems)
+        return utils.es_rand_int(self.num_elems)
 
     def get_two_indices(self) -> tuple[int, int]:
-        i1: int = rnd.randrange(self.num_elems)
-        i2: int = rnd.randrange(self.num_elems)
+        i1: int = utils.es_rand_int(self.num_elems)
+        i2: int = utils.es_rand_int(self.num_elems)
 
         while i1 == i2:
-            i2 = rnd.randrange(self.num_elems)
+            i2 = utils.es_rand_int(self.num_elems)
 
         return (i1, i2)
 
@@ -109,7 +110,7 @@ class TSPIndividual(ESIndividual):
 
     @override
     def es_randomize(self):
-        rnd.shuffle(self.positions)
+        utils.es_shuffle_list(self.positions)
 
     @override
     def es_calculate_fitness(self):

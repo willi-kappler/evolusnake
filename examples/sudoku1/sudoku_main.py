@@ -3,16 +3,17 @@
 #
 # See: https://github.com/willi-kappler/evolusnake
 
+# Python std lib:
 import logging
 import pathlib
 from typing import override, Self
-import random as rnd
 
 # Local imports:
 from evolusnake.es_config import ESConfiguration
 from evolusnake.es_individual import ESIndividual
 from evolusnake.es_select_population import es_select_population
 from evolusnake.es_server import ESServer
+import evolusnake.es_utils as utils
 
 
 logger = logging.getLogger(__name__)
@@ -141,7 +142,7 @@ class SudokuIndividual(ESIndividual):
             if len_num == 1:
                 self.set_value2(c, r, numbers[0])
             elif len_num > 1:
-                i = rnd.randrange(len_num)
+                i = utils.es_rand_int(len_num)
                 self.set_value2(c, r, numbers[i])
 
     @override
@@ -150,7 +151,7 @@ class SudokuIndividual(ESIndividual):
 
     @override
     def es_randomize(self):
-        rnd.shuffle(self.empty_positions)
+        utils.es_shuffle_list(self.empty_positions)
 
     @override
     def es_calculate_fitness(self):

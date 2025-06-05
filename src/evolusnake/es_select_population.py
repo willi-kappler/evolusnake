@@ -3,6 +3,7 @@
 #
 # See: https://github.com/willi-kappler/evolusnake
 
+# Python std lib:
 import logging
 
 # Local imports:

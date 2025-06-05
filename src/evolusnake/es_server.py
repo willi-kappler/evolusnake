@@ -14,15 +14,15 @@ import time
 from typing import override, Optional
 from collections import Counter
 
+# Local imports:
+from evolusnake.es_config import ESConfiguration
+from evolusnake.es_individual import ESIndividual
+import evolusnake.es_utils as utils
+
 # External imports:
 from parasnake.ps_server import PSServer
 from parasnake.ps_nodeid import PSNodeId
 
-import fastrand
-
-# Local imports:
-from evolusnake.es_config import ESConfiguration
-from evolusnake.es_individual import ESIndividual
 
 logger = logging.getLogger(__name__)
 
@@ -62,10 +62,9 @@ class ESServer(PSServer):
         logger.debug(f"{self.allow_same_fitness=}, {self.share_only_best=}")
 
         # Initialize random number generator:
-        current_time: float = time.time()
-        fastrand.pcg32_seed(int(current_time))
+        utils.es_init_seed()
 
-        self.start_time = current_time
+        self.start_time: float = time.time()
 
     def es_save_data(self, filename: str):
         with open(filename, "w") as f:
@@ -101,7 +100,7 @@ class ESServer(PSServer):
             # Pick a random individual from the current population of best
             # individuals and return it to the node.
             # (avoid to get stuck in a local minimum)
-            i = fastrand.pcg32bounded(self.population_size)
+            i = utils.es_rand_int(self.population_size)
 
         return self.population[i]
 

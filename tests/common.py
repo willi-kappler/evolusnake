@@ -5,10 +5,10 @@
 
 # Python std lib:
 from typing import override, Self
-import random as rnd
 
 # Local imports:
 from evolusnake.es_individual import ESIndividual
+import evolusnake.es_utils as utils
 
 
 class TestIndividual(ESIndividual):
@@ -24,15 +24,15 @@ class TestIndividual(ESIndividual):
         self.data_size = 10
 
     def flip_bit(self):
-        pos = rnd.randrange(self.data_size)
+        pos = utils.es_rand_int(self.data_size)
         self.data[pos] = 1 - self.data[pos]
 
     def set_one(self):
-        pos = rnd.randrange(self.data_size)
+        pos = utils.es_rand_int(self.data_size)
         self.data[pos] = 1
 
     def set_zero(self):
-        pos = rnd.randrange(self.data_size)
+        pos = utils.es_rand_int(self.data_size)
         self.data[pos] = 0
 
     @override
@@ -52,7 +52,7 @@ class TestIndividual(ESIndividual):
     @override
     def es_randomize(self):
         for i in range(self.data_size):
-            self.data[i] = rnd.randrange(2)
+            self.data[i] = utils.es_rand_int(2)
 
         self.randomize_called += 1
 

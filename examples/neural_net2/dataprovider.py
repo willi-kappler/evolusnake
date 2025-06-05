@@ -7,25 +7,13 @@
 # Python std lib:
 from typing import Generator, override
 import logging
-import time
-
-# External libraries:
-import fastrand
 
 # Local imports
 from evolusnake.es_population import ESPopulation, ESIterationCallBack
+import evolusnake.es_utils as utils
+
 
 logger = logging.getLogger(__name__)
-
-
-def shuffle_data(data: list):
-    num_elems: int = len(data)
-
-    for _ in range(num_elems):
-        i: int = fastrand.pcg32bounded(num_elems)
-        j: int = fastrand.pcg32bounded(num_elems)
-
-        (data[i], data[j]) = (data[j], data[i])
 
 
 class IterationNeural(ESIterationCallBack):
@@ -53,8 +41,8 @@ class DataProvider:
         self.test_data: list = []
 
         # Init random number generator:
-        fastrand.pcg32_seed(int(time.time()))
-        shuffle_data(data_values)
+        utils.es_init_seed()
+        utils.es_shuffle_list(data_values)
 
         # Use 80% for training and 20% for testing (20% is 1/5):
         test_limit: int = int(total_length / 5)
@@ -68,6 +56,7 @@ class DataProvider:
         self.training_size = len(self.training_data)
         self.test_size = len(self.test_data)
 
+        self.batch_indices: list = [0] * batch_size
         self.create_batch_indices()
 
         logger.debug(f"batch size: {batch_size}")
@@ -75,11 +64,8 @@ class DataProvider:
         logger.debug(f"test size: {self.test_size}")
 
     def create_batch_indices(self):
-        self.batch_indices: list = []
-
-        for _ in range(self.batch_size):
-            n = fastrand.pcg32bounded(self.training_size)
-            self.batch_indices.append(n)
+        for i in range(self.batch_size):
+            self.batch_indices[i] = utils.es_rand_int(self.training_size)
 
     def training_batch(self) -> Generator[tuple[list, list], None, None]:
         for i in self.batch_indices:
@@ -87,5 +73,5 @@ class DataProvider:
 
     def test_batch(self) -> Generator[tuple[list, list], None, None]:
         for _ in range(self.batch_size):
-            n = fastrand.pcg32bounded(self.test_size)
+            n = utils.es_rand_int(self.test_size)
             yield self.test_data[n]

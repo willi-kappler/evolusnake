@@ -3,16 +3,17 @@
 #
 # See: https://github.com/willi-kappler/evolusnake
 
+# Python std lib:
 import logging
 import pathlib
 from typing import override, Self
-import random as rnd
 
 # Local imports:
 from evolusnake.es_config import ESConfiguration
 from evolusnake.es_individual import ESIndividual
 from evolusnake.es_select_population import es_select_population
 from evolusnake.es_server import ESServer
+import evolusnake.es_utils as utils
 
 
 logger = logging.getLogger(__name__)
@@ -120,19 +121,19 @@ class SudokuIndividual(ESIndividual):
 
     def fill_numbers(self, possible_numbers, positions):
         possible_numbers2: list = list(possible_numbers)
-        rnd.shuffle(possible_numbers2)
+        utils.es_shuffle_list(possible_numbers2)
 
         for (c, r) in positions:
             self.set_value2(c, r, possible_numbers2.pop())
 
     def set_random_number(self):
-        (c, r) = rnd.choice(self.empty_positions)
-        n = rnd.randrange(1, 10)
+        (c, r) = utils.es_choice(self.empty_positions)
+        n = utils.es_rand_int(9) + 1
         self.set_value2(c, r, n)
 
     def swap_two_numbers(self):
-        (c1, r1) = rnd.choice(self.empty_positions)
-        (c2, r2) = rnd.choice(self.empty_positions)
+        (c1, r1) = utils.es_choice(self.empty_positions)
+        (c2, r2) = utils.es_choice(self.empty_positions)
 
         n1 = self.get_value2(c1, r1)
         n2 = self.get_value2(c2, r2)
@@ -141,7 +142,7 @@ class SudokuIndividual(ESIndividual):
         self.set_value2(c2, r2, n1)
 
     def random_cross(self):
-        (c, r) = rnd.choice(self.empty_positions)
+        (c, r) = utils.es_choice(self.empty_positions)
         possible_numbers: set = {1, 2, 3, 4, 5, 6, 7, 8, 9}
 
         n: int = self.get_value3(c - 1, r)
@@ -157,13 +158,13 @@ class SudokuIndividual(ESIndividual):
         possible_numbers.discard(n)
 
         possible_numbers2: list = list(possible_numbers)
-        i = rnd.randrange(5)
+        i = utils.es_rand_int(5)
         n = possible_numbers2[i]
 
         self.set_value2(c, r, n)
 
     def random_col(self):
-        (c, _) = rnd.choice(self.empty_positions)
+        (c, _) = utils.es_choice(self.empty_positions)
         possible_numbers: set = {1, 2, 3, 4, 5, 6, 7, 8, 9}
         new_pos: list = []
 
@@ -177,7 +178,7 @@ class SudokuIndividual(ESIndividual):
         self.fill_numbers(possible_numbers, new_pos)
 
     def random_row(self):
-        (_, r) = rnd.choice(self.empty_positions)
+        (_, r) = utils.es_choice(self.empty_positions)
         possible_numbers: set = {1, 2, 3, 4, 5, 6, 7, 8, 9}
         new_pos: list = []
 
@@ -191,7 +192,7 @@ class SudokuIndividual(ESIndividual):
         self.fill_numbers(possible_numbers, new_pos)
 
     def random_block(self):
-        (c1, r1) = rnd.choice(self.empty_positions)
+        (c1, r1) = utils.es_choice(self.empty_positions)
         possible_numbers: set = {1, 2, 3, 4, 5, 6, 7, 8, 9}
         new_pos: list = []
 
@@ -230,7 +231,7 @@ class SudokuIndividual(ESIndividual):
     @override
     def es_randomize(self):
         for (c, r) in self.empty_positions:
-            n = rnd.randrange(1, 10)
+            n = utils.es_rand_int(9) + 1
             self.set_value2(c, r, n)
 
     @override

@@ -8,11 +8,9 @@ import logging
 from typing import override
 import math
 
-# External libraries:
-import fastrand
-
 # Local imports:
 from evolusnake.es_individual import ESIndividual
+import evolusnake.es_utils as utils
 
 from neuron import Neuron
 from dataprovider import DataProvider
@@ -119,7 +117,7 @@ class NeuralNetBase(ESIndividual):
             new_neuron: Neuron = Neuron()
 
             # Add a random connection to the neuron:
-            index: int = fastrand.pcg32bounded(self.hidden_layer_size)
+            index: int = utils.es_rand_int(self.hidden_layer_size)
             new_neuron.add_hidden_connection(index)
 
             # Add a connection from a random existing neuron to this new neuron:
@@ -130,13 +128,13 @@ class NeuralNetBase(ESIndividual):
             self.hidden_layer_size += 1
 
     def get_random_neuron(self) -> tuple[Neuron, int]:
-        index: int = fastrand.pcg32bounded(self.hidden_layer_size)
+        index: int = utils.es_rand_int(self.hidden_layer_size)
         return (self.hidden_layer[index], index)
 
     def add_input_connection(self):
         neuron: Neuron = self.get_random_neuron()[0]
 
-        new_index: int = fastrand.pcg32bounded(self.input_size)
+        new_index: int = utils.es_rand_int(self.input_size)
         neuron.add_input_connection(new_index)
 
     def add_hidden_connection(self):
@@ -198,7 +196,7 @@ class NeuralNetBase(ESIndividual):
             self.hidden_layer_size += 1
 
     def common_mutations(self) -> bool:
-        mut_op: int = fastrand.pcg32bounded(11)
+        mut_op: int = utils.es_rand_int(11)
 
         match mut_op:
             case 0:

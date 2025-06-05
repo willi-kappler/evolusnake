@@ -7,10 +7,9 @@
 import logging
 from typing import override, Self
 
-# External libraries:
-import fastrand
-
 # Local imports:
+import evolusnake.es_utils as utils
+
 from dataprovider import DataProvider
 from neural_net_base import NeuralNetBase
 from neuron import Neuron
@@ -70,7 +69,7 @@ class NeuralNetIndividual1(NeuralNetBase):
                 self.mutate_hidden_connection2()
             case 6:
                 if self.common_mutations():
-                    self.es_mutate(fastrand.pcg32bounded(6))
+                    self.es_mutate(utils.es_rand_int(6))
             case _:
                 logger.error(f"Unknown operation: {mut_op} in net 1")
                 raise ValueError(f"Unknown operation: {mut_op} in net 1")

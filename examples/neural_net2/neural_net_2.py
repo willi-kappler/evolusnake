@@ -6,19 +6,14 @@
 import logging
 from typing import override, Self
 
-# External libraries:
-import fastrand
-
 # Local imports:
+import evolusnake.es_utils as utils
+
 from dataprovider import DataProvider
 from neural_net_base import NeuralNetBase
 from neuron import Neuron
 
 logger = logging.getLogger(__name__)
-
-
-def uniform1() -> float:
-    return (fastrand.pcg32_uniform() * 0.1) + 0.0001
 
 
 class NeuralNetIndividual2(NeuralNetBase):
@@ -32,7 +27,7 @@ class NeuralNetIndividual2(NeuralNetBase):
 
     def mutate_bias(self):
         neuron: Neuron = self.get_random_neuron()[0]
-        delta: float = uniform1()
+        delta: float = utils.es_uniform3()
 
         self.es_calculate_fitness()
         fitness1: float = self.fitness
@@ -64,7 +59,7 @@ class NeuralNetIndividual2(NeuralNetBase):
 
     def mutate_input_connection(self):
         neuron: Neuron = self.get_random_neuron()[0]
-        delta: float = uniform1()
+        delta: float = utils.es_uniform3()
         connection: list = neuron.get_random_input_connection()
 
         if connection:
@@ -98,7 +93,7 @@ class NeuralNetIndividual2(NeuralNetBase):
 
     def mutate_hidden_connection(self):
         neuron: Neuron = self.get_random_neuron()[0]
-        delta: float = uniform1()
+        delta: float = utils.es_uniform3()
         connection: list = neuron.get_random_hidden_connection()
 
         if connection:
@@ -149,7 +144,7 @@ class NeuralNetIndividual2(NeuralNetBase):
                 self.new_fitness_needed = False
             case 3:
                 if self.common_mutations():
-                    self.es_mutate(fastrand.pcg32bounded(3))
+                    self.es_mutate(utils.es_rand_int(3))
                 else:
                     self.new_fitness_needed = True
             case _:

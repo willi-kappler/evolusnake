@@ -6,9 +6,6 @@
 import logging
 from typing import override, Self
 
-# External libraries:
-# import fastrand
-
 # Local imports:
 from dataprovider import DataProvider
 from neural_net_base import NeuralNetBase

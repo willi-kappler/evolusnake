@@ -14,12 +14,11 @@ from typing import override
 # External imports:
 from parasnake.ps_node import PSNode
 
-import fastrand
-
 # Local imports:
 from evolusnake.es_config import ESConfiguration
 from evolusnake.es_individual import ESIndividual
 from evolusnake.es_population import ESPopulation, ESIterationCallBack
+import evolusnake.es_utils as utils
 
 logger = logging.getLogger(__name__)
 
@@ -54,7 +53,7 @@ class ESPopulationNode3(PSNode):
         for i in range(max_iter):
             self.population.es_fraction_iteration()
 
-            j = fastrand.pcg32bounded(self.population.population_size)
+            j = utils.es_rand_int(self.population.population_size)
             tmp_ind: ESIndividual = self.population.population[j].es_clone_internal()
 
             for _ in range(self.population.num_of_mutations):

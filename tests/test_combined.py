@@ -10,6 +10,7 @@ import unittest
 from evolusnake.es_config import ESConfiguration
 from evolusnake.es_individual import ESIndividual
 from evolusnake.es_population_node1 import ESPopulationNode1
+from evolusnake.es_population_node2 import ESPopulationNode2
 # from evolusnake.es_population import ESPopulation
 
 from evolusnake.es_server import ESServer
@@ -38,16 +39,15 @@ class TestServer(unittest.TestCase):
         node_id1: PSNodeId = PSNodeId()
 
         population1: ESPopulationNode1 = ESPopulationNode1(config1, ind1)
-        population2: ESPopulationNode1 = ESPopulationNode1(config1, ind1)
+        population2: ESPopulationNode2 = ESPopulationNode2(config1, ind1)
 
         ind_from_server: ESIndividual = server1.ps_get_new_data(node_id1)  # type: ignore
-        result1 = population1.ps_process_data(ind_from_server)
-        server1.ps_process_result(node_id1, result1)
-        job_done = server1.ps_is_job_done()
+        result = population1.ps_process_data(ind_from_server)
+        server1.ps_process_result(node_id1, result)
 
         ind_from_server: ESIndividual = server1.ps_get_new_data(node_id1)  # type: ignore
-        result2 = population2.ps_process_data(ind_from_server)
-        server1.ps_process_result(node_id1, result2)
+        result = population2.ps_process_data(ind_from_server)
+        server1.ps_process_result(node_id1, result)
         job_done = server1.ps_is_job_done()
 
         self.assertTrue(job_done)

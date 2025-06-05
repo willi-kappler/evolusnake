@@ -3,16 +3,17 @@
 #
 # See: https://github.com/willi-kappler/evolusnake
 
+# Python std lib:
 import logging
 import pathlib
 from typing import override, Self
-import random as rnd
 
 # Local imports:
 from evolusnake.es_config import ESConfiguration
 from evolusnake.es_individual import ESIndividual
 from evolusnake.es_select_population import es_select_population
 from evolusnake.es_server import ESServer
+import evolusnake.es_utils as utils
 
 
 logger = logging.getLogger(__name__)
@@ -37,25 +38,19 @@ class KnapsackIndividual(ESIndividual):
             self.penalty += value
 
     def flip(self):
-        i: int = rnd.randrange(0, self.num_items)
+        i: int = utils.es_rand_int(self.num_items)
         self.selection[i] = 1 - self.selection[i]
 
     def to_one(self):
-        i: int = rnd.randrange(0, self.num_items)
+        i: int = utils.es_rand_int(self.num_items)
         self.selection[i] = 1
 
     def to_zero(self):
-        i: int = rnd.randrange(0, self.num_items)
+        i: int = utils.es_rand_int(self.num_items)
         self.selection[i] = 0
 
     def swap(self):
-        i: int = rnd.randrange(0, self.num_items)
-        j: int = rnd.randrange(0, self.num_items)
-
-        while i == j:
-            j = rnd.randrange(0, self.num_items)
-
-        (self.selection[i], self.selection[j]) = (self.selection[j], self.selection[i])
+        utils.es_random_swap(self.selection)
 
     @override
     def es_mutate(self, mut_op: int):
@@ -74,7 +69,7 @@ class KnapsackIndividual(ESIndividual):
     @override
     def es_randomize(self):
         for _ in range(self.num_items):
-            b: int = rnd.randrange(0, 2)
+            b: int = utils.es_rand_int(2)
             self.selection.append(b)
 
     @override

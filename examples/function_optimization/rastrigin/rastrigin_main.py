@@ -3,10 +3,10 @@
 #
 # See: https://github.com/willi-kappler/evolusnake
 
+# Python std lib:
 import logging
 import pathlib
 from typing import override, Self
-import random as rnd
 import math
 
 # Local imports:
@@ -14,6 +14,7 @@ from evolusnake.es_config import ESConfiguration
 from evolusnake.es_individual import ESIndividual
 from evolusnake.es_select_population import es_select_population
 from evolusnake.es_server import ESServer
+import evolusnake.es_utils as utils
 
 
 logger = logging.getLogger(__name__)
@@ -32,29 +33,29 @@ class RastriginIndividual(ESIndividual):
             self.values.append(self.gen_rnd_value())
 
     def gen_rnd_value(self) -> float:
-        return rnd.uniform(self.lower_bound, self.upper_bound)
+        return utils.es_uniform5(self.lower_bound, self.upper_bound)
 
     def inc_value(self):
-        i = rnd.randrange(self.dimensions)
+        i = utils.es_rand_int(self.dimensions)
 
-        self.values[i] += rnd.random()
+        self.values[i] += utils.es_uniform4()
         if self.values[i] > self.upper_bound:
             self.values[i] = self.upper_bound
 
     def dec_value(self):
-        i = rnd.randrange(self.dimensions)
+        i = utils.es_rand_int(self.dimensions)
 
-        self.values[i] -= rnd.random()
+        self.values[i] -= utils.es_uniform4()
         if self.values[i] < self.lower_bound:
             self.values[i] = self.lower_bound
 
     def random_value1(self):
-        i = rnd.randrange(self.dimensions)
+        i = utils.es_rand_int(self.dimensions)
 
         self.values[i] = self.gen_rnd_value()
 
     def random_value2(self):
-        i = rnd.randrange(self.dimensions)
+        i = utils.es_rand_int(self.dimensions)
 
         self.values[i] = round(self.gen_rnd_value())
 

@@ -3,16 +3,17 @@
 #
 # See: https://github.com/willi-kappler/evolusnake
 
+# Python std lib:
 import logging
 import pathlib
 from typing import override, Self
-import random as rnd
 
 # Local imports:
 from evolusnake.es_config import ESConfiguration
 from evolusnake.es_individual import ESIndividual
 from evolusnake.es_select_population import es_select_population
 from evolusnake.es_server import ESServer
+import evolusnake.es_utils as utils
 
 
 logger = logging.getLogger(__name__)
@@ -29,17 +30,17 @@ class QueensIndividual(ESIndividual):
             self.positions.append([i, 0])
 
     def random_pos(self):
-        i: int = rnd.randrange(self.num_elems)
-        y: int = rnd.randrange(self.num_elems)
+        i: int = utils.es_rand_int(self.num_elems)
+        y: int = utils.es_rand_int(self.num_elems)
 
         self.positions[i][1] = y
 
     def swap_pos(self):
-        i: int = rnd.randrange(self.num_elems)
-        j: int = rnd.randrange(self.num_elems)
+        i: int = utils.es_rand_int(self.num_elems)
+        j: int = utils.es_rand_int(self.num_elems)
 
         while i == j:
-            j = rnd.randrange(self.num_elems)
+            j = utils.es_rand_int(self.num_elems)
 
         (self.positions[i][1], self.positions[j][1]) = (self.positions[j][1], self.positions[i][1])
 
@@ -56,7 +57,7 @@ class QueensIndividual(ESIndividual):
     @override
     def es_randomize(self):
         for i in range(self.num_elems):
-            y: int = rnd.randrange(self.num_elems)
+            y: int = utils.es_rand_int(self.num_elems)
             self.positions[i][1] = y
 
     @override

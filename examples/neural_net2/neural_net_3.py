@@ -6,10 +6,9 @@
 import logging
 from typing import override, Self
 
-# External libraries:
-import fastrand
-
 # Local imports:
+import evolusnake.es_utils as utils
+
 from dataprovider import DataProvider
 from neural_net_base import NeuralNetBase
 
@@ -70,14 +69,14 @@ class NeuralNetIndividual3(NeuralNetBase):
                 self.mutate_hidden_connection2()
             case 6:
                 # Hyperparameter: 100
-                prob: int = fastrand.pcg32bounded(100)
+                prob: int = utils.es_rand_int(100)
                 if prob == 0:
-                    self.current_neuron = fastrand.pcg32bounded(self.hidden_layer_size)
+                    self.current_neuron = utils.es_rand_int(self.hidden_layer_size)
                 else:
-                    self.es_mutate(fastrand.pcg32bounded(6))
+                    self.es_mutate(utils.es_rand_int(6))
             case 7:
                 if self.common_mutations():
-                    self.es_mutate(fastrand.pcg32bounded(6))
+                    self.es_mutate(utils.es_rand_int(6))
             case _:
                 logger.error(f"Unknown operation: {mut_op} in net 3")
                 raise ValueError(f"Unknown operation: {mut_op} in net 3")
@@ -92,9 +91,9 @@ class NeuralNetIndividual3(NeuralNetBase):
     @override
     def es_from_server(self, other):
         super().es_from_server(other)
-        self.current_neuron = fastrand.pcg32bounded(self.hidden_layer_size)
+        self.current_neuron = utils.es_rand_int(self.hidden_layer_size)
 
     @override
     def es_from_json(self, data: dict):
         super().es_from_json(data)
-        self.current_neuron = fastrand.pcg32bounded(self.hidden_layer_size)
+        self.current_neuron = utils.es_rand_int(self.hidden_layer_size)

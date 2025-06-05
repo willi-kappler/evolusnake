@@ -4,16 +4,19 @@
 # See: https://github.com/willi-kappler/evolusnake
 
 
-import random as rnd
+# Python std lib:
 from typing import Self
+
+# Local imports:
+import evolusnake.es_utils as utils
 
 
 def change_delta(value: float) -> float:
-    n = rnd.randrange(100)
+    n = utils.es_rand_int(100)
     if n == 0:
-        return rnd.uniform(-1.0, 1.0)
+        return utils.es_uniform1()
     else:
-        delta: float = rnd.uniform(-0.1, 0.1)
+        delta: float = utils.es_uniform2()
         value += delta
         if value < -1.0:
             return -1.0
@@ -27,7 +30,7 @@ class Neuron:
     def __init__(self):
         self.input_connections: list = []
         self.hidden_connections: list = []
-        self.bias: float = rnd.uniform(-1.0, 1.0)
+        self.bias: float = utils.es_uniform1()
         self.current_value: float = 0.0
 
     def is_empty(self) -> bool:
@@ -42,7 +45,7 @@ class Neuron:
                 self.mutate_input_connection()
                 return
 
-        weight: float = rnd.uniform(-1.0, 1.0)
+        weight: float = utils.es_uniform1()
         self.input_connections.append([index, weight])
 
     def mutate_input_connection(self):
@@ -52,7 +55,7 @@ class Neuron:
             self.mutate_bias()
             return
         else:
-            index: int = rnd.randrange(n)
+            index: int = utils.es_rand_int(n)
             connection: list = self.input_connections[index]
             connection[1] = change_delta(connection[1])
 
@@ -63,7 +66,7 @@ class Neuron:
             self.mutate_bias()
             return
         else:
-            index: int = rnd.randrange(n)
+            index: int = utils.es_rand_int(n)
             connection: list = self.input_connections[index]
             connection[0] = new_index
 
@@ -73,7 +76,7 @@ class Neuron:
                 self.mutate_hidden_connection()
                 return
 
-        weight: float = rnd.uniform(-1.0, 1.0)
+        weight: float = utils.es_uniform1()
         self.hidden_connections.append([index, weight])
 
         # logger.debug(f"add_hidden_connection, {index=}")
@@ -85,7 +88,7 @@ class Neuron:
             self.mutate_bias()
             return
         else:
-            index: int = rnd.randrange(n)
+            index: int = utils.es_rand_int(n)
             connection: list = self.hidden_connections[index]
             connection[1] = change_delta(connection[1])
 
@@ -96,7 +99,7 @@ class Neuron:
             self.mutate_bias()
             return
         else:
-            index: int = rnd.randrange(n)
+            index: int = utils.es_rand_int(n)
             connection: list = self.hidden_connections[index]
             connection[0] = new_index
             # logger.debug(f"replace_hidden_connection, {new_index=}")

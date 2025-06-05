@@ -11,12 +11,10 @@ This module defines the base data class for a population.
 import logging
 import time
 
-# External libraries:
-import fastrand
-
 # Local imports
 from evolusnake.es_individual import ESIndividual
 from evolusnake.es_config import ESConfiguration
+import evolusnake.es_utils as utils
 
 logger = logging.getLogger(__name__)
 
@@ -91,7 +89,7 @@ class ESPopulation:
         self.fraction_iterations: int = int(self.num_of_iterations / self.fraction_value)
 
         # Init random number generator:
-        fastrand.pcg32_seed(int(time.time()))
+        utils.es_init_seed()
 
         logger.debug(f"{self.population_size=}, {self.target_fitness=}, {self.target_fitness2=}")
         logger.debug(f"{self.num_of_iterations=}, {self.num_of_mutations=}")
@@ -153,14 +151,7 @@ class ESPopulation:
             logger.debug(f"{self.num_of_mutations=}")
 
     def es_shuffle_mutation_operations(self):
-        i: int = fastrand.pcg32bounded(self.mutation_operations_len)
-        j: int = fastrand.pcg32bounded(self.mutation_operations_len)
-
-        for _ in range(self.mutation_operations_len):
-            (self.mutation_operations[i], self.mutation_operations[j]) = (self.mutation_operations[j],
-                 self.mutation_operations[i])
-            i = fastrand.pcg32bounded(self.mutation_operations_len)
-            j = fastrand.pcg32bounded(self.mutation_operations_len)
+        utils.es_shuffle_list(self.mutation_operations)
 
     def es_randomize_worst(self):
         worst = self.population[self.worst_index]
