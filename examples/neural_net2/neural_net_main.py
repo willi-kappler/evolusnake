@@ -19,6 +19,7 @@ from neural_net_3 import NeuralNetIndividual3
 from neural_net_4 import NeuralNetIndividual4
 from neural_net_5 import NeuralNetIndividual5
 from neural_net_6 import NeuralNetIndividual6
+from neural_net_7 import NeuralNetIndividual7
 
 logger = logging.getLogger(__name__)
 
@@ -131,6 +132,9 @@ def main():
             config.mutation_operations = [0, 1, 2, 3, 4, 5, 6]
         case 6:
             ind = NeuralNetIndividual6(input_size, output_size, dp, use_softmax, max_size)
+            config.mutation_operations = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        case 7:
+            ind = NeuralNetIndividual7(input_size, output_size, dp, use_softmax, max_size)
             config.mutation_operations = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
         case _:
             raise ValueError(f"Unknown kind of neural net: {net_kind}")

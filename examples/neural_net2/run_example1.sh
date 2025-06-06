@@ -43,6 +43,8 @@ run_all_nets() {
     sleep 2
     python3 $main_file -k 1 -m 1 -i $iterations1 --user_options net=6 &
     sleep 2
+    python3 $main_file -k 1 -m 1 -i $iterations1 --user_options net=7 &
+    sleep 2
 }
 
 reset
