@@ -18,10 +18,8 @@ logger = logging.getLogger(__name__)
 
 class NeuralNetIndividual5(NeuralNetBase):
     def __init__(self, input_size: int, output_size: int,
-                 data_provider: DataProvider, network_size: int = 0,
-                 use_softmax: bool = False, max_size: int = 0):
-        super().__init__(input_size, output_size, data_provider, network_size,
-                         use_softmax, max_size)
+                 data_provider: DataProvider, use_softmax: bool = False, max_size: int = 0):
+        super().__init__(input_size, output_size, data_provider, use_softmax, max_size)
 
     def search_bias(self):
         neuron: Neuron = self.get_random_neuron()[0]
@@ -107,5 +105,5 @@ class NeuralNetIndividual5(NeuralNetBase):
     @override
     def es_clone(self) -> Self:
         clone = NeuralNetIndividual5(self.input_size, self.output_size, self.data_provider,
-                    self.network_size, self.use_softmax, self.max_size)
+                    self.use_softmax, self.max_size)
         return self.clone_base(clone)  # type: ignore

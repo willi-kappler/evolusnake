@@ -20,27 +20,25 @@ logger = logging.getLogger(__name__)
 
 class NeuralNetBase(ESIndividual):
     def __init__(self, input_size: int, output_size: int, data_provider: DataProvider,
-                 network_size: int = 0, use_softmax: bool = False, max_size: int = 100):
+                 use_softmax: bool = False, max_size: int = 100):
         super().__init__()
 
-        if output_size + network_size > max_size:
-            logger.error("output_size + network_size > max_size")
-            logger.error(f"{output_size=} + {network_size=} > {max_size=}")
-            raise ValueError(f"output_size ({output_size}) + network_size ({network_size}) > max_size ({max_size})!")
+        if output_size > max_size:
+            logger.error("output_size > max_size")
+            logger.error(f"{output_size=} > {max_size=}")
+            raise ValueError(f"output_size ({output_size}) > max_size ({max_size})!")
 
         self.input_size: int = input_size
         self.output_size: int = output_size
-        self.network_size: int = network_size
         self.max_size: int = max_size
         self.data_provider: DataProvider = data_provider
         self.hidden_layer_size: int = 0
         self.use_softmax: bool = use_softmax
+        self.hidden_layer: list[Neuron] = []
+        self.hidden_layer_size: int = output_size
 
-        self.es_randomize()
-
-        if network_size > 0:
-            for _ in range(network_size):
-                self.add_neuron()
+        for _ in range(output_size):
+            self.hidden_layer.append(Neuron())
 
     def description(self) -> str:
         return "NeuralNetBase"
@@ -111,6 +109,10 @@ class NeuralNetBase(ESIndividual):
             result += neuron.num_of_connections()
 
         return result / self.hidden_layer_size
+
+    def grow_to_size(self, size: int):
+        for _ in range(size):
+            self.add_neuron()
 
     def mutate_bias1(self):
         neuron: Neuron = self.get_random_neuron()[0]
@@ -277,23 +279,8 @@ class NeuralNetBase(ESIndividual):
     def es_randomize(self):
         self.hidden_layer: list[Neuron] = []
 
-        for _ in range(self.output_size):
+        for _ in range(self.hidden_layer_size):
             self.hidden_layer.append(Neuron())
-
-        prev_size: int = self.hidden_layer_size
-        self.hidden_layer_size = self.output_size
-
-        for i in range(self.input_size):
-            self.add_neuron()
-            self.hidden_layer[-1].add_input_connection(i)
-
-        # Did this node already have a big network ?
-        # If yes add the same number of neurons.
-        diff: int = prev_size - self.hidden_layer_size
-
-        if diff > 0:
-            for _ in range(diff):
-                self.add_neuron()
 
     @override
     def es_calculate_fitness(self):
