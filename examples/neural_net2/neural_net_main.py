@@ -111,7 +111,7 @@ def main():
     output_size: int = 3
     # For classifyers alwasy use softmax!
     use_softmax: bool = True
-    max_size: int = 12
+    max_size: int = 8
 
     match net_kind:
         case 1:
