@@ -6,7 +6,6 @@ run_kind() {
     echo "Run kind $1."
 
     num_of_mutations="1"
-    iterations1="3000"
 
     case $1 in
     6)
@@ -16,13 +15,13 @@ run_kind() {
 
     # python3 -m cProfile $main_file -k $1 -m $num_of_mutations -i $iterations1 --user_options net=6 > profile_out.txt &
     # sleep 2
-    python3 $main_file -k $1 -m $num_of_mutations -i $iterations1 --user_options net=6 &
+    python3 $main_file -k $1 -m $num_of_mutations -i 3000 --user_options net=6 &
     sleep 2
-    python3 $main_file -k $1 -m $num_of_mutations -i $iterations1 --user_options net=6 &
+    python3 $main_file -k $1 -m $num_of_mutations -i 3500 --user_options net=6 &
     sleep 2
-    python3 $main_file -k $1 -m $num_of_mutations -i $iterations1 --user_options net=6 &
+    python3 $main_file -k $1 -m $num_of_mutations -i 4000 --user_options net=6 &
     sleep 2
-    python3 $main_file -k $1 -m $num_of_mutations -i $iterations1 --user_options net=6 &
+    python3 $main_file -k $1 -m $num_of_mutations -i 4500 --user_options net=6 &
     sleep 2
 }
 
