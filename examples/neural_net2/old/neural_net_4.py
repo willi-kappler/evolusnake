@@ -7,6 +7,8 @@ import logging
 from typing import override, Self
 
 # Local imports:
+import evolusnake.es_utils as utils
+
 from dataprovider import DataProvider
 from neural_net_base import NeuralNetBase
 from neuron import Neuron
@@ -19,54 +21,89 @@ class NeuralNetIndividual4(NeuralNetBase):
                  data_provider: DataProvider, use_softmax: bool = False, max_size: int = 0):
         super().__init__(input_size, output_size, data_provider, use_softmax, max_size)
 
-    def mutate_all_neurons(self):
-        for neuron in self.hidden_layer:
-            neuron.mutate_all_values()
-
-    def change_all_deltas(self):
-        for neuron in self.hidden_layer:
-            neuron.change_all_deltas()
-
-    def change_some_deltas(self):
+    def search_bias(self):
         neuron: Neuron = self.get_random_neuron()[0]
 
-        neuron.mutate_bias3()
-        neuron.mutate_input_connection3()
-        neuron.mutate_hidden_connection3()
+        best_bias: float = neuron.bias
+        best_fitness: float = self.fitness
+
+        for i in range(11):
+            neuron.bias = (i - 5.0) / 5.0
+            self.es_calculate_fitness()
+
+            if self.fitness < best_fitness:
+                best_fitness = self.fitness
+                best_bias = neuron.bias
+
+        neuron.bias = best_bias
+
+    def search_connection(self, connection: list):
+        if connection:
+            best_weight: float = connection[1]
+            best_fitness: float = self.fitness
+
+            for i in range(11):
+                connection[1] = (i - 5.0) / 5.0
+                self.es_calculate_fitness()
+
+                if self.fitness < best_fitness:
+                    best_fitness = self.fitness
+                    best_weight = connection[1]
+
+            connection[1] = best_weight
+
+    def search_input_connection(self):
+        neuron: Neuron = self.get_random_neuron()[0]
+        connection = neuron.get_random_input_connection()
+
+        self.search_connection(connection)
+
+    def search_hidden_connection(self):
+        neuron: Neuron = self.get_random_neuron()[0]
+        connection = neuron.get_random_hidden_connection()
+
+        self.search_connection(connection)
 
     @override
     def description(self) -> str:
-        return "NeuralNet4: Use swarm."
+        return "NeuralNet4: Search through parameter space for best value."
 
     @override
     def es_mutate(self, mut_op: int):
         match mut_op:
             case 0:
-                self.mutate_all_neurons()
+                self.mutate_bias2()
             case 1:
-                self.change_all_deltas()
-                self.mutate_all_neurons()
+                self.mutate_input_connection2()
             case 2:
-                self.change_some_deltas()
-                self.mutate_all_neurons()
+                self.mutate_hidden_connection2()
             case 3:
+                # Hyperparameter: 100
+                prob: int = utils.es_rand_int(100)
+                if prob == 0:
+                    self.search_bias()
+                else:
+                    self.es_mutate(utils.es_rand_int(3))
+            case 4:
+                # Hyperparameter: 100
+                prob: int = utils.es_rand_int(100)
+                if prob == 0:
+                    self.search_input_connection()
+                else:
+                    self.es_mutate(utils.es_rand_int(3))
+            case 5:
+                # Hyperparameter: 100
+                prob: int = utils.es_rand_int(100)
+                if prob == 0:
+                    self.search_hidden_connection()
+                else:
+                    self.es_mutate(utils.es_rand_int(3))
+            case 6:
                 if self.common_mutations():
-                    self.es_mutate(0)
-            case _:
-                logger.error(f"Unknown operation: {mut_op} in net 4")
-                raise ValueError(f"Unknown operation: {mut_op} in net 4")
+                    self.es_mutate(utils.es_rand_int(3))
 
     @override
     def es_clone(self) -> Self:
         clone = NeuralNetIndividual4(self.input_size, self.output_size, self.data_provider,
                     self.use_softmax, self.max_size)
         return self.clone_base(clone)  # type: ignore
-
-    @override
-    def es_calculate_fitness(self):
-        prev_fitness: float = self.fitness
-        super().es_calculate_fitness()
-
-        if prev_fitness < self.fitness:
-            # Fitness has gotten worse, change direction:
-            self.change_some_deltas()

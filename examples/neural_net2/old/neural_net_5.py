@@ -3,6 +3,7 @@
 #
 # See: https://github.com/willi-kappler/evolusnake
 
+# Python std lib:
 import logging
 from typing import override, Self
 
@@ -11,96 +12,61 @@ import evolusnake.es_utils as utils
 
 from dataprovider import DataProvider
 from neural_net_base import NeuralNetBase
-from neuron import Neuron
 
 logger = logging.getLogger(__name__)
 
 
 class NeuralNetIndividual5(NeuralNetBase):
     def __init__(self, input_size: int, output_size: int,
-                 data_provider: DataProvider, use_softmax: bool = False, max_size: int = 0):
+                 data_provider: DataProvider, use_softmax: bool = False,
+                 max_size: int = 100):
         super().__init__(input_size, output_size, data_provider, use_softmax, max_size)
 
-    def search_bias(self):
-        neuron: Neuron = self.get_random_neuron()[0]
-
-        best_bias: float = neuron.bias
-        best_fitness: float = self.fitness
-
-        for i in range(11):
-            neuron.bias = (i - 5.0) / 5.0
-            self.es_calculate_fitness()
-
-            if self.fitness < best_fitness:
-                best_fitness = self.fitness
-                best_bias = neuron.bias
-
-        neuron.bias = best_bias
-
-    def search_connection(self, connection: list):
-        if connection:
-            best_weight: float = connection[1]
-            best_fitness: float = self.fitness
-
-            for i in range(11):
-                connection[1] = (i - 5.0) / 5.0
-                self.es_calculate_fitness()
-
-                if self.fitness < best_fitness:
-                    best_fitness = self.fitness
-                    best_weight = connection[1]
-
-            connection[1] = best_weight
-
-    def search_input_connection(self):
-        neuron: Neuron = self.get_random_neuron()[0]
-        connection = neuron.get_random_input_connection()
-
-        self.search_connection(connection)
-
-    def search_hidden_connection(self):
-        neuron: Neuron = self.get_random_neuron()[0]
-        connection = neuron.get_random_hidden_connection()
-
-        self.search_connection(connection)
+        self.prob: int = 100
 
     @override
     def description(self) -> str:
-        return "NeuralNet5: Search through parameter space for best value."
+        return "NeuralNet5: Randomly change values, grow network and connections slowly. " \
+            "Use more time to optimize current shape."
 
     @override
     def es_mutate(self, mut_op: int):
         match mut_op:
             case 0:
-                self.mutate_bias2()
+                self.mutate_bias1()
             case 1:
-                self.mutate_input_connection2()
+                self.mutate_bias2()
             case 2:
-                self.mutate_hidden_connection2()
+                self.mutate_input_connection1()
             case 3:
-                # Hyperparameter: 100
-                prob: int = utils.es_rand_int(100)
-                if prob == 0:
-                    self.search_bias()
-                else:
-                    self.es_mutate(utils.es_rand_int(3))
+                self.mutate_input_connection2()
             case 4:
-                # Hyperparameter: 100
-                prob: int = utils.es_rand_int(100)
-                if prob == 0:
-                    self.search_input_connection()
-                else:
-                    self.es_mutate(utils.es_rand_int(3))
+                self.mutate_hidden_connection1()
             case 5:
-                # Hyperparameter: 100
-                prob: int = utils.es_rand_int(100)
-                if prob == 0:
-                    self.search_hidden_connection()
-                else:
-                    self.es_mutate(utils.es_rand_int(3))
+                self.mutate_hidden_connection2()
             case 6:
-                if self.common_mutations():
-                    self.es_mutate(utils.es_rand_int(3))
+                if utils.es_rand_int(self.prob) == 0:
+                    self.add_input_connection()
+                else:
+                    self.mutate_hidden_connection2()
+            case 7:
+                if utils.es_rand_int(self.prob) == 0:
+                    self.add_hidden_connection()
+                else:
+                    self.mutate_hidden_connection2()
+            case 8:
+                if utils.es_rand_int(self.prob) == 0:
+                    self.add_neuron()
+                else:
+                    self.mutate_hidden_connection2()
+            case 9:
+                if utils.es_rand_int(self.prob) == 0:
+                    self.change_activation_function()
+                else:
+                    self.mutate_hidden_connection2()
+            case _:
+                logger.error(f"Unknown operation: {mut_op} in net 1")
+                raise ValueError(f"Unknown operation: {mut_op} in net 1")
 
     @override
     def es_clone(self) -> Self:

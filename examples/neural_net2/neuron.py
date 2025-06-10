@@ -20,7 +20,6 @@ class Neuron:
         self.hidden_connections_size: int = 0
         self.current_value: float = 0.0
         self.bias: float = utils.es_uniform1()
-        self.bias_delta: float = 0.0
         self.activation_kind: int = 0
 
     def is_empty(self) -> bool:
@@ -33,20 +32,8 @@ class Neuron:
         self.bias += utils.es_uniform2()
         self.bias = min(1.0, max(-1.0, self.bias))
 
-    def mutate_bias3(self):
-        self.bias += self.bias_delta
-        if self.bias < -1.0:
-            self.bias = -1.0
-            self.bias_delta = -self.bias_delta
-        elif self.bias > 1.0:
-            self.bias = 1.0
-            self.bias_delta = -self.bias_delta
-
-    def change_bias_delta(self):
-        self.bias_delta: float = utils.es_uniform2()
-
     def has_input_connection(self, new_index):
-        for (index2, _, _) in self.input_connections:
+        for (index2, _) in self.input_connections:
             if new_index == index2:
                 return True
 
@@ -58,8 +45,7 @@ class Neuron:
             return
 
         weight: float = utils.es_uniform1()
-        delta: float = 0.0
-        self.input_connections.append([new_index, weight, delta])
+        self.input_connections.append([new_index, weight])
         self.input_connections_size += 1
 
     def mutate_input_connection1(self):
@@ -75,20 +61,6 @@ class Neuron:
             connection[1] += utils.es_uniform2()
             connection[1] = min(1.0, max(-1.0, connection[1]))
 
-    def mutate_input_connection3(self):
-        if self.input_connections_size > 0:
-            index: int = utils.es_rand_int(self.input_connections_size)
-            connection: list = self.input_connections[index]
-            connection[1] += connection[2]  # Add delta
-            v: float = connection[1]
-            d: float = connection[2]
-            if v < -1.0:
-                connection[1] = -1.0
-                connection[2] = -d
-            elif v > 1.0:
-                connection[1] = 1.0
-                connection[2] = -d
-
     def get_random_input_connection(self) -> list:
         if self.input_connections_size > 0:
             index: int = utils.es_rand_int(self.input_connections_size)
@@ -97,7 +69,7 @@ class Neuron:
             return []
 
     def has_hidden_connection(self, new_index: int):
-        for (index2, _, _) in self.hidden_connections:
+        for (index2, _) in self.hidden_connections:
             if new_index == index2:
                 return True
 
@@ -109,8 +81,7 @@ class Neuron:
             return
 
         weight: float = utils.es_uniform1()
-        delta: float = 0.0
-        self.hidden_connections.append([new_index, weight, delta])
+        self.hidden_connections.append([new_index, weight])
         self.hidden_connections_size += 1
 
     def mutate_hidden_connection1(self):
@@ -126,39 +97,12 @@ class Neuron:
             connection[1] += utils.es_uniform2()
             connection[1] = min(1.0, max(-1.0, connection[1]))
 
-    def mutate_hidden_connection3(self):
-        if self.hidden_connections_size > 0:
-            index: int = utils.es_rand_int(self.hidden_connections_size)
-            connection: list = self.hidden_connections[index]
-            connection[1] += connection[2]  # Add delta
-            v: float = connection[1]
-            d: float = connection[2]
-            if v < -1.0:
-                connection[1] = -1.0
-                connection[2] = -d
-            elif v > 1.0:
-                connection[1] = 1.0
-                connection[2] = -d
-
     def get_random_hidden_connection(self) -> list:
         if self.hidden_connections_size > 0:
             index: int = utils.es_rand_int(self.hidden_connections_size)
             return self.hidden_connections[index]
         else:
             return []
-
-    def change_all_deltas(self):
-        self.change_bias_delta()
-
-        for connection in itertools.chain(self.input_connections, self.hidden_connections):
-            connection[2] = utils.es_uniform2()
-
-    def mutate_all_values(self):
-        self.mutate_bias3()
-
-        for connection in itertools.chain(self.input_connections, self.hidden_connections):
-            connection[1] += connection[2]
-            connection[1] = min(1.0, max(-1.0, connection[1]))
 
     def mutate_activation(self):
         self.activation_kind = utils.es_rand_int(5)
@@ -168,7 +112,6 @@ class Neuron:
 
         for connection in itertools.chain(self.input_connections, self.hidden_connections):
             connection[1] = utils.es_uniform1()
-            connection[2] = utils.es_uniform2()
 
     def remove_input_connection(self):
         if self.input_connections_size > 0:
@@ -257,10 +200,10 @@ class Neuron:
     def evaluate(self, input_values: list, hidden_layer: list):
         new_value: float = self.bias
 
-        for (index, weight, _) in self.input_connections:
+        for (index, weight) in self.input_connections:
             new_value += weight * input_values[index]
 
-        for (index, weight, _) in self.hidden_connections:
+        for (index, weight) in self.hidden_connections:
             new_value += weight * hidden_layer[index].current_value
 
         # Limit value to avoid overflow in exp() function below:
@@ -289,12 +232,11 @@ class Neuron:
     def clone(self) -> Self:
         n = Neuron()
         # Do proper cloning!
-        n.input_connections = [[i, w, d] for (i, w, d) in self.input_connections]
+        n.input_connections = [[i, w] for (i, w) in self.input_connections]
         n.input_connections_size = self.input_connections_size
-        n.hidden_connections = [[i, w, d] for (i, w, d) in self.hidden_connections]
+        n.hidden_connections = [[i, w] for (i, w) in self.hidden_connections]
         n.hidden_connections_size = self.hidden_connections_size
         n.bias = self.bias
-        n.bias_delta = self.bias_delta
         n.activation_kind = self.activation_kind
 
         return n  # type: ignore
@@ -320,7 +262,7 @@ class Neuron:
     def abs_weight_sum(self) -> float:
         ws: float = 0.0
 
-        for (_, w, _) in itertools.chain(self.input_connections, self.hidden_connections):
+        for (_, w) in itertools.chain(self.input_connections, self.hidden_connections):
             ws += abs(w)
 
         return ws
