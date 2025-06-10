@@ -17,7 +17,7 @@ from neuron import Neuron
 logger = logging.getLogger(__name__)
 
 
-class NeuralNetIndividual6(NeuralNetBase):
+class NeuralNetIndividual1(NeuralNetBase):
     def __init__(self, input_size: int, output_size: int,
                  data_provider: DataProvider, use_softmax: bool = False, max_size: int = 100):
         super().__init__(input_size, output_size, data_provider, use_softmax, max_size)
@@ -46,7 +46,7 @@ class NeuralNetIndividual6(NeuralNetBase):
 
     @override
     def description(self) -> str:
-        return "NeuralNet6: Use fully connected neurons."
+        return "NeuralNet1: Use fully connected neurons."
 
     @override
     def es_mutate(self, mut_op: int):
@@ -77,6 +77,6 @@ class NeuralNetIndividual6(NeuralNetBase):
 
     @override
     def es_clone(self) -> Self:
-        clone = NeuralNetIndividual6(self.input_size, self.output_size, self.data_provider,
+        clone = NeuralNetIndividual1(self.input_size, self.output_size, self.data_provider,
                     self.use_softmax, self.max_size)
         return self.clone_base(clone)  # type: ignore
