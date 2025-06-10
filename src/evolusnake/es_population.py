@@ -34,7 +34,7 @@ class ESIterationCallBack:
         pass
 
     def es_fraction_iteration(self, population: "ESPopulation"):
-        # This method is called when half of the iteration counter is reached.
+        # This method is called when the specified fraction of the iteration counter is reached.
         pass
 
     def es_after_of_iteration(self, population: "ESPopulation"):

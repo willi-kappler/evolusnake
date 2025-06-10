@@ -23,6 +23,7 @@ class ESIndividual:
         self.mut_op_counter: Counter = Counter()
 
     def es_reset_counter(self):
+        # Resets the mutation counter.
         self.mut_op_counter = Counter()
 
     def es_mutate_internal(self, mut_op: int):
