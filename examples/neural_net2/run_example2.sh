@@ -12,29 +12,29 @@ run_kind() {
         num_of_mutations="20"
     esac
 
-    python3 $main_file -k $1 -m $num_of_mutations -i 3000 --user_options net=6 &
+    python3 $main_file -k $1 -m $num_of_mutations -i 3000 --user_options net=1 &
     sleep 2
-    python3 $main_file -k $1 -m $num_of_mutations -i 3500 --user_options net=6 &
+    python3 $main_file -k $1 -m $num_of_mutations -i 3200 --user_options net=1 &
     sleep 2
-    python3 $main_file -k $1 -m $num_of_mutations -i 4000 --user_options net=6 &
+    python3 $main_file -k $1 -m $num_of_mutations -i 3400 --user_options net=1 &
     sleep 2
-    python3 $main_file -k $1 -m $num_of_mutations -i 4500 --user_options net=6 &
+    python3 $main_file -k $1 -m $num_of_mutations -i 3600 --user_options net=1 &
     sleep 2
-    python3 $main_file -k $1 -m $num_of_mutations -i 5000 --user_options net=6 &
+    python3 $main_file -k $1 -m $num_of_mutations -i 3800 --user_options net=1 &
     sleep 2
-    python3 $main_file -k $1 -m $num_of_mutations -i 5500 --user_options net=6 &
+    python3 $main_file -k $1 -m $num_of_mutations -i 4000 --user_options net=1 &
     sleep 2
-    python3 $main_file -k $1 -m $num_of_mutations -i 6000 --user_options net=6 &
+    python3 $main_file -k $1 -m $num_of_mutations -i 4200 --user_options net=1 &
     sleep 2
-    python3 $main_file -k $1 -m $num_of_mutations -i 6500 --user_options net=6 &
+    python3 $main_file -k $1 -m $num_of_mutations -i 4400 --user_options net=1 &
     sleep 2
-    python3 $main_file -k $1 -m $num_of_mutations -i 7000 --user_options net=6 &
+    python3 $main_file -k $1 -m $num_of_mutations -i 4600 --user_options net=1 &
     sleep 2
-    python3 $main_file -k $1 -m $num_of_mutations -i 7500 --user_options net=6 &
+    python3 $main_file -k $1 -m $num_of_mutations -i 4800 --user_options net=1 &
     sleep 2
-    python3 $main_file -k $1 -m $num_of_mutations -i 8000 --user_options net=6 &
+    python3 $main_file -k $1 -m $num_of_mutations -i 5000 --user_options net=1 &
     sleep 2
-    python3 $main_file -k $1 -m $num_of_mutations -i 8500 --user_options net=6 &
+    python3 $main_file -k $1 -m $num_of_mutations -i 5200 --user_options net=1 &
     sleep 2
 }
 

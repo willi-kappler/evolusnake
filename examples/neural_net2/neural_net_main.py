@@ -14,12 +14,12 @@ from evolusnake.es_server import ESServer
 
 from dataprovider import DataProvider, IterationNeural
 from neural_net_1 import NeuralNetIndividual1
-from neural_net_2 import NeuralNetIndividual2
-from neural_net_3 import NeuralNetIndividual3
-from neural_net_4 import NeuralNetIndividual4
-from neural_net_5 import NeuralNetIndividual5
-from neural_net_6 import NeuralNetIndividual6
-from neural_net_7 import NeuralNetIndividual7
+# from neural_net_2 import NeuralNetIndividual2
+# from neural_net_3 import NeuralNetIndividual3
+# from neural_net_4 import NeuralNetIndividual4
+# from neural_net_5 import NeuralNetIndividual5
+# from neural_net_6 import NeuralNetIndividual6
+# from neural_net_7 import NeuralNetIndividual7
 
 logger = logging.getLogger(__name__)
 
@@ -112,30 +112,30 @@ def main():
     output_size: int = 3
     # For classifyers alwasy use softmax!
     use_softmax: bool = True
-    max_size: int = 8
+    max_size: int = 10
 
     match net_kind:
         case 1:
             ind = NeuralNetIndividual1(input_size, output_size, dp, use_softmax, max_size)
-            config.mutation_operations = [0, 1, 2, 3, 4, 5, 6]
-        case 2:
-            ind = NeuralNetIndividual2(input_size, output_size, dp, use_softmax, max_size)
-            config.mutation_operations = [0, 1, 2, 3]
-        case 3:
-            ind = NeuralNetIndividual3(input_size, output_size, dp, use_softmax, max_size)
-            config.mutation_operations = [0, 1, 2, 3, 4, 5, 6, 7]
-        case 4:
-            ind = NeuralNetIndividual4(input_size, output_size, dp, use_softmax, max_size)
-            config.mutation_operations = [0, 1, 2, 3]
-        case 5:
-            ind = NeuralNetIndividual5(input_size, output_size, dp, use_softmax, max_size)
-            config.mutation_operations = [0, 1, 2, 3, 4, 5, 6]
-        case 6:
-            ind = NeuralNetIndividual6(input_size, output_size, dp, use_softmax, max_size)
             config.mutation_operations = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-        case 7:
-            ind = NeuralNetIndividual7(input_size, output_size, dp, use_softmax, max_size)
-            config.mutation_operations = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        # case 2:
+        #     ind = NeuralNetIndividual2(input_size, output_size, dp, use_softmax, max_size)
+        #     config.mutation_operations = [0, 1, 2, 3]
+        # case 3:
+        #     ind = NeuralNetIndividual3(input_size, output_size, dp, use_softmax, max_size)
+        #     config.mutation_operations = [0, 1, 2, 3, 4, 5, 6, 7]
+        # case 4:
+        #     ind = NeuralNetIndividual4(input_size, output_size, dp, use_softmax, max_size)
+        #     config.mutation_operations = [0, 1, 2, 3]
+        # case 5:
+        #     ind = NeuralNetIndividual5(input_size, output_size, dp, use_softmax, max_size)
+        #     config.mutation_operations = [0, 1, 2, 3, 4, 5, 6]
+        # case 6:
+        #     ind = NeuralNetIndividual6(input_size, output_size, dp, use_softmax, max_size)
+        #     config.mutation_operations = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        # case 7:
+        #     ind = NeuralNetIndividual7(input_size, output_size, dp, use_softmax, max_size)
+        #     config.mutation_operations = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
         case _:
             raise ValueError(f"Unknown kind of neural net: {net_kind}")
 
