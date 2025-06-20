@@ -47,7 +47,6 @@ class ESPopulationNode5(PSNode):
         logger.debug(f"Individual from server: {data.fitness}")
 
         self.population.es_randomize_or_accept_best(data)
-        self.population.es_increase_iteration_mutation()
         self.population.es_shuffle_mutation_operations()
         self.population.minimum_found = False
         self.population.best_index = 0
