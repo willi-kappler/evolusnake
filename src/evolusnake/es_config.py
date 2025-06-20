@@ -43,9 +43,8 @@ class ESConfiguration:
         self.num_of_mutations: int = 10
         self.accept_new_best: bool = True
         self.randomize_population: bool = False
+        self.randomize_count: int = 5
         self.population_kind: int = 1
-        self.increase_iteration: int = 0
-        self.increase_mutation: int = 0
         self.mutation_operations: list = [0]
         self.min_num_ind: int = 2
         self.sine_base: float = 100.0
@@ -87,6 +86,8 @@ class ESConfiguration:
                     config.result_filename = value
                 case "save_new_fitness":
                     config.save_new_fitness = value
+                case "allow_same_fitness":
+                    config.allow_same_fitness = value
                 case "share_only_best":
                     config.share_only_best = value
                 case "server_population_size":
@@ -101,12 +102,10 @@ class ESConfiguration:
                     config.accept_new_best = value
                 case "randomize_population":
                     config.randomize_population = value
+                case "randomize_count":
+                    config.randomize_count = value
                 case "population_kind":
                     config.population_kind = value
-                case "increase_iteration":
-                    config.increase_iteration = value
-                case "increase_mutation":
-                    config.increase_mutation = value
                 case "mutation_operations":
                     config.mutation_operations = value
                 case "min_num_ind":
@@ -136,9 +135,8 @@ class ESConfiguration:
         parser.add_argument("-i", "--num_of_iterations", type=int)
         parser.add_argument("-k", "--population_kind", type=int)
         parser.add_argument("-r", "--randomize_population", action="store_true")
-        parser.add_argument("--increase_iteration", type=int)
-        parser.add_argument("--increase_mutation", type=int)
         parser.add_argument("-o", "--mutation_operations")
+        parser.add_argument("--randomize_count", type=int)
         parser.add_argument("--min_num_ind", type=int)
         parser.add_argument("--sine_base", type=float)
         parser.add_argument("--sine_amplitude", type=float)
@@ -170,11 +168,8 @@ class ESConfiguration:
 
         self.randomize_population = args.randomize_population
 
-        if args.increase_iteration is not None:
-            self.increase_iteration = args.increase_iteration
-
-        if args.increase_mutation is not None:
-            self.increase_mutation = args.increase_mutation
+        if args.randomize_count is not None:
+            self.randomize_count = args.randomize_count
 
         if args.mutation_operations is not None:
             self.mutation_operations = [int(n) for n in args.mutation_operations.split(",")]
