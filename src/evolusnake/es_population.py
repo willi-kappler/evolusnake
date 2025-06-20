@@ -71,10 +71,9 @@ class ESPopulation:
         self.num_of_mutations: int = config.num_of_mutations
         self.accept_new_best: bool = config.accept_new_best
         self.randomize_population: bool = config.randomize_population
+        self.randomize_count: int = config.randomize_count
         self.target_fitness: float = config.target_fitness
         self.target_fitness2: float = config.target_fitness2
-        self.increase_iteration: int = config.increase_iteration
-        self.increase_mutation: int = config.increase_mutation
 
         self.best_index: int = 0
         self.worst_index: int = 0
@@ -93,13 +92,14 @@ class ESPopulation:
 
         logger.debug(f"{self.population_size=}, {self.target_fitness=}, {self.target_fitness2=}")
         logger.debug(f"{self.num_of_iterations=}, {self.num_of_mutations=}")
-        logger.debug(f"{self.accept_new_best=}, {self.randomize_population=}")
-        logger.debug(f"{self.increase_iteration=}, {self.increase_mutation=}")
-        logger.debug(f"{self.mutation_operations=}")
+        logger.debug(f"{self.randomize_population=}, {self.randomize_count=}")
+        logger.debug(f"{self.accept_new_best=}, {self.mutation_operations=}")
 
         self.mutation_operations = self.mutation_operations * 10
         self.mutation_operations_len: int = len(self.mutation_operations)
         self.es_shuffle_mutation_operations()
+
+        self.randomize_iteration: int = 0
 
     def es_find_worst_individual(self):
         self.worst_index = 0
@@ -137,18 +137,12 @@ class ESPopulation:
 
     def es_randomize_or_accept_best(self, best: ESIndividual):
         if self.randomize_population:
-            self.es_random_population()
+            self.randomize_iteration += 1
+            if self.randomize_iteration >= self.randomize_count:
+                self.randomize_iteration = 0
+                self.es_random_population()
         elif self.accept_new_best:
             self.population[0].es_from_server(best)
-
-    def es_increase_iteration_mutation(self):
-        if self.increase_iteration > 0:
-            self.num_of_iterations += self.increase_iteration
-            logger.debug(f"{self.num_of_iterations=}")
-
-        if self.increase_mutation > 0:
-            self.num_of_mutations += self.increase_mutation
-            logger.debug(f"{self.num_of_mutations=}")
 
     def es_shuffle_mutation_operations(self):
         utils.es_shuffle_list(self.mutation_operations)
