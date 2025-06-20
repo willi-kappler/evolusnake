@@ -26,6 +26,7 @@ class TestPopulation(unittest.TestCase):
         config1: ESConfiguration = ESConfiguration()
         config1.randomize_population = False
         config1.accept_new_best = True
+        config1.num_of_mutations = 1
         config1.parasnake_config = PSConfiguration("12345678901234567890123456789012")
         ind1: TestIndividual = TestIndividual()
 
@@ -50,6 +51,7 @@ class TestPopulation(unittest.TestCase):
         config1: ESConfiguration = ESConfiguration()
         config1.randomize_population = False
         config1.accept_new_best = True
+        config1.num_of_mutations = 1
         config1.parasnake_config = PSConfiguration("12345678901234567890123456789012")
         config1.mutation_operations = [0, 1, 2]
         ind1: TestIndividual = TestIndividual()
