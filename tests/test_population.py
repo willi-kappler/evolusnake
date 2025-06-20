@@ -36,8 +36,6 @@ class TestPopulation(unittest.TestCase):
         self.assertEqual(population1.worst_index, 0)
 
         self.assertEqual(population1.half_iterations, int(population1.num_of_iterations / 2))
-        self.assertEqual(population1.increase_iteration, config1.increase_iteration)
-        self.assertEqual(population1.increase_mutation, config1.increase_mutation)
 
         self.assertEqual(population1.best_index, 0)
         self.assertEqual(population1.worst_index, 0)
@@ -153,6 +151,7 @@ class TestPopulation(unittest.TestCase):
 
         config1: ESConfiguration = ESConfiguration()
         config1.randomize_population = True
+        config1.randomize_count = 1
         config1.accept_new_best = True
         ind1: TestIndividual = TestIndividual()
 
@@ -170,6 +169,9 @@ class TestPopulation(unittest.TestCase):
                 best_counter += 1
 
         self.assertLess(best_counter, 9)
+
+        for ind in population1.population:
+            self.assertEqual(ind.randomize_called, 11)
 
     def test_reset_or_accept_best2(self):
         """
@@ -197,77 +199,37 @@ class TestPopulation(unittest.TestCase):
 
         self.assertEqual(best_counter, 10)
 
-    def test_increate_iteration_mutation1(self):
+        for ind in population1.population:
+            self.assertEqual(ind.randomize_called, 1)
+
+    def test_reset_or_accept_best3(self):
         """
-        Test increasing the number of mutations.
-        """
-
-        config1: ESConfiguration = ESConfiguration()
-        config1.increase_mutation = 1
-        config1.increase_iteration = 0
-        ind1: TestIndividual = TestIndividual()
-
-        population1: ESPopulation = ESPopulation(config1, ind1, ESIterationCallBack())
-        self.assertEqual(population1.increase_mutation, 1)
-        self.assertEqual(population1.increase_iteration, 0)
-        self.assertEqual(population1.num_of_mutations, config1.num_of_mutations)
-        self.assertEqual(population1.num_of_iterations, config1.num_of_iterations)
-
-        population1.es_increase_iteration_mutation()
-        self.assertEqual(population1.num_of_mutations, config1.num_of_mutations + 1)
-        self.assertEqual(population1.num_of_iterations, config1.num_of_iterations)
-
-        population1.es_increase_iteration_mutation()
-        self.assertEqual(population1.num_of_mutations, config1.num_of_mutations + 2)
-        self.assertEqual(population1.num_of_iterations, config1.num_of_iterations)
-
-    def test_increate_iteration_mutation2(self):
-        """
-        Test increasing the number of iterations.
+        Test resetting the population or accepting the best solution.
         """
 
         config1: ESConfiguration = ESConfiguration()
-        config1.increase_mutation = 0
-        config1.increase_iteration = 1
+        config1.randomize_population = True
+        config1.randomize_count = 5
+        config1.accept_new_best = True
         ind1: TestIndividual = TestIndividual()
 
         population1: ESPopulation = ESPopulation(config1, ind1, ESIterationCallBack())
-        self.assertEqual(population1.increase_mutation, 0)
-        self.assertEqual(population1.increase_iteration, 1)
-        self.assertEqual(population1.num_of_mutations, config1.num_of_mutations)
-        self.assertEqual(population1.num_of_iterations, config1.num_of_iterations)
+        self.assertEqual(population1.randomize_population, True)
+        self.assertEqual(population1.accept_new_best, True)
 
-        population1.es_increase_iteration_mutation()
-        self.assertEqual(population1.num_of_mutations, config1.num_of_mutations)
-        self.assertEqual(population1.num_of_iterations, config1.num_of_iterations + 1)
+        ind1.data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
-        population1.es_increase_iteration_mutation()
-        self.assertEqual(population1.num_of_mutations, config1.num_of_mutations)
-        self.assertEqual(population1.num_of_iterations, config1.num_of_iterations + 2)
+        best_counter: int = 0
+        for _ in range(10):
+            population1.es_randomize_or_accept_best(ind1)
+            population1.es_sort_population()
+            if population1.population[0].fitness == 0.0:
+                best_counter += 1
 
-    def test_increate_iteration_mutation3(self):
-        """
-        Test increasing the number of mutations and iterations.
-        """
+        self.assertLess(best_counter, 9)
 
-        config1: ESConfiguration = ESConfiguration()
-        config1.increase_mutation = 2
-        config1.increase_iteration = 2
-        ind1: TestIndividual = TestIndividual()
-
-        population1: ESPopulation = ESPopulation(config1, ind1, ESIterationCallBack())
-        self.assertEqual(population1.increase_mutation, 2)
-        self.assertEqual(population1.increase_iteration, 2)
-        self.assertEqual(population1.num_of_mutations, config1.num_of_mutations)
-        self.assertEqual(population1.num_of_iterations, config1.num_of_iterations)
-
-        population1.es_increase_iteration_mutation()
-        self.assertEqual(population1.num_of_mutations, config1.num_of_mutations + 2)
-        self.assertEqual(population1.num_of_iterations, config1.num_of_iterations + 2)
-
-        population1.es_increase_iteration_mutation()
-        self.assertEqual(population1.num_of_mutations, config1.num_of_mutations + 4)
-        self.assertEqual(population1.num_of_iterations, config1.num_of_iterations + 4)
+        for ind in population1.population:
+            self.assertEqual(ind.randomize_called, 3)
 
     def test_randomize_worst(self):
         """
