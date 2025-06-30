@@ -396,6 +396,8 @@ class TestPopulation(unittest.TestCase):
     def test_calculate_fitness2(self):
         raise NotImplementedError("Test case not written yet.")
 
+    def test_randomize_count(self):
+        raise NotImplementedError("Test case not written yet.")
 
 if __name__ == "__main__":
     unittest.main()
