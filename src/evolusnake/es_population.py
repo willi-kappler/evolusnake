@@ -140,7 +140,9 @@ class ESPopulation:
             self.randomize_iteration += 1
             if self.randomize_iteration >= self.randomize_count:
                 self.randomize_iteration = 0
+                logger.debug("Randomize counter reached, randomzte population...")
                 self.es_random_population()
+            logger.debug(f"{self.randomize_iteration=}")
         elif self.accept_new_best:
             self.population[0].es_from_server(best)
 
